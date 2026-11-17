@@ -2,8 +2,8 @@ name: Holy Quran 24/7 Automated Tilawat Poster
 
 on:
   schedule:
-    # Runs every 25 minutes (~57 posts per day for 50+ daily uploads)
-    - cron: '*/25 * * * *'
+    # Runs every 15 minutes (96 ~ 100 posts per day for 24/7 tilawat)
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       batch_count:
