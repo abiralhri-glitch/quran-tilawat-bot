@@ -198,7 +198,7 @@ def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
         "-map", "0:v:0",
         "-map", "1:a:0",
         "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
-        "-af", "volume=2.0",
+        "-af", "asetrate=44100*1.04,atempo=0.98,volume=1.9,aecho=0.8:0.8:20:0.2",
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-pix_fmt", "yuv420p",
