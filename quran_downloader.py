@@ -36,10 +36,10 @@ def download_quran_video(search_query: str, is_reel: bool = True) -> dict:
 
     cmd = [
         "yt-dlp",
-        "--extractor-args", "youtube:player_client=android,ios",
+        "--extractor-args", "youtube:player_client=tv_embedded,android_creator",
         "--no-playlist",
         "--max-downloads", "1",
-        "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "-f", "best[ext=mp4]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best",
         "--merge-output-format", "mp4",
         "-o", out_template,
         "--print-json"
@@ -65,10 +65,10 @@ def download_quran_video(search_query: str, is_reel: bool = True) -> dict:
         fallback_query = f"ytsearch3:{search_query}"
         fallback_cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=android,ios",
+            "--extractor-args", "youtube:player_client=tv_embedded,android_creator",
             "--no-playlist",
             "--max-downloads", "1",
-            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "-f", "best[ext=mp4]/best",
             "--merge-output-format", "mp4",
             "-o", out_template,
             fallback_query
