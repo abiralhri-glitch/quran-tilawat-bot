@@ -1,0 +1,52 @@
+name: Holy Quran 24/7 Automated Tilawat Poster
+
+on:
+  schedule:
+    # Runs every 25 minutes (~57 posts per day for 50+ daily uploads)
+    - cron: '*/25 * * * *'
+  workflow_dispatch:
+    inputs:
+      batch_count:
+        description: 'Number of Surah videos to upload in this run'
+        required: false
+        default: '1'
+
+jobs:
+  post-quran-tilawat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Dependencies (FFmpeg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install yt-dlp requests moviepy imageio imageio-ffmpeg
+
+      - name: Download, Process and Upload Quran Tilawat Video
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          BATCH=${{ github.event.inputs.batch_count || '1' }}
+          python quran_runner.py $BATCH
+
+      - name: Commit and Push Upload History
+        run: |
+          git config --global user.name "QuranBot Auto"
+          git config --global user.email "quranbot@automation.local"
+          git add posted_history.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update quran posted history [skip ci]" && git push)
