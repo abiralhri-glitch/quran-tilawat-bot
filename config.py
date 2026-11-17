@@ -6,7 +6,7 @@ Configuration for Holy Quran Tilawat Page
 import os
 
 FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "1430288070174104")
-FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "EAAe1H3izQCYBTKqRGssZBfBij0DGxZCwQm12gkMuZBpWXwaiYuqbSmykjhXvytdEcoEtX89uZCaeUnMXuyr5bXHsZAi6rDcja9xK2ZBSZCsViywZBZAsW0LQqHHW75OsxFE8HivCbqUDA88qQocUSl2xsDv7VnmWMnCPj5A1tQ5XIp9FYEWsot8msfLN61xMMwJpCCb7uVcvz0pohbhRG89c4pt49auipck2sNdzOzs8Mdffk")
+FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "EAAe1H3izQCYBTECDZBuZCdZBhUCSZCxHfp80umYK4Q1N0SamI5KuTJCCMba3fqlzttmCdOwlxlZBIkJd1ATBlZCYM7Rtn26yXO27C9lxvZAOQEbaJZBJ2svO9bLlEwT9ZCQgwnRud7dW5n6eB7XwGyqbMU2fXO3imIzWjAsHkJxbZCDZANzaWVwqJeCX1jkxV2t9LhhkzJNcbQEFcKcEsFkumXIddDVjowjtLvOXP6PJkQZD")
 
 FB_GRAPH_URL = "https://graph.facebook.com/v21.0"
 
