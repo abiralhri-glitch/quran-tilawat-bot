@@ -40,49 +40,67 @@ LIVE_MOTION_FOOTAGE_POOL = [
     }
 ]
 
-# আসল কুরআন মধুর তিলাওয়াত অডিও পুল (উচ্চমানের হাই-কোয়ালিটি অডিও ফাইল)
+# আসল কুরআন মধুর তিলাওয়াত অডিও পুল - বহুমাত্রিক বিখ্যাত ক্বারীবৃন্দ (অ্যালগরিদম সুরক্ষা ও নিয়মিত রোটেশন)
 HIGH_QUALITY_QURAN_AUDIO = [
     {
-        "id": "audio_surah_55_rahman",
+        "id": "audio_afs_055_rahman",
         "title": "سُورَةُ الرَّحْمَٰنِ • সূরা আর-রহমান",
         "reciter": "শাইখ মিশারি রশিদ আল-আফাসি",
         "url": "https://server8.mp3quran.net/afs/055.mp3"
     },
     {
-        "id": "audio_surah_56_waqiah",
-        "title": "سُورَةُ الْوَاقِعَةِ • সূরা আল-ওয়াকিয়াহ",
-        "reciter": "শাইখ সাউদ আশ-শুরাইম",
-        "url": "https://server7.mp3quran.net/shur/056.mp3"
-    },
-    {
-        "id": "audio_surah_67_mulk",
-        "title": "سُورَةُ الْمُلْكِ • সূরা আল-মুলক",
-        "reciter": "শাইখ মাহের আল-মুয়াইক্লি",
-        "url": "https://server12.mp3quran.net/maher/067.mp3"
-    },
-    {
-        "id": "audio_surah_36_yasin",
+        "id": "audio_sds_036_yasin",
         "title": "سُورَةُ يس • সূরা ইয়াসিন",
         "reciter": "শাইখ আব্দুর রহমান আস-সুদাইস",
         "url": "https://server11.mp3quran.net/sds/036.mp3"
     },
     {
-        "id": "audio_surah_19_maryam",
-        "title": "سُورَةُ مَرْيَمَ • সূরা মারিয়াম",
-        "reciter": "শাইখ মিশারি রশিদ আল-আফাসি",
-        "url": "https://server8.mp3quran.net/afs/019.mp3"
+        "id": "audio_gmd_056_waqiah",
+        "title": "سُورَةُ الْوَاقِعَةِ • সূরা আল-ওয়াকিয়াহ",
+        "reciter": "শাইখ সাদ আল-গামদি",
+        "url": "https://server7.mp3quran.net/s_gmd/056.mp3"
     },
     {
-        "id": "audio_surah_18_kahf",
+        "id": "audio_shatr_020_taha",
+        "title": "سُورَةُ طه • সূরা ত্বা-হা",
+        "reciter": "শাইখ আবু বকর আশ-শাতরি",
+        "url": "https://server11.mp3quran.net/shatr/020.mp3"
+    },
+    {
+        "id": "audio_shur_018_kahf",
         "title": "سُورَةُ الْكَهْفِ • সূরা আল-কাহফ",
         "reciter": "শাইখ সাউদ আশ-শুরাইম",
         "url": "https://server7.mp3quran.net/shur/018.mp3"
     },
     {
-        "id": "audio_surah_20_taha",
-        "title": "سُورَةُ طه • সূরা ত্বা-হা",
-        "reciter": "শাইখ মাহের আল-মুয়াইক্লি",
-        "url": "https://server12.mp3quran.net/maher/020.mp3"
+        "id": "audio_sds_067_mulk",
+        "title": "سُورَةُ الْمُلْكِ • সূরা আল-মুলক",
+        "reciter": "শাইখ আব্দুর রহমান আস-সুদাইস",
+        "url": "https://server11.mp3quran.net/sds/067.mp3"
+    },
+    {
+        "id": "audio_afs_019_maryam",
+        "title": "سُورَةُ مَرْيَمَ • সূরা মারিয়াম",
+        "reciter": "শাইখ মিশারি রশিদ আল-আফাসি",
+        "url": "https://server8.mp3quran.net/afs/019.mp3"
+    },
+    {
+        "id": "audio_gmd_055_rahman",
+        "title": "سُورَةُ الرَّحْمَٰনِ • সূরা আর-রহমান",
+        "reciter": "শাইখ সাদ আল-গামদি",
+        "url": "https://server7.mp3quran.net/s_gmd/055.mp3"
+    },
+    {
+        "id": "audio_shatr_067_mulk",
+        "title": "سُورَةُ الْمُلْكِ • সূরা আল-মুলক",
+        "reciter": "শাইখ আবু বকর আশ-শাতরি",
+        "url": "https://server11.mp3quran.net/shatr/067.mp3"
+    },
+    {
+        "id": "audio_afs_056_waqiah",
+        "title": "سُورَةُ الْوَاقِعَةِ • সূরা আল-ওয়াকিয়াহ",
+        "reciter": "শাইখ মিশারি রশিদ আল-আফাসি",
+        "url": "https://server8.mp3quran.net/afs/056.mp3"
     }
 ]
 
@@ -106,8 +124,7 @@ def save_posted_id(video_id: str):
 
 def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
     """
-    বাস্তব চলমান লাইভ ভিডিও (ঝর্ণা, বৃষ্টি, সবুজ অরণ্য) এবং বিশুদ্ধ কুরআন তিলাওয়াত অডিও
-    একত্রিত করে 9:16 ফুলস্ক্রিন এইচডি রিলস তৈরি করে।
+    বাস্তব চলমান লাইভ ভিডিও (ঝর্ণা, বৃষ্টি, সবুজ অরণ্য) এবং বিশুদ্ধ কুরআন তিলাওয়াত অডিও একত্রিত করে 9:16 ফুলস্ক্রিন এইচডি রিলস তৈরি করে।
     """
     os.makedirs(DOWNLOADS_DIR, exist_ok=True)
     posted_ids = load_posted_ids()
@@ -182,7 +199,7 @@ def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
         raise RuntimeError("Failed to download Quran recitation audio")
 
     # FFmpeg 9:16 Vertical Reel Synthesis
-    # Explicitly map video from input 0 and recitation audio from input 1, boost volume
+    # Explicitly map video from input 0 and recitation audio from input 1, with STRONGER anti-copyright audio filter
     out_id = f"{selected_footage['id']}_{audio_item['id']}_{int(time.time())}"
     final_output_path = os.path.join(DOWNLOADS_DIR, f"live_quran_{out_id}.mp4")
     target_duration = 50
@@ -198,7 +215,7 @@ def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
         "-map", "0:v:0",
         "-map", "1:a:0",
         "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
-        "-af", "asetrate=44100*1.04,atempo=0.98,volume=1.9,aecho=0.8:0.8:20:0.2",
+        "-af", "asetrate=44100*1.07,aresample=44100,atempo=0.935,volume=2.0,equalizer=f=300:width_type=o:width=2:g=4,equalizer=f=3000:width_type=o:width=2:g=-3,aecho=0.8:0.75:30:0.25",
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-pix_fmt", "yuv420p",
@@ -213,10 +230,12 @@ def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
         print(f"[DOWNLOADER] Successfully synthesized live motion reel: {final_output_path}")
         save_posted_id(selected_footage["id"])
         save_posted_id(audio_item["id"])
+
         surah_title = audio_item["title"]
         reciter = audio_item["reciter"]
         nature_title = selected_footage["title"]
         full_title = f"{surah_title} • {nature_title} | ক্বারী {reciter}"
+
         return {
             "id": out_id,
             "filepath": final_output_path,
