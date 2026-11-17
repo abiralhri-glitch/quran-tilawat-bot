@@ -47,5 +47,5 @@ jobs:
         run: |
           git config --global user.name "QuranBot Auto"
           git config --global user.email "quranbot@automation.local"
-          git add posted_history.json || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update quran posted history [skip ci]" && git push)
+          git add -A
+          git diff --staged --quiet || (git commit -m "chore: update quran posted history [skip ci]" && git push) || true
