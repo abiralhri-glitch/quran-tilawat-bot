@@ -72,8 +72,7 @@ def download_quran_video(search_query: str, is_reel: bool = True, surah_data: di
         ]
         try:
             res = subprocess.run(search_cmd, capture_output=True, text=True, timeout=40)
-            lines = [l.strip() for l in res.stdout.strip().split("
-") if l.strip() and "||" in l]
+            lines = [l.strip() for l in res.stdout.strip().split("\n") if l.strip() and "||" in l]
             for line in lines:
                 parts = line.split("||")
                 v_id = parts[0].strip()
