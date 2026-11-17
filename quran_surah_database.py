@@ -16,6 +16,7 @@ QARIS = [
 # ১. জনপ্রিয় লং ভিডিও সূরা (৫ থেকে ৩০ মিনিটের পূর্ণাঙ্গ সূরা)
 LONG_SURAHS = [
     {
+        "number": 36,
         "arabic": "سُورَةُ يس",
         "bangla": "সূরা ইয়াসিন",
         "meaning": "কুরআনের হৃৎপিণ্ড",
@@ -23,6 +24,7 @@ LONG_SURAHS = [
         "query": "surah yasin full beautiful recitation with bangla translation"
     },
     {
+        "number": 67,
         "arabic": "سُورَةُ الْمُلْكِ",
         "bangla": "সূরা আল-মুলক",
         "meaning": "কবরের আজাব থেকে রক্ষাকারী",
@@ -30,6 +32,7 @@ LONG_SURAHS = [
         "query": "surah mulk full beautiful recitation with bangla translation"
     },
     {
+        "number": 55,
         "arabic": "سُورَةُ الرَّحْمَٰنِ",
         "bangla": "সূরা আর-রহমান",
         "meaning": "কুরআনের সৌন্দর্য ও বধূ",
@@ -37,6 +40,7 @@ LONG_SURAHS = [
         "query": "surah rahman full beautiful recitation with bangla translation"
     },
     {
+        "number": 56,
         "arabic": "سُورَةُ الْوَاقِعَةِ",
         "bangla": "সূরা আল-ওয়াকিয়াহ",
         "meaning": "দারিদ্র্য দূরকারী সূরা",
@@ -44,6 +48,7 @@ LONG_SURAHS = [
         "query": "surah waqiah full beautiful recitation with bangla translation"
     },
     {
+        "number": 18,
         "arabic": "سُورَةُ الْكَهْفِ",
         "bangla": "সূরা আল-কাহফ",
         "meaning": "দাজ্জালের ফিতনা থেকে রক্ষাকারী",
@@ -55,6 +60,7 @@ LONG_SURAHS = [
 # ২. ভাইরাল শর্টস ও রিলস সূরা (৩০ সেকেন্ড থেকে ২ মিনিট)
 REELS_SURAHS = [
     {
+        "number": 1,
         "arabic": "سُورَةُ الْفَاتِحَةِ",
         "bangla": "সূরা আল-ফাতিহা",
         "ayahs": "১-৭",
@@ -62,6 +68,7 @@ REELS_SURAHS = [
         "query": "surah fatihah emotional recitation shorts bangla"
     },
     {
+        "number": 2,
         "arabic": "آيَةُ الْكُرْسِيِّ",
         "bangla": "আয়াতুল কুরসি",
         "ayahs": "সূরা বাকারা: ২৫৫",
@@ -69,6 +76,7 @@ REELS_SURAHS = [
         "query": "ayatul kursi beautiful recitation reels shorts"
     },
     {
+        "number": 93,
         "arabic": "سُورَةُ الضُّحَىٰ",
         "bangla": "সূরা আদ-দুহা",
         "ayahs": "১-১১",
@@ -76,6 +84,7 @@ REELS_SURAHS = [
         "query": "surah ad duha emotional recitation reels shorts"
     },
     {
+        "number": 94,
         "arabic": "سُورَةُ الشَّرْحِ",
         "bangla": "সূরা আল-ইনশিরাহ",
         "ayahs": "১-৮",
@@ -83,6 +92,7 @@ REELS_SURAHS = [
         "query": "surah inshirah beautiful recitation reels shorts"
     },
     {
+        "number": 95,
         "arabic": "سُورَةُ التِّينِ",
         "bangla": "সূরা আত-তীন",
         "ayahs": "১-৮",
@@ -90,6 +100,7 @@ REELS_SURAHS = [
         "query": "surah tin emotional recitation reels shorts"
     },
     {
+        "number": 23,
         "arabic": "سُورَةُ الْمُؤْمِنُونَ",
         "bangla": "সূরা আল-মু'মিনুন",
         "ayahs": "৮৪-৮৭",
@@ -97,6 +108,7 @@ REELS_SURAHS = [
         "query": "surah muminun emotional recitation yasser al dossari shorts"
     },
     {
+        "number": 112,
         "arabic": "سُورَةُ الْإِخْلَاصِ",
         "bangla": "সূরা আল-ইখলাস",
         "ayahs": "১-৪",
