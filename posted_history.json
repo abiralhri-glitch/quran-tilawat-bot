@@ -48,5 +48,22 @@
         "fbtrace_id": "A8NKQsQ_By-rfFEp9qyJA9M"
       }
     }
+  },
+  {
+    "key": "সূরা আল-বাকারা (শেষ ২ আয়াত)_২৮৫-২৮৬_Abdul Rahman Al-Sudais",
+    "surah": "সূরা আল-বাকারা (শেষ ২ আয়াত)",
+    "ayahs": "২৮৫-২৮৬",
+    "qari": "শাইখ আব্দুর রহমান আস-সুদাইস",
+    "is_reel": true,
+    "uploaded_at": "2026-11-17 22:31:34",
+    "result": {
+      "error": {
+        "message": "Error validating access token: Session has expired on Tuesday, 17-Nov-26 12:00:00 PST. The current time is Tuesday, 17-Nov-26 14:31:34 PST.",
+        "type": "OAuthException",
+        "code": 190,
+        "error_subcode": 463,
+        "fbtrace_id": "Ao1Hqfm1Qb_oQqhCVYgSNo2"
+      }
+    }
   }
 ]
