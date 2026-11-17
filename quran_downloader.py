@@ -26,50 +26,34 @@ def download_quran_video(search_query: str, is_reel: bool = True) -> dict:
 
     out_template = os.path.join(DOWNLOADS_DIR, "%(id)s.%(ext)s")
     
-    # Filter duration based on type
     if is_reel:
-        duration_filter = "--match-filter duration < 120"
-        query = f"ytsearch5:{search_query} #shorts"
+        query = f"ytsearch1:{search_query} shorts"
     else:
-        duration_filter = "--match-filter duration > 180 & duration < 2400"
-        query = f"ytsearch5:{search_query}"
+        query = f"ytsearch1:{search_query}"
 
     cmd = [
         "yt-dlp",
-        "--extractor-args", "youtube:player_client=tv_embedded,android_creator",
-        "--no-playlist",
-        "--max-downloads", "1",
-        "-f", "best[ext=mp4]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best",
+        "--no-warnings",
         "--merge-output-format", "mp4",
+        "--max-filesize", "150M",
         "-o", out_template,
-        "--print-json"
+        query
     ]
-    
-    # Add duration filters if specified
-    if is_reel:
-        cmd.extend(["--match-filter", "duration < 120"])
-    else:
-        cmd.extend(["--match-filter", "duration > 180 & duration < 2400"])
-        
-    cmd.append(query)
 
-    print(f"[DOWNLOADER] Searching: {query} (Reel: {is_reel})")
-    
+    print(f"[DOWNLOADER] Downloading via yt-dlp: '{query}'")
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace")
     
     # Check downloaded file in DOWNLOADS_DIR
     files = [os.path.join(DOWNLOADS_DIR, f) for f in os.listdir(DOWNLOADS_DIR) if f.endswith(".mp4")]
     if not files:
-        # Fallback without strict duration filter
-        print("[DOWNLOADER] Initial filter returned no match, trying fallback query...")
-        fallback_query = f"ytsearch3:{search_query}"
+        # Fallback query
+        print("[DOWNLOADER] Initial search returned no file, trying fallback...")
+        fallback_query = "ytsearch1:quran tilawat bangla subtitle shorts"
         fallback_cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=tv_embedded,android_creator",
-            "--no-playlist",
-            "--max-downloads", "1",
-            "-f", "best[ext=mp4]/best",
+            "--no-warnings",
             "--merge-output-format", "mp4",
+            "--max-filesize", "150M",
             "-o", out_template,
             fallback_query
         ]
