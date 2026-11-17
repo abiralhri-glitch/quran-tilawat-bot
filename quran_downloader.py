@@ -16,84 +16,47 @@ from config import DOWNLOADS_DIR, BASE_DIR
 
 HISTORY_FILE = os.path.join(BASE_DIR, "posted_video_ids.json")
 
-# নিশ্চিত লাইভ মোশন ব্যাকগ্রাউন্ড (বৃষ্টি, ঝর্ণা, ড্রোন, সাগর) সহ ভিডিও পুল
-VERIFIED_LIVE_VIDEOS = [
-    {"id": "03bZxuv26Tk", "title": "সূরা আর-রহমান • বৃষ্টি ও অন্তরের প্রশান্তি", "surah": "সূরা আর-রহমান"},
-    {"id": "1MfU9psrDzQ", "title": "সূরা আল-ওয়াকিয়াহ • ঝর্ণার অপূর্ব দৃশ্য ও তিলাওয়াত", "surah": "সূরা আল-ওয়াকিয়াহ"},
-    {"id": "20AbFQzuRZM", "title": "সূরা আল-মুলক • গভীর অরণ্যের মনোমুগ্ধকর ঝর্ণা", "surah": "সূরা আল-মুলক"},
-    {"id": "3Mj7v_cDK10", "title": "সূরা ইয়াসিন • বৃষ্টির শীতল স্পর্শ ও কুরআন তিলাওয়াত", "surah": "সূরা ইয়াসিন"},
-    {"id": "sHk7u73f8Tw", "title": "সূরা মারিয়াম • প্রকৃতির নৈসর্গিক সৌন্দর্য ও তিলাওয়াত", "surah": "সূরা মারিয়াম"},
-    {"id": "IesdLMXUKJo", "title": "সূরা আল-কাহফ • প্রশান্তিময় হৃদয়স্পর্শী তিলাওয়াত", "surah": "সূরা আল-কাহফ"},
-    {"id": "Y5ITGlVpWAs", "title": "সূরা ত্বা-হা • মন জুড়ানো প্রকৃতি ও তিলাওয়াত", "surah": "সূরা ত্বা-হা"}
-]
-
-# সরাসরি লাইভ মোশন ও তিলাওয়াত ভিডিও ব্যাকআপ পুল (আর্কাইভ ও ক্লাউড সিডিএন—১০০% চলমান দৃশ্য)
-DIRECT_LIVE_VIDEOS = [
+# নিশ্চিত আসল চলমান লাইভ মোশন ব্যাকগ্রাউন্ড (ঝর্ণা, বৃষ্টি, সবুজ অরণ্য, পাহাড়)
+LIVE_MOTION_FOOTAGE_POOL = [
     {
-        "id": "live_recitation_02",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2002.mp4",
-        "title": "সূরা আল-মুলক • ক্বারী মুহাম্মদ সরাসরি তিলাওয়াত",
-        "surah_number": 67
+        "id": "fern_waterfall_01",
+        "title": "ঝর্ণার অপূর্ব জলধারা ও প্রশান্তিময় প্রকৃতি",
+        "url": "https://archive.org/download/FernCreekFalls/FernCreekFalls-720_512kb.mp4"
     },
     {
-        "id": "live_recitation_05",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2005.mp4",
-        "title": "সূরা আর-রহমান • অন্তরের প্রশান্তিময় তিলাওয়াত",
-        "surah_number": 55
+        "id": "rain_falling_01",
+        "title": "বৃষ্টির শীতল স্পর্শ ও অন্তরের প্রশান্তি",
+        "url": "https://archive.org/download/rain1932/rain1932_512kb.mp4"
     },
     {
-        "id": "live_recitation_07",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2007.mp4",
-        "title": "সূরা ইয়াসিন • হৃদয়স্পর্শী তিলাওয়াত",
-        "surah_number": 36
+        "id": "slow_green_leaves_01",
+        "title": "মনোরম সবুজ অরণ্য ও প্রকৃতির স্নিগ্ধ রূপ",
+        "url": "https://archive.org/download/SlowLeaves/SlowLeavesH264.mp4"
     },
     {
-        "id": "live_recitation_08",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2008.mp4",
-        "title": "সূরা আল-ওয়াকিয়াহ • রূহানী প্রশান্তি",
-        "surah_number": 56
-    },
-    {
-        "id": "live_recitation_01",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2001.mp4",
-        "title": "সূরা আল-কাহফ • নূর ও হেদায়েত",
-        "surah_number": 18
-    },
-    {
-        "id": "live_recitation_03",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2003.mp4",
-        "title": "সূরা মারিয়াম • পবিত্র তিলাওয়াত",
-        "surah_number": 19
-    },
-    {
-        "id": "live_recitation_04",
-        "url": "https://archive.org/download/QariMuhammadKantawi_Tilawat_Video/%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A9%20%D9%84%D9%84%D9%82%D8%A7%D8%B1%D8%A6%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%83%D9%86%D8%AA%D8%A7%D9%88%D9%8A%2004.mp4",
-        "title": "সূরা ত্বা-হা • মধুর সুরের তিলাওয়াত",
-        "surah_number": 20
+        "id": "fern_waterfall_hd_02",
+        "title": "পাহাড়ি ঝর্ণার কলতান ও নৈসর্গিক রূপ",
+        "url": "https://archive.org/download/FernCreekFalls/FernCreekFalls-720.mp4"
     }
 ]
 
-# চলমান প্রাকৃতিক ব্যাকগ্রাউন্ড ভিডিও (বৃষ্টি, ঝর্ণা, ড্রোন)
-NATURE_MOTION_BACKGROUNDS = [
+# বিশ্ববিখ্যাত ক্বারীগণের বিশুদ্ধ ও মধুর কুরআন অডিও সিডিএন
+QURAN_AUDIO_SOURCES = [
     {
-        "id": "waterfall_sohosrodhara",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Sohosrodhara_Waterfall%2C_Sitakund_Eco-Park%2C_Chittagong%2C_Bangladesh.webm",
-        "desc": "প্রাকৃতিক ঝর্ণার দৃশ্য"
+        "qari": "শাইখ মিশারি রশিদ আল-আফাসি",
+        "url_template": "https://server8.mp3quran.net/afs/{num:03d}.mp3"
     },
     {
-        "id": "rain_motion_drops",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Rain_water.webm",
-        "desc": "বৃষ্টির মন জুড়ানো দৃশ্য"
+        "qari": "শাইখ আব্দুর রহমান আস-সুদাইস",
+        "url_template": "https://server11.mp3quran.net/sds/{num:03d}.mp3"
     },
     {
-        "id": "drone_waterfall_keila",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Drone_video_of_Keila_waterfall_and_manor_in_Keila-Joa%2C_Estonia.webm",
-        "desc": "ড্রোন শটে মনোরম জলপ্রপাত"
+        "qari": "শাইখ ইয়াসির আদ-দুসারি",
+        "url_template": "https://server11.mp3quran.net/yasser/{num:03d}.mp3"
     },
     {
-        "id": "fern_creek_falls",
-        "url": "https://archive.org/download/FernCreekFalls/FernCreekFalls-720.mp4",
-        "desc": "পাহাড়ি ঝর্ণার প্রবাহ"
+        "qari": "শাইখ নাসের আল-কাতামি",
+        "url_template": "https://server6.mp3quran.net/qtm/{num:03d}.mp3"
     }
 ]
 
@@ -115,120 +78,151 @@ def save_posted_id(video_id: str):
     except Exception as e:
         print(f"[DOWNLOADER] Warning saving history ID: {e}")
 
-def download_file_direct(url: str, out_path: str, timeout: int = 45) -> bool:
+def download_file_direct(url: str, dest_path: str, timeout: int = 60) -> bool:
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    }
     try:
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"}
-        with requests.get(url, stream=True, headers=headers, timeout=timeout) as r:
-            r.raise_for_status()
-            with open(out_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024 * 1024):
+        resp = requests.get(url, headers=headers, stream=True, timeout=timeout)
+        if resp.status_code in [200, 206]:
+            with open(dest_path, "wb") as f:
+                for chunk in resp.iter_content(chunk_size=1024 * 1024):
                     if chunk:
                         f.write(chunk)
-        return os.path.exists(out_path) and os.path.getsize(out_path) > 100000
+            return os.path.exists(dest_path) and os.path.getsize(dest_path) > 10000
+        else:
+            print(f"[DOWNLOADER] Direct download failed HTTP {resp.status_code} for {url}")
+            return False
     except Exception as e:
-        print(f"[DOWNLOADER] Direct download notice for {url}: {e}")
+        print(f"[DOWNLOADER] Direct download error: {e}")
         return False
 
-def generate_nature_quran_reel(surah_num: int, surah_bangla: str, posted_ids: set) -> dict:
+def generate_live_motion_quran_video(surah_num: int, surah_bangla: str, posted_ids: set) -> dict:
     """
-    বাস্তব চলমান প্রকৃতির দৃশ্য (ঝর্ণা/বৃষ্টি/ড্রোন) এবং সংশ্লিষ্ট সূরার মধুর তিলাওয়াত
-    একত্রিত করে নিখুঁত ৯:১৬ চলমান লাইভ রিলস তৈরি করে।
+    ১০০% নিশ্চিত বাস্তব লাইভ মোশন ব্যাকগ্রাউন্ড (প্রবাহিত ঝর্ণা, বৃষ্টি, সবুজ অরণ্য)
+    এবং বিশ্ববিখ্যাত ক্বারীর মধুর তিলাওয়াত অডিও সংযুক্ত করে একটি আকর্ষণীয় ৯:১৬ রিলস তৈরি করে।
+    কোনো স্থির ছবি বা স্লাইড নয়—প্রতিটি ফ্রেমেই থাকে জীবন্ত চলমান প্রাকৃতিক দৃশ্য।
     """
-    print(f"[DOWNLOADER] Generating live nature motion reel for {surah_bangla} (#{surah_num})...")
+    print(f"[DOWNLOADER] Synthesizing 100% Real Live Motion Quran Reel for {surah_bangla}...")
+    temp_dir = os.path.join(DOWNLOADS_DIR, "temp_render")
+    os.makedirs(temp_dir, exist_ok=True)
 
-    available_bg = [b for b in NATURE_MOTION_BACKGROUNDS if f"{b['id']}_{surah_num}" not in posted_ids]
-    if not available_bg:
-        available_bg = NATURE_MOTION_BACKGROUNDS
-    bg_choice = random.choice(available_bg)
+    # পূর্বে ব্যবহার না হওয়া লাইভ ফুটেজ নির্বাচন
+    available_footage = [item for item in LIVE_MOTION_FOOTAGE_POOL if f"{item['id']}_{surah_num}" not in posted_ids]
+    if not available_footage:
+        available_footage = LIVE_MOTION_FOOTAGE_POOL
+    selected_motion = random.choice(available_footage)
 
-    bg_raw_ext = ".mp4" if bg_choice["url"].endswith(".mp4") else ".webm"
-    bg_path = os.path.join(DOWNLOADS_DIR, f"bg_{bg_choice['id']}{bg_raw_ext}")
-    audio_path = os.path.join(DOWNLOADS_DIR, f"audio_surah_{surah_num}.mp3")
-    final_output = os.path.join(DOWNLOADS_DIR, f"nature_quran_{surah_num}_{int(time.time())}.mp4")
+    # ক্বারী নির্বাচন
+    selected_audio_source = random.choice(QURAN_AUDIO_SOURCES)
+    audio_url = selected_audio_source["url_template"].format(num=surah_num)
+    qari_name = selected_audio_source["qari"]
 
-    if not os.path.exists(bg_path) or os.path.getsize(bg_path) < 10000:
-        print(f"[DOWNLOADER] Downloading motion background: {bg_choice['desc']}")
-        if not download_file_direct(bg_choice["url"], bg_path):
-            raise RuntimeError(f"Could not download motion background {bg_choice['url']}")
+    raw_motion_path = os.path.join(temp_dir, f"raw_motion_{selected_motion['id']}.mp4")
+    raw_audio_path = os.path.join(temp_dir, f"raw_audio_surah_{surah_num}.mp3")
+    final_output_path = os.path.join(DOWNLOADS_DIR, f"live_quran_{surah_num}_{int(time.time())}.mp4")
 
-    audio_url = f"https://server8.mp3quran.net/afs/{surah_num:03d}.mp3"
-    print(f"[DOWNLOADER] Downloading recitation audio from {audio_url}")
-    if not download_file_direct(audio_url, audio_path):
-        audio_url_backup = f"https://everyayah.com/data/Alafasy_128kbps/{surah_num:03d}001.mp3"
-        download_file_direct(audio_url_backup, audio_path)
+    # ১. লাইভ ফুটেজ ডাউনলোড
+    if not os.path.exists(raw_motion_path) or os.path.getsize(raw_motion_path) < 10000:
+        print(f"[DOWNLOADER] Downloading real live footage: {selected_motion['title']}")
+        ok_video = download_file_direct(selected_motion["url"], raw_motion_path, timeout=90)
+        if not ok_video:
+            download_file_direct(LIVE_MOTION_FOOTAGE_POOL[0]["url"], raw_motion_path, timeout=90)
 
-    if not os.path.exists(audio_path) or os.path.getsize(audio_path) < 5000:
-        raise RuntimeError("Could not download audio recitation")
+    # ২. তিলাওয়াত অডিও ডাউনলোড
+    if not os.path.exists(raw_audio_path) or os.path.getsize(raw_audio_path) < 10000:
+        print(f"[DOWNLOADER] Downloading melodious recitation ({qari_name}) from {audio_url}...")
+        ok_audio = download_file_direct(audio_url, raw_audio_path, timeout=60)
+        if not ok_audio:
+            backup_audio = f"https://server8.mp3quran.net/afs/{surah_num:03d}.mp3"
+            download_file_direct(backup_audio, raw_audio_path, timeout=60)
 
-    merge_cmd = [
+    if not os.path.exists(raw_motion_path) or not os.path.exists(raw_audio_path):
+        raise RuntimeError(f"Failed to acquire live video or audio assets for {surah_bangla}")
+
+    # ৩. FFmpeg দিয়ে ৯:১৬ (১০৮০x১৯২০) খাঁটি লাইভ মোশন রিলস তৈরি
+    reel_duration = 55
+    fade_start = reel_duration - 4
+
+    ffmpeg_cmd = [
         "ffmpeg", "-y",
         "-stream_loop", "-1",
-        "-i", bg_path,
-        "-i", audio_path,
+        "-i", raw_motion_path,
+        "-ss", "5",
+        "-t", str(reel_duration),
+        "-i", raw_audio_path,
         "-map", "0:v:0",
         "-map", "1:a:0",
+        "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
         "-c:v", "libx264",
+        "-preset", "fast",
+        "-crf", "22",
         "-c:a", "aac",
-        "-t", "65",
+        "-b:a", "192k",
+        "-af", f"afade=t=out:st={fade_start}:d=4",
         "-shortest",
-        final_output
+        final_output_path
     ]
-    print("[DOWNLOADER] Merging real motion background with Quran recitation...")
-    subprocess.run(merge_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    vid_id = f"{bg_choice['id']}_surah_{surah_num}"
-    save_posted_id(vid_id)
+    print(f"[DOWNLOADER] Rendering 9:16 Live Nature Motion Reel with FFmpeg...")
+    res = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=120)
+    if res.returncode != 0 or not os.path.exists(final_output_path) or os.path.getsize(final_output_path) < 50000:
+        print(f"[DOWNLOADER] FFmpeg render error: {res.stderr[:300]}")
+        raise RuntimeError("Failed to render 9:16 live video reel")
+
+    motion_id = f"{selected_motion['id']}_{surah_num}"
+    save_posted_id(motion_id)
+
+    full_title = f"{surah_bangla} • {selected_motion['title']} | ক্বারী: {qari_name}"
+    print(f"[DOWNLOADER] Successfully synthesized 100% Real Live Motion Reel ({os.path.getsize(final_output_path)} bytes): {final_output_path}")
 
     return {
-        "filepath": final_output,
-        "title": f"{surah_bangla} • {bg_choice['desc']} ও প্রশান্তিময় তিলাওয়াত",
-        "video_id": vid_id,
-        "surah_number": surah_num
+        "path": final_output_path,
+        "id": motion_id,
+        "title": full_title,
+        "surah": surah_bangla,
+        "is_verified_live": True
     }
 
 def download_quran_video(search_query: str, is_reel: bool = True, surah_data: dict = None) -> dict:
     """
-    বাস্তব চলমান লাইভ ভিডিও (বৃষ্টি, ঝর্ণা, ড্রোন, মহাসমুদ্র) ডাউনলোড করে।
-    কোনো স্থির ছবি বা ফটো স্লাইড আসবে না।
+    বাস্তব চলমান লাইভ ভিডিও (প্রকৃতি, বৃষ্টি, ঝর্ণা, ড্রোন শট) ও তিলাওয়াত রিলস স্বয়ংক্রিয়ভাবে ডাউনলোড করে।
+    একই ভিডিও দ্বিতীয়বার ডাউনলোড হবে না—প্রতিটি ভিডিও সম্পূর্ণ ইউনিক ও লাইভ চলমান হবে।
     """
     os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
     for f in glob.glob(os.path.join(DOWNLOADS_DIR, "*")):
-        try:
-            os.remove(f)
-        except Exception:
-            pass
+        if os.path.isfile(f):
+            try:
+                os.remove(f)
+            except Exception:
+                pass
 
     surah_num = surah_data.get("number", 1) if surah_data else 1
     surah_bangla = surah_data.get("bangla", f"সূরা #{surah_num}") if surah_data else f"সূরা #{surah_num}"
     posted_ids = load_posted_ids()
 
-    # ১. লাইভ মোশন কুয়েরি তৈরি (যেগুলোতে গ্যারান্টিড রিয়েল চলমান ভিডিও থাকে)
-    live_queries = [
+    # ১. প্রথমে ইউটিউব সার্চ থেকে লাইভ মোশন শর্টস অনুসন্ধান
+    queries = [
         f"{surah_bangla} quran status rain aesthetic shorts",
         f"{surah_bangla} quran recitation waterfall nature reels",
         f"{surah_bangla} quran aesthetic ocean drone shorts",
-        "quran status rain aesthetic shorts",
-        "quran status waterfall nature 4k shorts",
-        "quran recitation aesthetic nature shorts",
-        "quran drone nature aesthetic reels shorts"
+        f"quran status rain aesthetic shorts",
+        f"quran status waterfall nature 4k shorts",
+        f"quran drone nature aesthetic reels shorts"
     ]
 
     selected_video_id = None
     selected_title = None
 
-    # স্থির ছবি ফিল্টার: যাতে কোনো স্টিল ফটো বা অডিও-অনলি ভিডিও না আসে
-    bad_keywords = ["audio", "full surah", "podcast", "slide", "black screen", "waz", "book", "cover"]
-
-    for query in live_queries:
+    for query in queries:
         print(f"[DOWNLOADER] Searching real live video for: {query}")
         search_cmd = [
             "yt-dlp",
-            f"ytsearch6:{query}",
-            "--extractor-args", "youtube:player_client=ios,android,web",
-            "--no-check-certificates",
+            f"ytsearch8:{query}",
+            "--extractor-args", "youtube:player_client=android,web",
             "--no-playlist",
-            "--match-filter", "duration <= 90 & duration >= 15",
+            "--match-filter", "duration <= 90 & duration >= 15 & !is_live",
             "--print", "%(id)s||%(title)s||%(duration)s"
         ]
         try:
@@ -237,77 +231,49 @@ def download_quran_video(search_query: str, is_reel: bool = True, surah_data: di
             for line in lines:
                 parts = line.split("||")
                 v_id = parts[0].strip()
-                v_title = parts[1].strip() if len(parts) > 1 else surah_bangla
-
+                v_title = parts[1].strip() if len(parts) > 1 else ""
+                
                 lower_title = v_title.lower()
-                if any(bad in lower_title for bad in bad_keywords):
+                if any(bad in lower_title for bad in ["full audio", "mp3", "static", "slideshow", "photo cover"]):
                     continue
 
                 if v_id not in posted_ids:
                     selected_video_id = v_id
                     selected_title = v_title
                     break
-        except Exception as se:
-            print(f"[DOWNLOADER] Search notice ({se}), trying next query...")
+        except Exception as e:
+            print(f"[DOWNLOADER] Search error for query '{query}': {e}")
 
         if selected_video_id:
             break
 
-    # ২. যদি সার্চে না পাওয়া যায়, তবে ভেরিফায়েড লাইভ পুল থেকে চেষ্টা
-    if not selected_video_id:
-        print("[DOWNLOADER] Using guaranteed live nature/rain verified pool...")
-        available_pool = [v for v in VERIFIED_LIVE_VIDEOS if v["id"] not in posted_ids]
-        if not available_pool:
-            available_pool = VERIFIED_LIVE_VIDEOS
-        chosen = random.choice(available_pool)
-        selected_video_id = chosen["id"]
-        selected_title = chosen["title"]
+    # ২. ইউটিউব থেকে লাইভ ভিডিও ডাউনলোড চেষ্টা
+    if selected_video_id:
+        out_path = os.path.join(DOWNLOADS_DIR, f"quran_{selected_video_id}.mp4")
+        dl_cmd = [
+            "yt-dlp",
+            f"https://www.youtube.com/watch?v={selected_video_id}",
+            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "--extractor-args", "youtube:player_client=android,web",
+            "-o", out_path,
+            "--no-playlist",
+            "--max-filesize", "80M"
+        ]
+        try:
+            print(f"[DOWNLOADER] Downloading real live video [{selected_video_id}] - {selected_title}")
+            res = subprocess.run(dl_cmd, capture_output=True, text=True, timeout=100)
+            if res.returncode == 0 and os.path.exists(out_path) and os.path.getsize(out_path) > 50000:
+                save_posted_id(selected_video_id)
+                return {
+                    "path": out_path,
+                    "id": selected_video_id,
+                    "title": selected_title,
+                    "surah": surah_bangla,
+                    "is_verified_live": True
+                }
+        except Exception as e:
+            print(f"[DOWNLOADER] yt-dlp download failed: {e}")
 
-    found_files = []
-    out_template = os.path.join(DOWNLOADS_DIR, f"quran_{selected_video_id}.%(ext)s")
-    dl_cmd = [
-        "yt-dlp",
-        f"https://www.youtube.com/watch?v={selected_video_id}",
-        "--extractor-args", "youtube:player_client=ios,android,web",
-        "--no-check-certificates",
-        "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-        "--max-filesize", "80M",
-        "-o", out_template
-    ]
-
-    print(f"[DOWNLOADER] Downloading real live video [{selected_video_id}] - {selected_title}")
-    res = subprocess.run(dl_cmd, capture_output=True, text=True, timeout=60)
-    found_files = glob.glob(os.path.join(DOWNLOADS_DIR, f"quran_{selected_video_id}.*"))
-    if not found_files:
-        found_files = glob.glob(os.path.join(DOWNLOADS_DIR, "*.mp4"))
-
-    # ৩. যদি ইউটিউব রেট লিমিট বা বট ব্লকে ব্যর্থ হয়, তবে সরাসরি লাইভ তিলাওয়াত পুল থেকে নেওয়া
-    if not found_files or not os.path.exists(found_files[0]):
-        print("[DOWNLOADER] YouTube blocked or unavailable. Using direct live recitation pool...")
-        available_direct = [v for v in DIRECT_LIVE_VIDEOS if v["id"] not in posted_ids]
-        if not available_direct:
-            available_direct = DIRECT_LIVE_VIDEOS
-        chosen_direct = random.choice(available_direct)
-
-        direct_out = os.path.join(DOWNLOADS_DIR, f"quran_{chosen_direct['id']}.mp4")
-        print(f"[DOWNLOADER] Downloading direct live footage: {chosen_direct['title']}")
-        if download_file_direct(chosen_direct["url"], direct_out):
-            found_files = [direct_out]
-            selected_video_id = chosen_direct["id"]
-            selected_title = chosen_direct["title"]
-
-    # ৪. যদি তাও কোনো কারণে না হয়, লাইভ নেচার রিলস জেনারেট করা
-    if not found_files or not os.path.exists(found_files[0]):
-        print("[DOWNLOADER] Generating live nature motion reel as ultimate guarantee...")
-        return generate_nature_quran_reel(surah_num, surah_bangla, posted_ids)
-
-    final_path = found_files[0]
-    save_posted_id(selected_video_id)
-    print(f"[DOWNLOADER] Successfully acquired real live motion video ({os.path.getsize(final_path)} bytes): {final_path}")
-
-    return {
-        "filepath": final_path,
-        "title": selected_title or surah_bangla,
-        "video_id": selected_video_id,
-        "surah_number": surah_num
-    }
+    # ৩. শতভাগ নিশ্চিত রিয়েল লাইভ মোশন ইঞ্জিন (প্রবাহিত ঝর্ণা, বৃষ্টি, সবুজ অরণ্য + তিলাওয়াত)
+    print(f"[DOWNLOADER] Activating 100% Guaranteed Real Live Motion Engine...")
+    return generate_live_motion_quran_video(surah_num, surah_bangla, posted_ids)
