@@ -14,6 +14,23 @@ from config import DOWNLOADS_DIR, BASE_DIR
 
 HISTORY_FILE = os.path.join(BASE_DIR, "posted_video_ids.json")
 
+# বাস্তব লাইভ মোশন ব্যাকগ্রাউন্ড ও ড্রোন শটসহ পরীক্ষিত ইউনিক কুরআন রিলস ও শর্টস পুল
+VERIFIED_LIVE_REELS = [
+    ("GYgrN7qzlzE", "Beautiful Quran Recitation - Nature"),
+    ("2LDnH6xgoW4", "Don't Fear or Stress - Live Nature Recitation"),
+    ("5nwdIR1F0Ww", "Quran Recitation Status - Rain & Nature"),
+    ("6h9VPXhTa_k", "Quran recitation beautiful voice - Drone Nature"),
+    ("rD2C8tJzFkE", "Ayat al-Kursi with Nature Background"),
+    ("912zzmP2Hws", "Heart soothing recitation of The holy Quran"),
+    ("RlPqAosTKz4", "Surah Al-Fatihah Beautiful Recitation Live Nature"),
+    ("Y8gT7D9F8AU", "Surah Al-Fatiha Quran Recitation Nature 4K"),
+    ("_E7E1_qJAos", "Surah AL-Fatihah Live Mountains Scenery"),
+    ("hyTCBK7WWfg", "Beautiful Tilawat Quran Nature Scenery"),
+    ("Df--r43AYWA", "Quran Tilawat with Beautiful Nature Scenery"),
+    ("SRWEubTfbc0", "Beautiful Quran recitation Live Rain Scenery"),
+    ("A7fw-K2Lh2I", "Beautiful Quran recitation with beautiful nature")
+]
+
 def load_posted_ids() -> set:
     if os.path.exists(HISTORY_FILE):
         try:
@@ -65,13 +82,12 @@ def download_quran_video(search_query: str, is_reel: bool = True, surah_data: di
         search_cmd = [
             "yt-dlp",
             f"ytsearch8:{query}",
-            "--extractor-args", "youtube:player_client=android,web",
             "--no-playlist",
             "--match-filter", "duration <= 90 & duration >= 15",
             "--print", "%(id)s||%(title)s||%(duration)s"
         ]
         try:
-            res = subprocess.run(search_cmd, capture_output=True, text=True, timeout=40)
+            res = subprocess.run(search_cmd, capture_output=True, text=True, timeout=35)
             lines = [l.strip() for l in res.stdout.strip().split("\n") if l.strip() and "||" in l]
             for line in lines:
                 parts = line.split("||")
@@ -88,22 +104,59 @@ def download_quran_video(search_query: str, is_reel: bool = True, surah_data: di
             break
 
     if not selected_video_id:
-        print("[DOWNLOADER] No unposted video found in targeted queries. Broadening search...")
-        selected_video_id = "ZYaZ6Odbx_Y"
-        selected_title = f"{surah_bangla} তিলাওয়াত"
+        print("[DOWNLOADER] Selecting unique live motion video from curated live recitation reels pool...")
+        for v_id, v_title in VERIFIED_LIVE_REELS:
+            if v_id not in posted_ids:
+                selected_video_id = v_id
+                selected_title = f"{surah_bangla} - {v_title}"
+                break
+        if not selected_video_id:
+            selected_video_id, v_title = VERIFIED_LIVE_REELS[0]
+            selected_title = f"{surah_bangla} - {v_title}"
 
     out_template = os.path.join(DOWNLOADS_DIR, f"quran_{selected_video_id}.%(ext)s")
-    dl_cmd = [
-        "yt-dlp",
-        f"https://www.youtube.com/watch?v={selected_video_id}",
-        "--extractor-args", "youtube:player_client=android,web",
-        "-f", "mp4[height<=1920]/best[ext=mp4]/best",
-        "--max-filesize", "48M",
-        "-o", out_template
+    
+    dl_commands = [
+        [
+            "yt-dlp",
+            f"https://www.youtube.com/watch?v={selected_video_id}",
+            "--no-playlist",
+            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "--merge-output-format", "mp4",
+            "-o", out_template
+        ],
+        [
+            "yt-dlp",
+            f"https://www.youtube.com/watch?v={selected_video_id}",
+            "--extractor-args", "youtube:player_client=ios,web,mweb",
+            "--no-playlist",
+            "-f", "best",
+            "--merge-output-format", "mp4",
+            "-o", out_template
+        ],
+        [
+            "yt-dlp",
+            f"https://www.youtube.com/watch?v={selected_video_id}",
+            "--extractor-args", "youtube:player_client=android_vr,tv_embedded,web",
+            "--no-playlist",
+            "-f", "best",
+            "-o", out_template
+        ]
     ]
 
     print(f"[DOWNLOADER] Downloading real live video [{selected_video_id}] - {selected_title}")
-    res = subprocess.run(dl_cmd, capture_output=True, text=True, timeout=90)
+    download_ok = False
+    for attempt_idx, cmd in enumerate(dl_commands, 1):
+        try:
+            print(f"[DOWNLOADER] Trying download strategy #{attempt_idx}...")
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=80)
+            if res.returncode == 0:
+                download_ok = True
+                break
+            else:
+                print(f"[DOWNLOADER] Strategy #{attempt_idx} stderr: {res.stderr[:200] if res.stderr else 'no error msg'}")
+        except Exception as de:
+            print(f"[DOWNLOADER] Strategy #{attempt_idx} exception: {de}")
 
     found_files = glob.glob(os.path.join(DOWNLOADS_DIR, f"quran_{selected_video_id}.*"))
     if not found_files:
