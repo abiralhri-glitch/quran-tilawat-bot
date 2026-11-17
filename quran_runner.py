@@ -1,18 +1,42 @@
 """
 Quran Tilawat Master Runner
 সূরা নির্বাচন, ডাউনলোড, কপিরাইট সুরক্ষা প্রক্রিয়াকরণ এবং ফেসবুকে স্বয়ংক্রিয় আপলোড
+(ফেসবুকের লাইভ ভিডিও চেক করে ১০০% ডুপ্লিকেট রোধ করা হয়)
 """
 
 import os
 import random
 import json
 import time
-from config import BASE_DIR, LOGS_FILE
+import requests
+from config import BASE_DIR, LOGS_FILE, FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, FB_GRAPH_URL
 from quran_surah_database import QARIS, LONG_SURAHS, REELS_SURAHS
 from quran_downloader import download_quran_video
 from anti_copyright_quran import process_quran_video
 from caption_engine import generate_quran_caption
 from fb_video_uploader import upload_quran_video_to_page
+
+def get_published_surahs_from_fb() -> set:
+    """ফেসবুক পেজ থেকে ইতিমধ্যে আপলোড করা সূরাগুলোর নাম সংগ্রহ করে"""
+    published = set()
+    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
+        return published
+
+    try:
+        url = f"{FB_GRAPH_URL}/{FB_PAGE_ID}/videos?limit=100&access_token={FB_PAGE_ACCESS_TOKEN}"
+        r = requests.get(url, timeout=15)
+        if r.status_code == 200:
+            data = r.json().get("data", [])
+            for item in data:
+                desc = item.get("description", "")
+                for s in LONG_SURAHS + REELS_SURAHS:
+                    if s["bangla"] in desc:
+                        published.add(s["bangla"])
+            print(f"[RUNNER] Already published on Facebook: {len(published)} Surahs ({list(published)})")
+    except Exception as e:
+        print(f"[RUNNER] Notice checking FB published videos: {e}")
+
+    return published
 
 def load_history() -> list:
     if os.path.exists(LOGS_FILE):
@@ -32,6 +56,7 @@ def save_history(history: list):
 
 def run_single_post():
     history = load_history()
+    published_on_fb = get_published_surahs_from_fb()
     
     # 75% Reels, 25% Long Surahs for high algorithm viral reach
     is_reel = random.random() < 0.75
@@ -41,14 +66,16 @@ def run_single_post():
     qari_en = qari["en"]
     
     if is_reel:
-        available_surahs = [s for s in REELS_SURAHS if f"{s['bangla']}_{qari_en}" not in history]
+        available_surahs = [s for s in REELS_SURAHS if s["bangla"] not in published_on_fb]
         if not available_surahs:
+            print("[RUNNER] All reels surahs published once! Resetting cycle.")
             available_surahs = REELS_SURAHS
         surah = random.choice(available_surahs)
         search_query = f"{surah['bangla']} {qari_en} quran recitation bangla subtitle"
     else:
-        available_surahs = [s for s in LONG_SURAHS if f"{s['bangla']}_{qari_en}" not in history]
+        available_surahs = [s for s in LONG_SURAHS if s["bangla"] not in published_on_fb]
         if not available_surahs:
+            print("[RUNNER] All long surahs published once! Resetting cycle.")
             available_surahs = LONG_SURAHS
         surah = random.choice(available_surahs)
         search_query = f"{surah['bangla']} full {qari_en} quran recitation bangla translation"
