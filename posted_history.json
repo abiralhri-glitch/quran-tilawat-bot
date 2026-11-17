@@ -82,5 +82,22 @@
         "fbtrace_id": "AHvByPi1sDAai-Y0fHbIUlo"
       }
     }
+  },
+  {
+    "key": "সূরা আল-বাকারা (আয়াতুল কুরসি)_২৫৫_Islam Sobhi",
+    "surah": "সূরা আল-বাকারা (আয়াতুল কুরসি)",
+    "ayahs": "২৫৫",
+    "qari": "শাইখ ইসলাম সোবভী",
+    "is_reel": true,
+    "uploaded_at": "2026-11-17 23:37:42",
+    "result": {
+      "error": {
+        "message": "Error validating access token: Session has expired on Tuesday, 17-Nov-26 12:00:00 PST. The current time is Tuesday, 17-Nov-26 15:37:42 PST.",
+        "type": "OAuthException",
+        "code": 190,
+        "error_subcode": 463,
+        "fbtrace_id": "AkqW88eNKLwJBM1Sc3eX2-3"
+      }
+    }
   }
 ]
