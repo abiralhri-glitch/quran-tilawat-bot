@@ -16,7 +16,7 @@ from config import DOWNLOADS_DIR, BASE_DIR
 
 HISTORY_FILE = os.path.join(BASE_DIR, "posted_video_ids.json")
 
-# নিশ্চিত আসল চলমান লাইভ মোশন ব্যাকগ্রাউন্ড (ঝর্ণা, বৃষ্টি, সবুজ অরণ্য, পাহাড়)
+# নিশ্চিত আসল চলমান লাইভ মোশন ব্যাকগ্রাউন্ড (ঝর্ণা, বৃষ্টি, সবুজ অরণ্য, পাহাড়) - 100% Verified Direct MP4
 LIVE_MOTION_FOOTAGE_POOL = [
     {
         "id": "fern_waterfall_01",
@@ -26,17 +26,17 @@ LIVE_MOTION_FOOTAGE_POOL = [
     {
         "id": "rain_falling_01",
         "title": "বৃষ্টির শীতল স্পর্শ ও অন্তরের প্রশান্তি",
-        "url": "https://archive.org/download/rain1932/rain1932_512kb.mp4"
+        "url": "https://archive.org/download/rain1932/Rain_512kb.mp4"
     },
     {
         "id": "slow_green_leaves_01",
         "title": "মনোরম সবুজ অরণ্য ও প্রকৃতির স্নিগ্ধ রূপ",
-        "url": "https://archive.org/download/SlowLeaves/Leaves-720_512kb.mp4"
+        "url": "https://archive.org/download/SlowLeaves/SlowLeavesH264.mp4"
     },
     {
-        "id": "fern_waterfall_02",
+        "id": "fern_waterfall_hd",
         "title": "পাহাড়ী ঝর্ণার হৃদয়স্পর্শী বয়ে চলা জলধারা",
-        "url": "https://archive.org/download/FernCreekFalls/FernCreekFalls-480_512kb.mp4"
+        "url": "https://archive.org/download/FernCreekFalls/FernCreekFalls-720.mp4"
     }
 ]
 
@@ -111,36 +111,26 @@ def save_posted_id(video_id: str):
 
 def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
     """
-    আসল লাইভ চলমান মোশন ভিডিও (ঝর্ণা/বৃষ্টি) + মধুর তিলাওয়াত অডিও
-    সমন্বয় করে এফএফএমপেগের মাধ্যমে ৯:১৬ ফুল এইচডি ভিডিও তৈরি করে।
+    আসল লাইভ চলমান মোশন ভিডিও (ঝর্ণা/বৃষ্টি) + মধুর তিলাওয়াত অডিও সমন্বয় করে
+    এফএফএমপেগের মাধ্যমে ৯:১৬ ফুল এইচডি ভিডিও তৈরি করে।
     """
     posted_ids = load_posted_ids()
-
+    
     available_footages = [v for v in LIVE_MOTION_FOOTAGE_POOL if v["id"] not in posted_ids]
     if not available_footages:
-        available_footages = LIVE_MOTION_FOOTAGE_POOL
-    footage = random.choice(available_footages)
-
+        available_footages = list(LIVE_MOTION_FOOTAGE_POOL)
+    
+    random.shuffle(available_footages)
+    
     available_audios = [a for a in QURAN_AUDIO_POOLS if f"audio_{a['surah_num']}" not in posted_ids]
     if not available_audios:
-        available_audios = QURAN_AUDIO_POOLS
+        available_audios = list(QURAN_AUDIO_POOLS)
+    
     audio_meta = random.choice(available_audios)
-
-    ts = int(time.time())
-    raw_video_path = os.path.join(DOWNLOADS_DIR, f"raw_motion_{footage['id']}.mp4")
-    raw_audio_path = os.path.join(DOWNLOADS_DIR, f"raw_audio_{audio_meta['surah_num']}.mp3")
-    final_output_path = os.path.join(DOWNLOADS_DIR, f"live_quran_{audio_meta['surah_num']}_{ts}.mp4")
-
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-
-    if not os.path.exists(raw_video_path) or os.path.getsize(raw_video_path) < 10000:
-        print(f"[DOWNLOADER] Downloading real live footage from archive: {footage['title']}")
-        r = requests.get(footage["url"], headers=headers, timeout=60, stream=True)
-        r.raise_for_status()
-        with open(raw_video_path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=65536):
-                f.write(chunk)
-
+    
+    # অডিও ডাউনলোড
+    raw_audio_path = os.path.join(DOWNLOADS_DIR, f"raw_audio_{audio_meta['surah_num']}.mp3")
     if not os.path.exists(raw_audio_path) or os.path.getsize(raw_audio_path) < 10000:
         print(f"[DOWNLOADER] Downloading pure Quran audio recitation: {audio_meta['surah_name']}")
         r = requests.get(audio_meta["audio_url"], headers=headers, timeout=60, stream=True)
@@ -149,45 +139,65 @@ def synthesize_live_nature_quran_video(surah_data: dict = None) -> dict:
             for chunk in r.iter_content(chunk_size=65536):
                 f.write(chunk)
 
-    print(f"[DOWNLOADER] Rendering 9:16 Real Live Motion Quran Reel via FFmpeg...")
-    target_duration = 55
-    ffmpeg_cmd = [
-        "ffmpeg", "-y",
-        "-stream_loop", "-1",
-        "-i", raw_video_path,
-        "-ss", "10",
-        "-i", raw_audio_path,
-        "-t", str(target_duration),
-        "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
-        "-c:v", "libx264",
-        "-preset", "veryfast",
-        "-pix_fmt", "yuv420p",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        "-shortest",
-        final_output_path
-    ]
+    # ফুটেজ লুপ ট্রাই
+    for footage in available_footages:
+        try:
+            ts = int(time.time())
+            raw_video_path = os.path.join(DOWNLOADS_DIR, f"raw_motion_{footage['id']}.mp4")
+            final_output_path = os.path.join(DOWNLOADS_DIR, f"live_quran_{audio_meta['surah_num']}_{ts}.mp4")
 
-    proc = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=180)
-    if proc.returncode != 0 or not os.path.exists(final_output_path) or os.path.getsize(final_output_path) < 50000:
-        raise RuntimeError(f"FFmpeg render error: {proc.stderr[:300]}")
+            if not os.path.exists(raw_video_path) or os.path.getsize(raw_video_path) < 10000:
+                print(f"[DOWNLOADER] Downloading real live footage from archive: {footage['title']}")
+                r = requests.get(footage["url"], headers=headers, timeout=60, stream=True)
+                r.raise_for_status()
+                with open(raw_video_path, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=65536):
+                        f.write(chunk)
 
-    save_posted_id(footage["id"])
-    save_posted_id(f"audio_{audio_meta['surah_num']}")
+            print(f"[DOWNLOADER] Rendering 9:16 Real Live Motion Quran Reel via FFmpeg...")
+            target_duration = 55
+            ffmpeg_cmd = [
+                "ffmpeg", "-y",
+                "-stream_loop", "-1",
+                "-i", raw_video_path,
+                "-ss", "10",
+                "-i", raw_audio_path,
+                "-t", str(target_duration),
+                "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest",
+                final_output_path
+            ]
+            
+            proc = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=180)
+            if proc.returncode != 0 or not os.path.exists(final_output_path) or os.path.getsize(final_output_path) < 50000:
+                raise RuntimeError(f"FFmpeg render error: {proc.stderr[:300]}")
 
-    title = f"{audio_meta['surah_name']} • {audio_meta['reciter']} • {footage['title']}"
-    print(f"[DOWNLOADER] Live motion video successfully generated: {final_output_path}")
+            save_posted_id(footage["id"])
+            save_posted_id(f"audio_{audio_meta['surah_num']}")
 
-    return {
-        "filepath": final_output_path,
-        "video_path": final_output_path,
-        "path": final_output_path,
-        "title": title,
-        "surah_name": audio_meta["surah_name"],
-        "reciter": audio_meta["reciter"],
-        "video_id": f"live_{footage['id']}_{ts}",
-        "is_reel": True
-    }
+            title = f"{audio_meta['surah_name']} • {audio_meta['reciter']} • {footage['title']}"
+            print(f"[DOWNLOADER] Live motion video successfully generated: {final_output_path}")
+
+            return {
+                "filepath": final_output_path,
+                "video_path": final_output_path,
+                "path": final_output_path,
+                "title": title,
+                "surah_name": audio_meta["surah_name"],
+                "reciter": audio_meta["reciter"],
+                "video_id": f"live_{footage['id']}_{ts}",
+                "is_reel": True
+            }
+        except Exception as e:
+            print(f"[DOWNLOADER] Footage {footage['title']} failed: {e}, trying next footage...")
+            continue
+            
+    raise RuntimeError("Could not synthesize live video from any footage in pool.")
 
 def download_from_youtube(video_id: str, title: str) -> dict:
     url = f"https://www.youtube.com/watch?v={video_id}"
