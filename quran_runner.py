@@ -56,7 +56,7 @@ def run_single_post():
     print(f"\n[RUNNER] Selected Surah: {surah['bangla']} | Qari: {qari_name} | Type: {'Reel' if is_reel else 'Long Video'}")
     
     # 1. Download
-    video_meta = download_quran_video(search_query, is_reel=is_reel)
+    video_meta = download_quran_video(search_query, is_reel=is_reel, surah_data=surah)
     input_video_path = video_meta["filepath"]
     
     # 2. Process Anti-Copyright
