@@ -74,13 +74,6 @@ MAKKAH_MADINAH_IMAMS = [
         "title": "কিংবদন্তি সাবেক ইমাম",
         "mosque": "পবিত্র মসজিদে নববী, মদিনা মনোওয়ারা",
         "server": "https://server8.mp3quran.net/ayyub"
-    },
-    {
-        "id": "alafasy",
-        "name": "শাইখ মিশারি রশিদ আল-আফাসি",
-        "title": "আন্তর্জাতিক খ্যাতিসম্পন্ন ক্বারী",
-        "mosque": "গ্র্যান্ড মস্ক কুয়েত / অতিথি ইমাম হারামাইন",
-        "server": "https://server8.mp3quran.net/afs"
     }
 ]
 
