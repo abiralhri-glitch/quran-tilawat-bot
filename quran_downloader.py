@@ -14,7 +14,10 @@ import time
 import random
 import requests
 import subprocess
+import imageio_ffmpeg
 from pathlib import Path
+
+FFMPEG_EXE = imageio_ffmpeg.get_ffmpeg_exe()
 
 from watermark_generator import generate_watermark_overlay
 from quran_surah_database import MAKKAH_MADINAH_IMAMS, LONG_SURAHS
@@ -123,7 +126,7 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
     filter_complex = f"[0:v]{video_scale}[scaled_v];[scaled_v][2:v]overlay=0:0[final_v]"
 
     cmd = [
-        "ffmpeg", "-y",
+        FFMPEG_EXE, "-y",
         "-stream_loop", "-1",
         "-i", video_path,
         "-i", audio_path,
