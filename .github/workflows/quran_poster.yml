@@ -1,13 +1,13 @@
-name: Holy Quran 24/7 Automated Tilawat Poster
+name: Holy Quran 24/7 Automated Tilawat & Azan Poster
 
 on:
   schedule:
-    # Runs every 15 minutes (96 ~ 100 posts per day for 24/7 tilawat)
-    - cron: '*/15 * * * *'
+    # Runs every 20 minutes (72 runs per day -> 5 Azan + 67 Long Surahs / Tilawat posts)
+    - cron: '*/20 * * * *'
   workflow_dispatch:
     inputs:
       batch_count:
-        description: 'Number of Surah videos to upload in this run'
+        description: 'Number of videos to process in this run'
         required: false
         default: '1'
 
@@ -25,17 +25,21 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install System Dependencies (FFmpeg & Node.js)
+      - name: Install System Dependencies (FFmpeg & Bengali Fonts)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg nodejs
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-beng
 
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yt-dlp requests moviepy imageio imageio-ffmpeg
+          pip install -r requirements.txt
 
-      - name: Download, Process and Upload Quran Tilawat Video
+      - name: Pull Latest Changes to Prevent Merge Conflicts
+        run: |
+          git pull --rebase origin main || true
+
+      - name: Run Quran Tilawat & Azan Engine
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
@@ -43,9 +47,9 @@ jobs:
           BATCH=${{ github.event.inputs.batch_count || '1' }}
           python quran_runner.py $BATCH
 
-      - name: Commit and Push Upload History
+      - name: Commit and Push State & History
         run: |
-          git config --global user.name "QuranBot Auto"
+          git config --global user.name "QuranBot Automation"
           git config --global user.email "quranbot@automation.local"
           git add -A
-          git diff --staged --quiet || (git commit -m "chore: update quran posted history [skip ci]" && git push) || true
+          git diff --staged --quiet || (git commit -m "chore: update quran posted history & azan state [skip ci]" && git push origin main) || true
