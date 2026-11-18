@@ -41,11 +41,7 @@ REAL_FOOTAGE_FILES = [
     "kaaba_rain.mp4",                  # কাবা প্রাঙ্গণে রহমতের বৃষ্টি
     "al_aqsa.mp4",                     # পবিত্র মসজিদুল আকসা
     "madinah_nabawi_majestic.mp4",     # মসজিদে নববীর স্বয়ংক্রিয় ছাতা
-    "makkah_kaaba_multazam.mp4",       # পবিত্র মুলতাজাম ও কাবার দ্বার
-    "madinah_serene_atmosphere.mp4",   # মসজিদে নববীর আধ্যাত্মিক পরিবেশ
-    "mountain_clouds.mp4",             # সৃষ্টিজগতের মহিমাময় পাহাড়
-    "ocean_sunset.mp4",                # রবের কুদরতের সমুদ্র ও সূর্যাস্ত
-    "rain_aesthetic.mp4"               # স্নিগ্ধ বৃষ্টি
+    "madinah_serene_atmosphere.mp4"    # মসজিদে নববীর আধ্যাত্মিক পরিবেশ
 ]
 
 FOOTAGE_HISTORY_FILE = os.path.join(BASE_DIR, "footage_history.json")
