@@ -29,10 +29,14 @@ def load_posted_history() -> dict:
     if os.path.exists(POSTED_HISTORY_FILE):
         try:
             with open(POSTED_HISTORY_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                if isinstance(data, list):
+                    return {"posted_ids": data, "last_surah_index": -1, "last_imam_index": -1}
+                elif isinstance(data, dict):
+                    return data
         except Exception:
-            return {}
-    return {}
+            return {"last_surah_index": -1, "last_imam_index": -1}
+    return {"last_surah_index": -1, "last_imam_index": -1}
 
 def save_posted_history(history: dict):
     try:
@@ -77,7 +81,7 @@ def run_single_quran_cycle():
         print(f"📖 নির্বাচিত সূরা: {selected_surah['bangla']} ({selected_surah['arabic']})")
         print(f"🎙️ নির্বাচিত ইমাম: {selected_imam['name']} • {selected_imam['mosque']}")
 
-        # ভিডিও ও অডিও প্রস্তুতকরণ (ওয়াটারমার্ক সহ)
+        # ভিডিও ও অডিও প্রস্তুতকরণ (রিয়েল ফুটেজ ও ওয়াটারমার্ক সহ)
         video_metadata = download_quran_video(
             is_reel=True,
             surah_data=selected_surah,
