@@ -1,6 +1,7 @@
 """
 Holy Quran Automated Tilawat Engine & High-Retention Video Generator
-- পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা ও মসজিদুল আকসার আসল ড্রোন ও সিনেমাটিক ফুটেজ
+- পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা, আল-আকসা ও গ্র্যান্ড মসজিদ
+- পাহাড় ও মেঘমালা, সমুদ্রের ঢেউ ও সূর্যাস্ত, রাস্তায় গাড়ি চলা, স্নিগ্ধ বৃষ্টি ও প্রাকৃতিক সৌন্দর্য
 - মক্কা ও মদিনার সকল সম্মানিত ঐতিহাসিক ও বর্তমান ইমামগণের তিলাওয়াত
 - পেজের স্থায়ী ব্র্যান্ডেড ওয়াটারমার্ক: 'কুরআনের তিলাওয়াত • Quran Tilawat'
 - অ্যান্টি-কপিরাইট একোস্টিক ফিল্টারিং
@@ -31,17 +32,22 @@ os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
-# স্থানীয় বাস্তব ফুটেজ তালিকা (মক্কা কা'বা, মদিনা মসজিদে নববী, আল-আকসা ও বৃষ্টি)
+# স্থানীয় বাস্তব ফুটেজ তালিকা (মক্কা, মদিনা, আল-আকসা, পাহাড়, সমুদ্র, রাস্তায় গাড়ি চলা, ফুল ও বৃষ্টি)
 REAL_FOOTAGE_FILES = [
     "makkah_kaaba.mp4",
     "madinah_nabawi.mp4",
     "al_aqsa.mp4",
-    "kaaba_rain.mp4"
+    "kaaba_rain.mp4",
+    "mountain_clouds.mp4",
+    "ocean_sunset.mp4",
+    "highway_drive.mp4",
+    "nature_flowers.mp4",
+    "rain_aesthetic.mp4"
 ]
 
 def get_high_retention_video() -> str:
     """
-    ১০০% আসল ও সিনেমাটিক মক্কা, মদিনা বা আল-আকসার ড্রোন ফুটেজ প্রদান করে।
+    ১০০% আসল ও সিনেমাটিক মক্কা, মদিনা, আল-আকসা, পাহাড়, সমুদ্র, হাইওয়ে ও বৃষ্টির ফুটেজ প্রদান করে।
     """
     available = []
     for f in REAL_FOOTAGE_FILES:
@@ -51,10 +57,10 @@ def get_high_retention_video() -> str:
 
     if available:
         chosen = random.choice(available)
-        print(f"🎥 আসল সিনেমাটিক মসজিদ ফুটেজ লোড: {os.path.basename(chosen)} ({os.path.getsize(chosen)/(1024*1024):.2f} MB)")
+        print(f"🎥 আসল সিনেমাটিক ফুটেজ লোড: {os.path.basename(chosen)} ({os.path.getsize(chosen)/(1024*1024):.2f} MB)")
         return chosen
 
-    raise FileNotFoundError("কোনো আসল মসজিদ ফুটেজ পাওয়া যায়নি।")
+    raise FileNotFoundError("কোনো আসল সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
 
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
