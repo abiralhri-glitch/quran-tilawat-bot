@@ -144,16 +144,20 @@ def run_single_post():
     print(f"🎙️ ক্বারী: {qari_name} ({qari_en}) | টাইপ: {'রিলস (Reel)' if is_reel else 'লং ভিডিও (Long)'}")
     print(f"========================================================")
     
-    # ১. ডাউনলোড
+    # ১. ডাউনলোড (Pinterest/Pixabay HD + YouTube Tilawat Voice + Anti-Copyright)
     video_meta = download_quran_video(search_query, is_reel=is_reel, surah_data=surah)
-    input_video_path = video_meta["filepath"]
+    input_video_path = video_meta.get("filepath") or video_meta.get("file_path")
     
     # ২. এন্টি-কপিরাইট ফিল্টারিং
     processed_video_path = process_quran_video(input_video_path, output_name="clean_quran_upload.mp4")
     
-    # ৩. ক্যাপশন ও টাইটেল প্রস্তুত (সূরা ও আয়াতের সঠিক উল্লেখ সহ)
-    caption = generate_quran_caption(surah, qari_name, is_reel=is_reel)
-    title = f"{surah['arabic']} • {surah['bangla']} [আয়াত: {ayahs_text}] | ক্বারী {qari_name}"
+    # ৩. ক্যাপশন ও টাইটেল প্রস্তুত (ভিডিওর সাথে ১০০% সামঞ্জস্যপূর্ণ)
+    if video_meta.get("caption"):
+        caption = video_meta["caption"]
+        title = video_meta.get("title", f"{surah['arabic']} • {surah['bangla']} | ক্বারী {qari_name}")
+    else:
+        caption = generate_quran_caption(surah, qari_name, is_reel=is_reel)
+        title = f"{surah['arabic']} • {surah['bangla']} [আয়াত: {ayahs_text}] | ক্বারী {qari_name}"
     
     # ৪. ফেসবুকে আপলোড
     upload_result = upload_quran_video_to_page(processed_video_path, caption=caption, title=title)
