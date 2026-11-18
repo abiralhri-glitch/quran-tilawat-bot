@@ -128,7 +128,7 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
     watermark_png = generate_watermark_overlay(w, h)
 
     # একোস্টিক ফিল্টার ও ওয়াটারমার্ক ওভারলে
-    audio_filter = "asetrate=48000*1.015,aresample=48000,atempo=0.985,bass=g=2:f=110,volume=1.05"
+    # 100% pure authentic original audio without any distortion or pitch shifting
     filter_complex = f"[0:v]{video_scale}[scaled_v];[scaled_v][2:v]overlay=0:0[final_v]"
 
     cmd = [
@@ -140,7 +140,7 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
         "-filter_complex", filter_complex,
         "-map", "[final_v]",
         "-map", "1:a:0",
-        "-af", audio_filter,
+        # No pitch shifting or audio filters
         "-c:v", "libx264",
         "-preset", "fast",
         "-crf", "21",
