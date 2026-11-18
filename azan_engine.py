@@ -13,6 +13,7 @@ import random
 import datetime
 import requests
 import subprocess
+import imageio_ffmpeg
 
 from watermark_generator import generate_watermark_overlay
 from fb_video_uploader import upload_quran_video_to_page
@@ -26,6 +27,8 @@ AZAN_HISTORY_FILE = os.path.join(BASE_DIR, "azan_posted_today.json")
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(ASSETS_AZAN_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
+
+FFMPEG_EXE = imageio_ffmpeg.get_ffmpeg_exe()
 
 # ৫ ওয়াক্তের নির্ভরযোগ্য ইসলামিক আজান অডিও এবং আসল মসজিদ ড্রোন ফুটেজ
 AZAN_COLLECTION = {
@@ -167,7 +170,7 @@ def render_azan_reel(video_path: str, audio_path: str, out_path: str) -> str:
     filter_complex = f"[0:v]{video_scale}[scaled_v];[scaled_v][2:v]overlay=0:0[final_v]"
 
     cmd = [
-        "ffmpeg", "-y",
+        FFMPEG_EXE, "-y",
         "-stream_loop", "-1",
         "-i", video_path,
         "-i", audio_path,
