@@ -1,19 +1,27 @@
-"""
-Configuration for Holy Quran Tilawat Page
-পেজ আইডি, এক্সেস টোকেন এবং পাথ কনফিগারেশন
-"""
-
 import os
+from dotenv import load_dotenv
 
-FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "1430288070174104")
-FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "EAAe1H3izQCYBTECDZBuZCdZBhUCSZCxHfp80umYK4Q1N0SamI5KuTJCCMba3fqlzttmCdOwlxlZBIkJd1ATBlZCYM7Rtn26yXO27C9lxvZAOQEbaJZBJ2svO9bLlEwT9ZCQgwnRud7dW5n6eB7XwGyqbMU2fXO3imIzWjAsHkJxbZCDZANzaWVwqJeCX1jkxV2t9LhhkzJNcbQEFcKcEsFkumXIddDVjowjtLvOXP6PJkQZD")
+load_dotenv()
 
-FB_GRAPH_URL = "https://graph.facebook.com/v21.0"
+# Facebook Graph API Credentials for "কুরআনের তিলাওয়াত - Quran Tilawat" (Page ID: 1430288070174104)
+# Verified Lifetime Permanent Page Access Token (expires_at: 0 - NEVER EXPIRES)
+PERMANENT_QURAN_TOKEN = "EAAe1H3izQCYBTIZAJZCf3kDxYyVg3DxziLkrE3mPJ68KOnPmLIajfvfznlFItheoclTjYZBKm26jPpoFM19i0nAx2DZA6VsQOGtjltqkkgD2AEdyHEGKDZAKId7jxZAX1QoDScW0Q4EdECG0MZCZCLnzr2MCZBytkWDSdT2DpdHbceLOQnmZAkzSo02rrBmPTTffMGvzT8"
 
+FB_PAGE_ID = os.getenv("FB_PAGE_ID", "1430288070174104")
+FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN") or PERMANENT_QURAN_TOKEN
+
+# Meta Graph API Base URL
+FB_GRAPH_API_VERSION = "v21.0"
+FB_GRAPH_URL = f"https://graph.facebook.com/{FB_GRAPH_API_VERSION}"
+
+# Directories
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DOWNLOADS_DIR = os.path.join(BASE_DIR, "downloads")
-PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
-LOGS_FILE = os.path.join(BASE_DIR, "posted_history.json")
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+DOWNLOAD_DIR = os.path.join(BASE_DIR, "downloads")
 
-os.makedirs(DOWNLOADS_DIR, exist_ok=True)
-os.makedirs(PROCESSED_DIR, exist_ok=True)
+# Aliases for compatibility
+DOWNLOADS_DIR = DOWNLOAD_DIR
+PROCESSED_DIR = OUTPUT_DIR
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)
