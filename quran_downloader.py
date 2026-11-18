@@ -1,6 +1,9 @@
 """
-Holy Quran 24/7 Automated Tilawat Engine (Pinterest & Pixabay HD + Verified Quran Recitation + Anti-Copyright)
-১০০% কপিরাইট-মুক্ত, হাই-কোয়ালিটি ব্যাকগ্রাউন্ড ভিডিও এবং সূরা অনুযায়ী সুনির্দিষ্ট তিলাওয়াত
+Holy Quran Automated Tilawat Engine & High-Retention Video Generator
+- পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা ও মসজিদুল আকসার ভাইরাল ড্রোন ও সিনেমাটিক ফুটেজ
+- মক্কা ও মদিনার সকল সম্মানিত ঐতিহাসিক ও বর্তমান ইমামগণের তিলাওয়াত
+- পেজের স্থায়ী ব্র্যান্ডেড ওয়াটারমার্ক: 'কুরআনের তিলাওয়াত - Quran Tilawat'
+- অ্যান্টি-কপিরাইট একোস্টিক ফিল্টারিং
 """
 
 import os
@@ -13,18 +16,31 @@ import requests
 import subprocess
 from pathlib import Path
 
-# Paths
+from watermark_generator import generate_watermark_overlay
+from quran_surah_database import MAKKAH_MADINAH_IMAMS, LONG_SURAHS
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOWNLOADS_DIR = os.path.join(BASE_DIR, "downloads")
 PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
 VISUAL_ARCHIVE_FILE = os.path.join(BASE_DIR, "visual_archive.txt")
-AUDIO_ARCHIVE_FILE = os.path.join(BASE_DIR, "audio_archive.txt")
 
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
-# 100% Verified Aesthetic Pinterest & Pixabay HD Nature/Mecca/Medina/Rain Visuals
-VERIFIED_PINTEREST_PIXABAY_BACKGROUNDS = [
+# ভাইরাল ও হাই-ভিউ ব্যাকগ্রাউন্ড ফুটেজের অনুসন্ধান তালিকা (মক্কা, মদিনা, আল-আকসা ও গ্র্যান্ড মসজিদ)
+HIGH_RETENTION_VIDEO_QUERIES = [
+    "Makkah Kaaba rain tawaf drone 4k cinematic no copyright",
+    "Masjid Nabawi Madina green dome 4k cinematic footage",
+    "Al Aqsa Mosque Dome of the Rock sunset 4k drone footage",
+    "Masjid Nabawi umbrellas opening cinematic 4k aesthetic",
+    "Makkah Clock Tower beautiful view 4k cinematic",
+    "Makkah Kaaba golden hour tawaf 4k drone footage",
+    "Sheikh Zayed Grand Mosque beautiful drone 4k",
+    "Masjid Al Haram marble rain reflection night 4k"
+]
+
+# গ্যারান্টেড ডিরেক্ট সিডিএন ব্যাকগ্রাউন্ডস
+VERIFIED_ISLAMIC_BACKGROUNDS = [
     {
         "id": "mecca_clock_tower",
         "title": "পবিত্র মক্কা ক্লক টাওয়ার ও কা'বা চত্বর",
@@ -49,21 +65,6 @@ VERIFIED_PINTEREST_PIXABAY_BACKGROUNDS = [
         "id": "desert_sunset_stars",
         "title": "মরুভূমির গোধূলি ও তারার মেলা",
         "url": "https://pixabay.com/videos/download/video-31359_medium.mp4"
-    },
-    {
-        "id": "forest_fog_river",
-        "title": "কুয়াশাচ্ছন্ন সবুজ বন ও নদীর কলতান",
-        "url": "https://pixabay.com/videos/download/video-15814_medium.mp4"
-    },
-    {
-        "id": "candle_quran_aesthetic",
-        "title": "নান্দনিক মোমবাতির আলো ও শান্ত পরিবেশ",
-        "url": "https://pixabay.com/videos/download/video-18014_medium.mp4"
-    },
-    {
-        "id": "ocean_sunset_waves",
-        "title": "সাগরের মৃদু ঢেউ ও সূর্যাস্ত",
-        "url": "https://pixabay.com/videos/download/video-41758_medium.mp4"
     }
 ]
 
@@ -83,144 +84,145 @@ def append_archive(file_path: str, item_id: str):
     except Exception as e:
         print(f"[ARCHIVE NOTICE] {e}")
 
-def download_aesthetic_video() -> tuple:
-    """Downloads HD vertical aesthetic background video."""
-    visual_history = load_archive(VISUAL_ARCHIVE_FILE)
-    available_bgs = [bg for bg in VERIFIED_PINTEREST_PIXABAY_BACKGROUNDS if bg["id"] not in visual_history]
-    if not available_bgs:
-        visual_history.clear()
-        available_bgs = VERIFIED_PINTEREST_PIXABAY_BACKGROUNDS
-
-    selected_bg = random.choice(available_bgs)
-    append_archive(VISUAL_ARCHIVE_FILE, selected_bg["id"])
-
-    dest_file = os.path.join(DOWNLOADS_DIR, f"bg_{selected_bg['id']}_{int(time.time())}.mp4")
-    print(f"🎥 ডাউনলোড হচ্ছে ব্যাকগ্রাউন্ড ভিডিও: '{selected_bg['title']}'...")
-
-    headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        r = requests.get(selected_bg["url"], stream=True, timeout=60, headers=headers)
-        if r.status_code == 200:
-            with open(dest_file, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024*1024):
-                    if chunk:
-                        f.write(chunk)
-            if os.path.exists(dest_file) and os.path.getsize(dest_file) > 100000:
-                print(f"✅ সফল ব্যাকগ্রাউন্ড ডাউনলোড: {os.path.basename(dest_file)} ({os.path.getsize(dest_file)/(1024*1024):.2f} MB)")
-                return dest_file, selected_bg
-    except Exception as e:
-        print(f"[FALLBACK BG] Download notice: {e}")
-
-    # Fallback solid background
-    fallback_video = os.path.join(DOWNLOADS_DIR, f"bg_fallback_{int(time.time())}.mp4")
-    cmd = [
-        "ffmpeg", "-y", "-f", "lavfi",
-        "-i", "color=c=0x0a192f:s=720x1280:d=60",
-        "-c:v", "libx264", "-pix_fmt", "yuv420p",
-        fallback_video
-    ]
-    subprocess.run(cmd, check=True)
-    return fallback_video, {"id": "solid_deep_blue", "title": "ইসলামিক গাঢ় নীল ব্যাকগ্রাউন্ড"}
-
-def download_surah_audio(surah_data: dict, qari_name: str = "") -> tuple:
+def download_high_reach_mosque_video() -> tuple:
     """
-    সুনির্দিষ্ট সূরার জন্য হাই-কোয়ালিটি অডিও ডাউনলোড করে।
-    ১. ইউটিউব থেকে ঐ নির্দিষ্ট সূরার শর্টস অডিও অনুসন্ধান
-    ২. গ্যারান্টেড সিডিএন (EveryAyah Alafasy) ব্যাকআপ
+    মক্কা, মদিনা বা আল-আকসার ভাইরাল এইচডি সিনেমাটিক ড্রোন ফুটেজ সংগ্রহ করে।
     """
-    surah_num = surah_data.get("number", 1)
-    surah_bangla = surah_data.get("bangla", "সূরা আল-ফাতিহা")
-    ayahs = surah_data.get("ayahs", "")
+    for old in glob.glob(os.path.join(DOWNLOADS_DIR, "bg_*.mp4")):
+        try: os.remove(old)
+        except Exception: pass
 
-    # Clean old voice files
-    for old in glob.glob(os.path.join(DOWNLOADS_DIR, "voice_*.mp3")):
-        try:
-            os.remove(old)
-        except Exception:
-            pass
+    # ১. ইউটিউব থেকে হাই-রিটেনশন ফুটেজ সংগ্রহ
+    query = random.choice(HIGH_RETENTION_VIDEO_QUERIES)
+    print(f"🎥 হাই-রিটেনশন ফুটেজ অনুসন্ধান: '{query}'...")
+    dest_video = os.path.join(DOWNLOADS_DIR, f"bg_yt_{int(time.time())}.mp4")
 
-    selected_audio = None
-    audio_title = f"{surah_bangla} [আয়াত: {ayahs}]"
-
-    # ১. ইউটিউব থেকে নির্দিষ্ট সূরার জন্য সার্চ
-    specific_query = f"{surah_bangla} {qari_name} quran recitation shorts"
-    print(f"🎧 সুনির্দিষ্ট সূরা অনুযায়ী অনুসন্ধান: '{specific_query}'...")
-
-    temp_pattern = os.path.join(DOWNLOADS_DIR, "voice_%(id)s.%(ext)s")
     cmd = [
         "yt-dlp",
         "--no-warnings",
         "--extractor-args", "youtube:player_client=android,web",
-        "--extract-audio",
-        "--audio-format", "mp3",
-        "--max-filesize", "25M",
-        "-o", temp_pattern,
-        "--print-json",
-        f"ytsearch2:{specific_query}"
+        "-f", "mp4[height<=1080]/best[height<=1080]",
+        "--max-filesize", "60M",
+        "-o", dest_video,
+        f"ytsearch1:{query}"
     ]
+
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
-        if res.returncode == 0 and res.stdout.strip():
-            for line in res.stdout.strip().split("\n"):
-                try:
-                    info = json.loads(line)
-                    vid_id = info.get("id")
-                    if vid_id:
-                        downloaded_files = glob.glob(os.path.join(DOWNLOADS_DIR, f"voice_{vid_id}.*"))
-                        if downloaded_files:
-                            selected_audio = downloaded_files[0]
-                            print(f"✅ সফল ইউটিউব অডিও সংগ্রহ: '{surah_bangla}' (ID: {vid_id})")
-                            break
-                except Exception:
-                    pass
+        subprocess.run(cmd, check=True, timeout=90)
+        if os.path.exists(dest_video) and os.path.getsize(dest_video) > 200000:
+            print(f"✅ সফল সিনেমাটিক ফুটেজ ডাউনলোড: {os.path.basename(dest_video)} ({os.path.getsize(dest_video)/(1024*1024):.2f} MB)")
+            return dest_video, {"id": "yt_mosque_footage", "title": query}
     except Exception as e:
-        print(f"[YOUTUBE NOTICE] {e}")
+        print(f"[YT FOOTAGE FALLBACK] {e}")
 
-    # ২. গ্যারান্টেড সিডিএন ব্যাকআপ (EveryAyah Alafasy 128kbps)
-    if not selected_audio or not os.path.exists(selected_audio):
-        print(f"💡 গ্যারান্টেড ইসলামিক সিডিএন (EveryAyah) থেকে {surah_bangla} অডিও সংগ্রহ করা হচ্ছে...")
-        cdn_url = f"https://everyayah.com/data/Alafasy_128kbps/{surah_num:03d}001.mp3"
-        dest_cdn = os.path.join(DOWNLOADS_DIR, f"voice_cdn_{surah_num:03d}_{int(time.time())}.mp3")
-        try:
-            r = requests.get(cdn_url, timeout=20)
-            if r.status_code == 200 and len(r.content) > 10000:
-                with open(dest_cdn, "wb") as f:
-                    f.write(r.content)
-                selected_audio = dest_cdn
-                print(f"✅ সফল সিডিএন অডিও সংগ্রহ: {surah_bangla}")
-        except Exception as e:
-            print(f"[CDN ERROR] {e}")
+    # ২. ডিরেক্ট সিডিএন ব্যাকআপ
+    selected_bg = random.choice(VERIFIED_ISLAMIC_BACKGROUNDS)
+    dest_file = os.path.join(DOWNLOADS_DIR, f"bg_cdn_{int(time.time())}.mp4")
+    try:
+        r = requests.get(selected_bg["url"], stream=True, timeout=60, headers={"User-Agent": "Mozilla/5.0"})
+        if r.status_code == 200:
+            with open(dest_file, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    if chunk: f.write(chunk)
+            if os.path.exists(dest_file) and os.path.getsize(dest_file) > 100000:
+                print(f"✅ সিডিএন ব্যাকগ্রাউন্ড ডাউনলোড: {selected_bg['title']}")
+                return dest_file, selected_bg
+    except Exception as e:
+        print(f"[CDN ERROR] {e}")
 
-    if not selected_audio or not os.path.exists(selected_audio):
-        raise RuntimeError(f"অডিও তিলাওয়াত সংগ্রহ করা যায়নি: {surah_bangla}")
+    # ৩. কালার ব্যাকগ্রাউন্ড ফলব্যাক
+    fallback_video = os.path.join(DOWNLOADS_DIR, f"bg_fallback_{int(time.time())}.mp4")
+    cmd = [
+        "ffmpeg", "-y", "-f", "lavfi",
+        "-i", "color=c=0x061a2b:s=720x1280:d=60",
+        "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        fallback_video
+    ]
+    subprocess.run(cmd, check=True)
+    return fallback_video, {"id": "deep_emerald", "title": "ইসলামিক গাঢ় নীল ব্যাকগ্রাউন্ড"}
 
-    return selected_audio, audio_title
-
-def render_anti_copyright_quran_reel(video_path: str, audio_path: str, out_path: str, max_duration: int = 58) -> str:
+def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
-    Renders 9:16 HD vertical reel with anti-copyright acoustic transformation.
-    - Micro-pitch shift (+2%) & micro-tempo shift (-2%) to bypass Content ID acoustic hashing
-    - Subtle acoustic warmth filter
-    - Completely strips all container and stream metadata
-    - Scales and crops to 720x1280 (HD 9:16)
+    মক্কা ও মদিনার নির্দিষ্ট ইমামের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে।
     """
-    print("🛡️ এন্টি-কপিরাইট একোস্টিক ট্রান্সফর্মেশন ও এইচডি ৯:১৬ রিলস রেন্ডারিং...")
+    surah_num = surah_data.get("number", 1)
+    surah_bangla = surah_data.get("bangla", "সূরা আল-ফাতিহা")
 
-    audio_filter = "asetrate=48000*1.02,aresample=48000,atempo=0.98,bass=g=2:f=110,volume=1.1"
-    video_filter = "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280"
+    for old in glob.glob(os.path.join(DOWNLOADS_DIR, "voice_*.mp3")):
+        try: os.remove(old)
+        except Exception: pass
+
+    if not imam:
+        imam = random.choice(MAKKAH_MADINAH_IMAMS)
+
+    print(f"🎙️ তিলাওয়াতকারী নির্বাচন: {imam['name']} ({imam['mosque']})")
+    audio_path = os.path.join(DOWNLOADS_DIR, f"voice_{imam['id']}_{surah_num:03d}_{int(time.time())}.mp3")
+
+    # ডিরেক্ট হাই-স্পিড সিডিএন ডাউনলোড (mp3quran.net)
+    cdn_url = f"{imam['server']}/{surah_num:03d}.mp3"
+    print(f"📥 অডিও ডাউনলোড হচ্ছে: {cdn_url}...")
+
+    try:
+        r = requests.get(cdn_url, stream=True, timeout=40, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=True)
+        if r.status_code == 200:
+            with open(audio_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    if chunk: f.write(chunk)
+            if os.path.exists(audio_path) and os.path.getsize(audio_path) > 30000:
+                print(f"✅ সফল তিলাওয়াত অডিও ডাউনলোড: {os.path.getsize(audio_path)/(1024*1024):.2f} MB")
+                return audio_path, imam
+    except Exception as e:
+        print(f"[IMAM CDN NOTICE] {e}")
+
+    # ফলব্যাক: EveryAyah সিডিএন
+    print(f"💡 ফলব্যাক EveryAyah সিডিএন থেকে {surah_bangla} সংগ্রহ হচ্ছে...")
+    fallback_url = f"https://everyayah.com/data/Alafasy_128kbps/{surah_num:03d}001.mp3"
+    try:
+        r = requests.get(fallback_url, timeout=25)
+        if r.status_code == 200:
+            with open(audio_path, "wb") as f:
+                f.write(r.content)
+            return audio_path, {"id": "alafasy", "name": "শাইখ মিশারি রশিদ আল-আফাসি", "mosque": "গ্র্যান্ড মস্ক কুয়েত"}
+    except Exception as e:
+        print(f"[FALLBACK CDN ERROR] {e}")
+
+    raise RuntimeError(f"অডিও তিলাওয়াত সংগ্রহ করা যায়নি: {surah_bangla}")
+
+def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path: str, is_reel: bool = True, max_duration: int = 58) -> str:
+    """
+    ভিডিওতে পেজের অফিশিয়াল ওয়াটারমার্ক সহ অ্যান্টি-কপিরাইট রেন্ডার সম্পন্ন করে:
+    - ওয়াটারমার্ক: কুরআনের তিলাওয়াত • Quran Tilawat
+    - ক্রপ ও স্কেলিং: 720x1280 (রিলস) বা 1280x720 (লং ভিডিও)
+    - অ্যান্টি-কপিরাইট একোস্টিক ফিল্টার
+    """
+    print("🎨 পেজের অফিসিয়াল ওয়াটারমার্ক তৈরি ও ভিডিও রেন্ডারিং শুরু...")
+
+    if is_reel:
+        w, h = 720, 1280
+        video_scale = "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280"
+    else:
+        w, h = 1280, 720
+        video_scale = "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720"
+
+    watermark_png = generate_watermark_overlay(w, h)
+
+    # একোস্টিক ফিল্টার ও ওয়াটারমার্ক ওভারলে
+    audio_filter = "asetrate=48000*1.015,aresample=48000,atempo=0.985,bass=g=2:f=110,volume=1.05"
+    filter_complex = f"[0:v]{video_scale}[scaled_v];[scaled_v][2:v]overlay=0:0[final_v]"
 
     cmd = [
         "ffmpeg", "-y",
         "-stream_loop", "-1",
         "-i", video_path,
         "-i", audio_path,
-        "-map", "0:v:0",
+        "-i", watermark_png,
+        "-filter_complex", filter_complex,
+        "-map", "[final_v]",
         "-map", "1:a:0",
-        "-vf", video_filter,
         "-af", audio_filter,
         "-c:v", "libx264",
         "-preset", "fast",
-        "-crf", "20",
+        "-crf", "21",
         "-c:a", "aac",
         "-b:a", "192k",
         "-t", str(max_duration),
@@ -231,43 +233,53 @@ def render_anti_copyright_quran_reel(video_path: str, audio_path: str, out_path:
 
     subprocess.run(cmd, check=True)
     if os.path.exists(out_path) and os.path.getsize(out_path) > 100000:
-        print(f"✨ রিলস তৈরি সম্পন্ন! সাইজ: {os.path.getsize(out_path) / (1024*1024):.2f} MB")
+        print(f"✨ রেন্ডারিং সম্পন্ন! সাইজ: {os.path.getsize(out_path)/(1024*1024):.2f} MB")
         return out_path
     else:
         raise RuntimeError("ভিডিও রেন্ডারিং সম্পন্ন হয়নি।")
 
-def download_quran_video(search_query: str = None, is_reel: bool = True, surah_data: dict = None) -> dict:
-    """Main entrypoint executed by quran_runner.py."""
+def download_quran_video(search_query: str = None, is_reel: bool = True, surah_data: dict = None, imam_data: dict = None) -> dict:
+    """quran_runner.py থেকে প্রধান এন্ট্রি পয়েন্ট"""
     if not surah_data:
-        surah_data = {"number": 1, "bangla": "সূরা আল-ফাতিহা", "arabic": "سُورَةُ الْفَاتِحَةِ", "ayahs": "১-৭ (পূর্ণাঙ্গ)"}
+        surah_data = random.choice(LONG_SURAHS)
+
+    if not imam_data:
+        imam_data = random.choice(MAKKAH_MADINAH_IMAMS)
 
     print("\n=======================================================")
-    print(f"📖 'কুরআনের তিলাওয়াত' ২৪/৭ ইঞ্জিন: {surah_data['bangla']} [আয়াত: {surah_data.get('ayahs', '')}]")
+    print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']}")
+    print(f"🎙️ তিলাওয়াত: {imam_data['name']} ({imam_data['mosque']})")
     print("=======================================================")
 
-    bg_video, bg_info = download_aesthetic_video()
-    voice_audio, audio_title = download_surah_audio(surah_data)
+    bg_video, bg_info = download_high_reach_mosque_video()
+    voice_audio, imam = download_imam_surah_audio(surah_data, imam_data)
 
     ts = int(time.time())
-    final_output = os.path.join(PROCESSED_DIR, f"clean_quran_reel_{ts}.mp4")
-    render_anti_copyright_quran_reel(bg_video, voice_audio, final_output, max_duration=55)
+    final_output = os.path.join(PROCESSED_DIR, f"quran_{surah_data['number']}_{ts}.mp4")
 
-    try:
-        if os.path.exists(bg_video):
-            os.remove(bg_video)
-        if os.path.exists(voice_audio):
-            os.remove(voice_audio)
-    except Exception:
-        pass
+    # রিলস হলে ৫৮ সেকেন্ড, সাধারণ ভিডিও হলে পূর্ণ তিলাওয়াত (অথবা সর্বোচ্চ ৩০০ সেকেন্ড)
+    duration = 58 if is_reel else 240
+    render_quran_video_with_watermark(bg_video, voice_audio, final_output, is_reel=is_reel, max_duration=duration)
+
+    # ক্লিনআপ টেম্প ফাইল
+    for p in [bg_video, voice_audio]:
+        try:
+            if os.path.exists(p): os.remove(p)
+        except Exception: pass
 
     return {
         "filepath": final_output,
         "file_path": final_output,
-        "title": f"হৃদয় জুড়ানো কুরআন তিলাওয়াত | {surah_data['bangla']}",
+        "title": f"হৃদয় জুড়ানো তিলাওয়াত | {surah_data['bangla']} | {imam['name']}",
         "surah_name": surah_data["bangla"],
-        "reciter": "আন্তর্জাতিক খ্যাতিসম্পন্ন ক্বারী"
+        "surah_number": surah_data["number"],
+        "reciter": imam["name"],
+        "mosque": imam["mosque"],
+        "meaning": surah_data.get("meaning", ""),
+        "benefit": surah_data.get("benefit", ""),
+        "ayahs": surah_data.get("ayahs", "")
     }
 
 if __name__ == "__main__":
-    result = download_quran_video()
-    print("ফলাফল:", result)
+    res = download_quran_video()
+    print("ফলাফল:", res)
