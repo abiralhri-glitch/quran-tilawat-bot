@@ -1,6 +1,6 @@
 """
 Holy Quran 24/7 Automated Tilawat Engine (Pinterest & Pixabay HD + YouTube Voice + Anti-Copyright)
-১০০% কপিরাইট-মুক্ত, হাই-কোয়ালিটি পিন্টারেস্ট ও পিক্সাবে ভিডিও ব্যাকগ্রাউন্ড এবং ইউটিউব থেকে মধুর কণ্ঠের তিলাওয়াত
+১০০% কপিরাইট-মুক্ত, হাই-কোয়ালিটি পিন্টারেস্ট ও পিক্সাবে ভিডিও ব্যাকগ্রাউন্ড এবং ইউটিউব ও পিওর অডিও তিলাওয়াত
 """
 
 import os
@@ -32,125 +32,124 @@ AESTHETIC_VIDEO_POOL = [
     {"id": "pin_serene_moonlit_night", "type": "pinterest", "url": "https://www.pinterest.com/pin/605593481176903638/", "title": "মায়াবী রাতের শান্ত প্রকৃতি"},
     {"id": "pin_lake_sunset_silhouettes", "type": "pinterest", "url": "https://www.pinterest.com/pin/924152786019978264/", "title": "হ্রদের কিনারায় অস্তগামী চাঁদ"},
     {"id": "pin_starry_galaxy_horizon", "type": "pinterest", "url": "https://www.pinterest.com/pin/863143084873107493/", "title": "মহাবিশ্বের অনন্ত নক্ষত্ররাজি"},
-    {"id": "pin_gentle_rain_nature", "type": "pinterest", "url": "https://www.pinterest.com/pin/540994974006214270/", "title": "সবুজ পাতায় বৃষ্টির স্পর্শ"},
-    {"id": "pin_night_view_rain", "type": "pinterest", "url": "https://www.pinterest.com/pin/933300722794599168/", "title": "বৃষ্টিভেজা রাতের স্নিগ্ধ রূপ"},
-    {"id": "pin_night_rain_street", "type": "pinterest", "url": "https://www.pinterest.com/pin/1086774953860693613/", "title": "বৃষ্টিস্নাত রাতের বৃক্ষরাজি"},
-    {"id": "pin_rain_soaked_trees", "type": "pinterest", "url": "https://www.pinterest.com/pin/765330530472063889/", "title": "স্নিগ্ধ বৃষ্টির ঝিমঝিম ধারা"},
-    {"id": "pin_cascading_waterfall", "type": "pinterest", "url": "https://www.pinterest.com/pin/599049187978860539/", "title": "পাহাড়ি ঝর্ণার নির্মল জলধারা"},
-    {"id": "pin_flowing_river_stream", "type": "pinterest", "url": "https://www.pinterest.com/pin/1137440449705442614/", "title": "বনের বুক চিরে বহমান নদী"},
-    {"id": "pin_lush_river_clouds", "type": "pinterest", "url": "https://www.pinterest.com/pin/1075304848549322092/", "title": "নদী ও মেঘের মনোরম আবহাওয়া"},
-    {"id": "pin_sea_waves_twilight", "type": "pinterest", "url": "https://www.pinterest.com/pin/961377851703515577/", "title": "গোধূলি লগ্নে সমুদ্রের ঢেউ"},
-    {"id": "pin_snowy_mountain_peaks", "type": "pinterest", "url": "https://www.pinterest.com/pin/975099756801353185/", "title": "তুষারশুভ্র পর্বতমালার দিগন্ত"},
-    {"id": "pin_sunset_pastel_clouds", "type": "pinterest", "url": "https://www.pinterest.com/pin/1087267535071578388/", "title": "আকাশে রঙের মেলা ও সূর্যাস্ত"},
-    {"id": "pin_ocean_sunset_dark_clouds", "type": "pinterest", "url": "https://www.pinterest.com/pin/1019924646883616183/", "title": "সাগরের কিনারায় গোধূলির মায়া"},
-    {"id": "pin_golden_hues_sunset", "type": "pinterest", "url": "https://www.pinterest.com/pin/917960336556579772/", "title": "সোনারঙা মেঘে ঢাকা সূর্যাস্ত"},
-    {"id": "pin_rose_petals_sunset", "type": "pinterest", "url": "https://www.pinterest.com/pin/615233999145554771/", "title": "গোলাপের পাপড়ি ও শান্ত সন্ধ্যা"},
-    {"id": "pin_white_flower_breeze", "type": "pinterest", "url": "https://www.pinterest.com/pin/1087830485012382777/", "title": "বাতাসে দোলা শ্বেতপদ্ম"},
-    {"id": "pin_sunbeams_foggy_forest", "type": "pinterest", "url": "https://www.pinterest.com/pin/1066649493008823735/", "title": "কুয়াশাঘেরা বনে সূর্যের রশ্মি"},
-    {"id": "pin_green_mountain_fields", "type": "pinterest", "url": "https://www.pinterest.com/pin/1152710467138867315/", "title": "সবুজ পাহাড় ও নীলাভ আকাশ"},
-    {"id": "pin_calm_beach_evening", "type": "pinterest", "url": "https://www.pinterest.com/pin/891994269952168013/", "title": "শান্ত সৈকতে মৃদু বাতাসের পরশ"},
+    {"id": "pin_gentle_rain_nature", "type": "pinterest", "url": "https://www.pinterest.com/pin/540994974006214270/", "title": "সবুজ পাতায় বৃষ্টির স্নিগ্ধতা"},
+    {"id": "pin_peaceful_clouds_sunset", "type": "pinterest", "url": "https://www.pinterest.com/pin/719872321727725965/", "title": "সূর্যাস্তের শান্ত মেঘমালা"},
+    {"id": "pin_lantern_moon_vibes", "type": "pinterest", "url": "https://www.pinterest.com/pin/873979871465223062/", "title": "মায়াবী চাঁদের নিচে লণ্ঠনের আলো"},
+    {"id": "pin_serene_river_sunset", "type": "pinterest", "url": "https://www.pinterest.com/pin/21392166974127025/", "title": "গোধূলি লগ্নে শান্ত নদীর মোহনা"},
+    {"id": "pin_dark_aesthetic_rain", "type": "pinterest", "url": "https://www.pinterest.com/pin/1032309664539958742/", "title": "বৃষ্টির ঝিরিঝিরি ধারায় প্রকৃতির সৌন্দর্য"},
+    {"id": "pin_misty_mountain_river", "type": "pinterest", "url": "https://www.pinterest.com/pin/1004865748083818321/", "title": "কুয়াশাঘেরা পাহাড় ও শান্ত নদী"},
 
-    # --- High-Definition Pixabay Free HD Streams (100% Royalty-Free) ---
-    {"id": "pix_mountain_fog", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2021/10/26/93432-639359155_large.mp4", "title": "কুয়াশাঢাকা সবুজ পাহাড় ও বনানী"},
-    {"id": "pix_sunset_clouds", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2024/08/08/225504_large.mp4", "title": "মেঘের কোলে রক্তিম সূর্যাস্ত"},
-    {"id": "pix_rain_drops_ground", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2024/06/02/214982_large.mp4", "title": "প্রকৃতির বুকে স্নিগ্ধ বৃষ্টিপাত"},
-    {"id": "pix_waterfall_cascade", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2023/07/04/170060-842720151_large.mp4", "title": "পাথরের বুক চিরে নেমে আসা ঝর্ণা"},
-    {"id": "pix_waterfall_stream", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2022/11/24/140366-774838017_large.mp4", "title": "স্বচ্ছ পাহাড়ি নদীর শান্ত জলধারা"}
+    # --- Curated Pixabay CDN HD Nature Clips ---
+    {"id": "pixabay_calm_waterfall", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2020/05/25/40149-425176523_tiny.mp4", "title": "শান্ত পাহাড়ি ঝর্ণাধারা"},
+    {"id": "pixabay_clouds_timelapse", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2016/09/13/5158-183786493_tiny.mp4", "title": "নীল আকাশে সাদা মেঘের ভেলা"},
+    {"id": "pixabay_gentle_waves_beach", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2019/04/16/22849-330962804_tiny.mp4", "title": "শান্ত সৈকতে মৃদু বাতাসের পরশ"},
+    {"id": "pixabay_forest_stream", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2021/08/04/83875-584061618_tiny.mp4", "title": "গহীন অরণ্যের শান্ত জলধারা"},
+    {"id": "pixabay_rain_window", "type": "pixabay", "url": "https://cdn.pixabay.com/video/2020/07/04/43834-436440232_tiny.mp4", "title": "শান্ত বৃষ্টি ও সবুজ পাতার দৃশ্য"}
 ]
 
-# YouTube Quran Recitation Voice Search Queries (Emotion & Soothing Voice)
+# Curated Fallback Quran Recitations from direct Islamic CDN (EveryAyah / Quran.com CDN)
+# Applied with FFmpeg Anti-Copyright filter to guarantee 100% safe monetization and zero muting!
+FALLBACK_QURAN_AUDIO = [
+    {"surah": "সূরা আল-ফাতিহা", "surah_no": "001", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/1.mp3"},
+    {"surah": "সূরা আল-ইখলাস", "surah_no": "112", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/112.mp3"},
+    {"surah": "সূরা আল-ফালাক", "surah_no": "113", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/113.mp3"},
+    {"surah": "সূরা আন-নাস", "surah_no": "114", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/114.mp3"},
+    {"surah": "সূরা আর-রহমান (নির্বাচিত আয়াত)", "surah_no": "055", "qari": "শাইখ মাহের আল-মুয়াইক্লি", "url": "https://download.quranicaudio.com/qdc/maher_al_muaiqly/murattal/55.mp3"},
+    {"surah": "সূরা আল-মুলক (শান্তিপূর্ণ তিলাওয়াত)", "surah_no": "067", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/67.mp3"},
+    {"surah": "সূরা আদ-দুহা", "surah_no": "093", "qari": "শাইখ আব্দুল বাসেত", "url": "https://download.quranicaudio.com/qdc/abdul_baset/mujawwad/93.mp3"},
+    {"surah": "সূরা আল-ইনশিরাহ", "surah_no": "094", "qari": "শাইখ মিশারি রশিদ আল-আফাসি", "url": "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/94.mp3"}
+]
+
 YOUTUBE_VOICE_QUERIES = [
-    "quran recitation emotional beautiful voice short",
-    "surah yusuf beautiful voice tilawat short",
-    "surah rahman soothing recitation short",
-    "heart touching quran recitation short",
-    "surah mulk beautiful recitation short",
-    "surah al kahf beautiful tilawat short",
-    "surah maryam emotional recitation short",
-    "quran recitation calming sleep anxiety short",
-    "surah baqarah emotional tilawat short",
-    "quran recitation deep voice short",
-    "emotional tilawat bangla quran short",
-    "surah waqiah beautiful recitation short"
+    "সূরা আর রহমান মিষ্টি তিলাওয়াত shorts",
+    "সূরা আল মুলক মিষ্টি তিলাওয়াত shorts",
+    "সূরা ইয়াসিন তিলাওয়াত shorts",
+    "হৃদয় জুড়ানো কুরআন তিলাওয়াত shorts",
+    "most emotional quran recitation shorts",
+    "quran recitation bangla subtitle shorts"
 ]
 
+def load_archive(file_path: str) -> set:
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return set(line.strip() for line in f if line.strip())
+        except Exception:
+            return set()
+    return set()
 
-def load_archive(archive_path: str) -> set:
-    if not os.path.exists(archive_path):
-        return set()
+def append_archive(file_path: str, item_id: str):
     try:
-        with open(archive_path, "r", encoding="utf-8") as f:
-            return set(line.strip() for line in f if line.strip())
-    except Exception:
-        return set()
-
-
-def append_to_archive(archive_path: str, item_id: str):
-    try:
-        with open(archive_path, "a", encoding="utf-8") as f:
+        with open(file_path, "a", encoding="utf-8") as f:
             f.write(f"{item_id}\n")
-    except Exception as e:
-        print(f"[ARCHIVE ERROR] {e}")
-
+    except Exception:
+        pass
 
 def download_aesthetic_video() -> tuple:
-    """Selects an unrepeated high-definition Pinterest or Pixabay video and downloads it."""
+    """Downloads high-definition 9:16 vertical nature background from Pinterest or Pixabay."""
     visual_history = load_archive(VISUAL_ARCHIVE_FILE)
-    available_items = [v for v in AESTHETIC_VIDEO_POOL if v["id"] not in visual_history]
+    shuffled_pool = list(AESTHETIC_VIDEO_POOL)
+    random.shuffle(shuffled_pool)
 
-    # Reset archive if all used
-    if not available_items:
-        print("♻️ সকল পিন্টারেস্ট ও পিক্সাবে ভিডিও ব্যবহৃত হয়েছে। ভিজ্যুয়াল হিস্ট্রি রিসেট হচ্ছে...")
-        if os.path.exists(VISUAL_ARCHIVE_FILE):
-            os.remove(VISUAL_ARCHIVE_FILE)
-        available_items = AESTHETIC_VIDEO_POOL
-
-    item = random.choice(available_items)
-    print(f"🎬 নির্বাচিত ব্যাকগ্রাউন্ড: '{item['title']}' (ID: {item['id']}, Type: {item['type'].upper()})")
-
-    out_file = os.path.join(DOWNLOADS_DIR, f"bg_{item['id']}_{int(time.time())}.mp4")
-
-    # Clean older downloads
+    # Clean old temp videos
     for old in glob.glob(os.path.join(DOWNLOADS_DIR, "bg_*.mp4")):
         try:
             os.remove(old)
         except Exception:
             pass
 
-    if item["type"] == "pixabay":
-        # Direct high-speed CDN download
-        print(f"📥 পিক্সাবে ডিরেক্ট এইচডি ডাউনলোড শুরু: {item['url']}...")
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-        r = requests.get(item["url"], headers=headers, stream=True, timeout=60)
-        r.raise_for_status()
-        with open(out_file, "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                if chunk:
-                    f.write(chunk)
-    else:
-        # Pinterest download via yt-dlp
-        print(f"📥 পিন্টারেস্ট এস্থেটিক ভিডিও ডাউনলোড হচ্ছে: {item['url']}...")
-        cmd = [
-            "yt-dlp",
-            "--no-warnings",
-            "-o", out_file,
-            item["url"]
-        ]
-        subprocess.run(cmd, check=True, timeout=90)
+    for item in shuffled_pool:
+        item_id = item["id"]
+        item_url = item["url"]
+        item_type = item["type"]
+        out_file = os.path.join(DOWNLOADS_DIR, f"bg_{item_id}_{int(time.time())}.mp4")
 
-    if os.path.exists(out_file) and os.path.getsize(out_file) > 100000:
-        print(f"✅ ব্যাকগ্রাউন্ড ডাউনলোড সম্পন্ন! সাইজ: {os.path.getsize(out_file) / (1024*1024):.2f} MB")
-        append_to_archive(VISUAL_ARCHIVE_FILE, item["id"])
-        return out_file, item
-    else:
-        raise RuntimeError("ভিডিও ব্যাকগ্রাউন্ড ডাউনলোড ব্যর্থ হয়েছে।")
+        print(f"🎬 ডাউনলোড হচ্ছে ({item_type.upper()}): {item['title']}...")
 
+        if item_type == "pixabay":
+            try:
+                r = requests.get(item_url, timeout=30, stream=True)
+                if r.status_code == 200:
+                    with open(out_file, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1024*1024):
+                            if chunk:
+                                f.write(chunk)
+                    if os.path.exists(out_file) and os.path.getsize(out_file) > 100000:
+                        append_archive(VISUAL_ARCHIVE_FILE, item_id)
+                        print(f"✅ সফল ডাউনলোড: {out_file} ({os.path.getsize(out_file)/(1024*1024):.2f} MB)")
+                        return out_file, item
+            except Exception as e:
+                print(f"[PIXABAY NOTICE] {e}")
+
+        elif item_type == "pinterest":
+            cmd = [
+                "yt-dlp",
+                "--no-warnings",
+                "--merge-output-format", "mp4",
+                "-o", out_file,
+                item_url
+            ]
+            try:
+                res = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+                if res.returncode == 0 and os.path.exists(out_file) and os.path.getsize(out_file) > 100000:
+                    append_archive(VISUAL_ARCHIVE_FILE, item_id)
+                    print(f"✅ সফল পিন্টারেস্ট ভিডিও: {out_file} ({os.path.getsize(out_file)/(1024*1024):.2f} MB)")
+                    return out_file, item
+            except Exception as e:
+                print(f"[PINTEREST NOTICE] {e}")
+
+    # Fallback to direct Pixabay CDN clip
+    fallback_url = "https://cdn.pixabay.com/video/2020/05/25/40149-425176523_tiny.mp4"
+    fb_file = os.path.join(DOWNLOADS_DIR, f"bg_fallback_{int(time.time())}.mp4")
+    r = requests.get(fallback_url, timeout=30)
+    with open(fb_file, "wb") as f:
+        f.write(r.content)
+    return fb_file, {"id": "fb_waterfall", "title": "শান্ত পাহাড়ি ঝর্ণাধারা"}
 
 def download_youtube_quran_voice() -> tuple:
-    """Downloads emotional Quran recitation voice from YouTube Shorts."""
+    """Downloads emotional Quran recitation voice with Android extractor, plus guaranteed direct CDN fallback."""
     audio_history = load_archive(AUDIO_ARCHIVE_FILE)
 
-    # Clean old audio files
     for old in glob.glob(os.path.join(DOWNLOADS_DIR, "voice_*.mp3")):
         try:
             os.remove(old)
@@ -167,28 +166,28 @@ def download_youtube_quran_voice() -> tuple:
         cmd = [
             "yt-dlp",
             "--no-warnings",
+            "--extractor-args", "youtube:player_client=android,web",
             "--extract-audio",
             "--audio-format", "mp3",
-            "--max-filesize", "20M",
+            "--max-filesize", "25M",
             "-o", temp_pattern,
             "--print-json",
-            f"ytsearch3:{query}"
+            f"ytsearch2:{query}"
         ]
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
             if res.returncode == 0 and res.stdout.strip():
-                # Parse JSON output of downloaded item
                 for line in res.stdout.strip().split("\n"):
                     try:
                         info = json.loads(line)
                         vid_id = info.get("id")
                         if vid_id and vid_id not in audio_history:
                             video_title = info.get("title", video_title)
-                            downloaded_files = glob.glob(os.path.join(DOWNLOADS_DIR, f"voice_{vid_id}.mp3"))
+                            downloaded_files = glob.glob(os.path.join(DOWNLOADS_DIR, f"voice_{vid_id}.*"))
                             if downloaded_files:
                                 selected_audio = downloaded_files[0]
-                                append_to_archive(AUDIO_ARCHIVE_FILE, vid_id)
-                                print(f"✅ সফল অডিও ডাউনলোড: '{video_title}' (ID: {vid_id})")
+                                append_archive(AUDIO_ARCHIVE_FILE, vid_id)
+                                print(f"✅ সফল ইউটিউব অডিও ডাউনলোড: '{video_title}' (ID: {vid_id})")
                                 break
                     except Exception:
                         pass
@@ -197,16 +196,26 @@ def download_youtube_quran_voice() -> tuple:
         except Exception as e:
             print(f"[VOICE DOWNLOAD NOTICE] {e}")
 
-    # Fallback to any downloaded voice
+    # Guaranteed Bulletproof Fallback: Pure Direct Islamic Audio CDN
     if not selected_audio or not os.path.exists(selected_audio):
-        mp3s = glob.glob(os.path.join(DOWNLOADS_DIR, "voice_*.mp3"))
-        if mp3s:
-            selected_audio = mp3s[0]
-        else:
-            raise RuntimeError("ইউটিউব থেকে অডিও তিলাওয়াত সংগ্রহ করা যায়নি।")
+        print("💡 ইউটিউব সীমাবদ্ধতার কারণে ডিরেক্ট পিওর ইসলামিক অডিও সিডিএন থেকে অডিও সংগ্রহ করা হচ্ছে...")
+        chosen = random.choice(FALLBACK_QURAN_AUDIO)
+        video_title = f"{chosen['surah']} | ক্বারী {chosen['qari']}"
+        fallback_file = os.path.join(DOWNLOADS_DIR, f"voice_cdn_{chosen['surah_no']}_{int(time.time())}.mp3")
+        try:
+            r = requests.get(chosen['url'], timeout=30)
+            if r.status_code == 200:
+                with open(fallback_file, "wb") as f:
+                    f.write(r.content)
+                selected_audio = fallback_file
+                print(f"✅ সফল ডিরেক্ট অডিও ডাউনলোড: '{video_title}'")
+        except Exception as e:
+            print(f"[FALLBACK AUDIO ERROR] {e}")
+
+    if not selected_audio or not os.path.exists(selected_audio):
+        raise RuntimeError("অডিও তিলাওয়াত সংগ্রহ করা যায়নি।")
 
     return selected_audio, video_title
-
 
 def render_anti_copyright_quran_reel(video_path: str, audio_path: str, out_path: str, max_duration: int = 58) -> str:
     """
@@ -248,10 +257,9 @@ def render_anti_copyright_quran_reel(video_path: str, audio_path: str, out_path:
     else:
         raise RuntimeError("ভিডিও রেন্ডারিং সম্পন্ন হয়নি।")
 
-
 def generate_quran_post_content(raw_title: str, bg_title: str) -> dict:
     """Generates clean Bengali Islamic caption matching the tilawat."""
-    clean_title = re.sub(r"[#@][\w_]+", "", raw_title).strip()
+    clean_title = re.sub(r"[#@][w_]+", "", raw_title).strip()
     clean_title = re.sub(r"\s+", " ", clean_title)
 
     caption = (
@@ -263,9 +271,8 @@ def generate_quran_post_content(raw_title: str, bg_title: str) -> dict:
     title = f"হৃদয় জুড়ানো কুরআন তিলাওয়াত | {clean_title[:50]}"
     return {"caption": caption, "title": title}
 
-
 def download_quran_video(search_query: str = None, is_reel: bool = True, surah_data: dict = None) -> dict:
-    """Main entrypoint executed by quran_poster.py."""
+    """Main entrypoint executed by quran_runner.py."""
     print("\n=======================================================")
     print("📖 'কুরআনের তিলাওয়াত' ২৪/৭ হাই-কোয়ালিটি কপিরাইট-মুক্ত ইঞ্জিন")
     print("=======================================================")
@@ -296,7 +303,6 @@ def download_quran_video(search_query: str = None, is_reel: bool = True, surah_d
         "surah_name": post_info["title"],
         "reciter": "আন্তর্জাতিক খ্যাতিসম্পন্ন ক্বারী"
     }
-
 
 if __name__ == "__main__":
     result = download_quran_video()
