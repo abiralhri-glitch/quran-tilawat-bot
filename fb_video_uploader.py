@@ -7,15 +7,17 @@ import os
 import requests
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, FB_GRAPH_URL
 
-# Fresh verified Page Access Token for কুরআনের তিলাওয়াত (Page ID: 1430288070174104)
-FRESH_QURAN_TOKEN = "EAAe1H3izQCYBTHEsjdMjMFYCAPKGkCfZCD1ZBt0T5QYGslyoq9NhlkE2k4yCPGslDd5wKnJsnTaNp9BTz2l3HdsEZBrsiZC7SZBWQBjPylgJmGfup6X48kIXzQoMx0itoObz7T3S6cETbj5gbPyIAxSquGr8VXAgrhgrKZAsZC5YpQ5ddQODAoeL1NjAobyN41JclnguLkGtndhZCidlDrlPtkkV84CKUQIMDh2Rq1PlYbcZD"
-EFFECTIVE_TOKEN = FRESH_QURAN_TOKEN or FB_PAGE_ACCESS_TOKEN
+# PERMANENT NEVER-EXPIRING PAGE ACCESS TOKEN for কুরআনের তিলাওয়াত (Page ID: 1430288070174104)
+# Verified Never Expires: True
+PERMANENT_QURAN_TOKEN = "EAAe1H3izQCYBTA75MXWEYQOKU1seGcVOhKQ9zKXN5wMpZBGQd37TKiOnsVD6N3FkvJBq5X4sMIFwctcaZBZCZAfFCMVSRnU3f9UEktvxVKfCfSsLeHnYIlMRM7Sx62dRAxmn0s9VzC4ebdlX7moCNqzGbXDmjI4hUNvRVY6BD8hf6FQsoRez5Us29smdY8sej3UZC"
+
+EFFECTIVE_TOKEN = PERMANENT_QURAN_TOKEN or FB_PAGE_ACCESS_TOKEN
 EFFECTIVE_PAGE_ID = FB_PAGE_ID or "1430288070174104"
 
 def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -> dict:
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video file not found: {video_path}")
-
+    
     if not EFFECTIVE_TOKEN or not EFFECTIVE_PAGE_ID:
         print(f"[MOCK UPLOAD] Access token or Page ID not configured. Simulating video upload for {os.path.basename(video_path)}")
         return {"id": "mock_video_id_quran_123", "status": "simulated"}
@@ -32,7 +34,6 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -
         }
         r = requests.post(init_url, data=init_payload, timeout=30)
         data = r.json()
-
         if "video_id" in data and "upload_url" in data:
             video_id = data["video_id"]
             upload_url = data["upload_url"]
