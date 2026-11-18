@@ -7,30 +7,27 @@ import os
 import requests
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, FB_GRAPH_URL
 
-# PERMANENT NEVER-EXPIRING PAGE ACCESS TOKEN for কুরআনের তিলাওয়াত (Page ID: 1430288070174104)
-# Verified Never Expires: True
-PERMANENT_QURAN_TOKEN = "EAAe1H3izQCYBTFIZBcrHlwSJUCaRGZAKqsfpZCz95ZBHC6HZCoTZBmU7yAA0ah5FGSiIAE1uqDjpyljZC1EQ9GCzoiWrGSIQEX9viTd4KZAg9wVzPgOUKu8LKPeRZApzu3lMkFvKQ6Wd0uEbTM7tZAEuNQn85RBBZC2XQj8GnZChtJMwUaReBFDlB0ii96aDoIZBrGXVLJQsE"
-
-EFFECTIVE_TOKEN = FB_PAGE_ACCESS_TOKEN or PERMANENT_QURAN_TOKEN
-EFFECTIVE_PAGE_ID = FB_PAGE_ID or "1430288070174104"
-
 def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -> dict:
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video file not found: {video_path}")
-    
-    if not EFFECTIVE_TOKEN or not EFFECTIVE_PAGE_ID:
-        print(f"[MOCK UPLOAD] Access token or Page ID not configured. Simulating video upload for {os.path.basename(video_path)}")
+
+    token = FB_PAGE_ACCESS_TOKEN
+    page_id = FB_PAGE_ID or "1430288070174104"
+
+    if not token:
+        print(f"[MOCK UPLOAD] Access token not configured. Simulating video upload for {os.path.basename(video_path)}")
         return {"id": "mock_video_id_quran_123", "status": "simulated"}
 
     file_size = os.path.getsize(video_path)
     print(f"[UPLOADER] Uploading {os.path.basename(video_path)} as Facebook Reel ({file_size / (1024*1024):.2f} MB)...")
 
     # Phase 1: Initialize Reels Upload Session
+    reels_uploaded = False
     try:
-        init_url = f"{FB_GRAPH_URL}/{EFFECTIVE_PAGE_ID}/video_reels"
+        init_url = f"{FB_GRAPH_URL}/{page_id}/video_reels"
         init_payload = {
             "upload_phase": "start",
-            "access_token": EFFECTIVE_TOKEN
+            "access_token": token
         }
         r = requests.post(init_url, data=init_payload, timeout=30)
         data = r.json()
@@ -44,7 +41,7 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -
                 video_bytes = f.read()
 
             upload_headers = {
-                "Authorization": f"OAuth {EFFECTIVE_TOKEN}",
+                "Authorization": f"OAuth {token}",
                 "offset": "0",
                 "file_size": str(file_size)
             }
@@ -54,7 +51,7 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -
             # Phase 3: Finish and Publish as Reel
             finish_payload = {
                 "upload_phase": "finish",
-                "access_token": EFFECTIVE_TOKEN,
+                "access_token": token,
                 "video_id": video_id,
                 "video_state": "PUBLISHED",
                 "description": caption
@@ -62,21 +59,21 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -
             finish_resp = requests.post(init_url, data=finish_payload, timeout=30)
             finish_data = finish_resp.json()
             print(f"[+] Reels finish result: {finish_data}")
-            if finish_data.get("success") or "video_id" in finish_data:
+            if finish_data.get("success") or "video_id" in finish_data or "post_id" in finish_data or finish_resp.status_code == 200:
                 return {"id": video_id, "success": True, "reels_response": finish_data}
     except Exception as e:
-        print(f"[UPLOADER] Reels API notice: {e}, falling back to standard...")
+        print(f"[UPLOADER] Reels API notice: {e}")
 
-    # Standard fallback
-    url = f"{FB_GRAPH_URL}/{EFFECTIVE_PAGE_ID}/videos"
-    print(f"[UPLOADER] Posting to standard videos endpoint...")
+    # Standard fallback only if Reels API failed to start
+    url = f"{FB_GRAPH_URL}/{page_id}/videos"
+    print(f"[UPLOADER] Posting to standard videos endpoint as fallback...")
     with open(video_path, "rb") as vf:
         files = {"source": vf}
         data = {
             "description": caption,
             "title": title or caption.split("\n")[0][:60],
             "published": True,
-            "access_token": EFFECTIVE_TOKEN
+            "access_token": token
         }
         r = requests.post(url, files=files, data=data, timeout=300)
         resp = r.json()
