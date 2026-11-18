@@ -34,33 +34,72 @@ os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
 # স্থানীয় বাস্তব ফুটেজ তালিকা (মক্কা, মদিনা, আল-আকসা, পাহাড়, সমুদ্র, রাস্তায় গাড়ি চলা, ফুল ও বৃষ্টি)
 REAL_FOOTAGE_FILES = [
-    "makkah_kaaba.mp4",
-    "madinah_nabawi.mp4",
-    "al_aqsa.mp4",
-    "kaaba_rain.mp4",
-    "mountain_clouds.mp4",
-    "ocean_sunset.mp4",
-    "highway_drive.mp4",
-    "nature_flowers.mp4",
-    "rain_aesthetic.mp4"
+    "makkah_kaaba.mp4",                # পবিত্র কাবা শরীফ ও তাওয়াফ
+    "madinah_nabawi.mp4",              # মসজিদে নববী ও মিনার
+    "makkah_grand_haram.mp4",          # মসজিদে হারামের অপূর্ব দৃশ্য
+    "madinah_rawdah_view.mp4",         # রওজা শরীফ ও সবুজ চত্বর
+    "kaaba_rain.mp4",                  # কাবা প্রাঙ্গণে রহমতের বৃষ্টি
+    "al_aqsa.mp4",                     # পবিত্র মসজিদুল আকসা
+    "madinah_nabawi_majestic.mp4",     # মসজিদে নববীর স্বয়ংক্রিয় ছাতা
+    "makkah_kaaba_multazam.mp4",       # পবিত্র মুলতাজাম ও কাবার দ্বার
+    "madinah_serene_atmosphere.mp4",   # মসজিদে নববীর আধ্যাত্মিক পরিবেশ
+    "mountain_clouds.mp4",             # সৃষ্টিজগতের মহিমাময় পাহাড়
+    "ocean_sunset.mp4",                # রবের কুদরতের সমুদ্র ও সূর্যাস্ত
+    "rain_aesthetic.mp4"               # স্নিগ্ধ বৃষ্টি
 ]
+
+FOOTAGE_HISTORY_FILE = os.path.join(BASE_DIR, "footage_history.json")
 
 def get_high_retention_video() -> str:
     """
-    ১০০% আসল ও সিনেমাটিক মক্কা, মদিনা, আল-আকসা, পাহাড়, সমুদ্র, হাইওয়ে ও বৃষ্টির ফুটেজ প্রদান করে।
+    ১০০% পবিত্র মক্কা, মদিনা ও আল-আকসার আসল সিনেমাটিক ফুটেজ রোটেশন।
+    কঠোর নন-রিপিট সুরক্ষা: পরপর কখনো একই ব্যাকগ্রাউন্ড ফুটেজ ব্যবহৃত হবে না।
     """
+    history = {"recent": []}
+    if os.path.exists(FOOTAGE_HISTORY_FILE):
+        try:
+            with open(FOOTAGE_HISTORY_FILE, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception:
+            pass
+
+    recent = history.get("recent", [])
+
+    # ফিল্টার: যেসব ফাইল বর্তমানে ফিজিক্যালি আছে
     available = []
     for f in REAL_FOOTAGE_FILES:
         p = os.path.join(ASSETS_FOOTAGE_DIR, f)
         if os.path.exists(p) and os.path.getsize(p) > 50000:
-            available.append(p)
+            available.append(f)
 
-    if available:
-        chosen = random.choice(available)
-        print(f"🎥 আসল সিনেমাটিক ফুটেজ লোড: {os.path.basename(chosen)} ({os.path.getsize(chosen)/(1024*1024):.2f} MB)")
-        return chosen
+    if not available:
+        raise FileNotFoundError("কোনো আসল সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
 
-    raise FileNotFoundError("কোনো আসল সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
+    # পূর্বে ব্যবহৃত হয়নি এমন ফুটেজ বাছাই (গ্যারান্টিড নো-রিপিট)
+    unseen = [f for f in available if f not in recent]
+    if not unseen:
+        # সব ক্লিপ একবার করে ব্যবহার শেষ হলে হিস্টোরি রিসেট, কিন্তু শেষেরটা বাদ
+        last_used = recent[-1] if recent else None
+        unseen = [f for f in available if f != last_used]
+        recent = []
+
+    chosen_file = random.choice(unseen) if unseen else available[0]
+    recent.append(chosen_file)
+
+    # রিসেন্ট তালিকায় সর্বোচ্চ উপলব্ধ ফুটেজ সংখ্যার চেয়ে ১ কম রাখা (যাতে সবসময় অন্তত ১টি আনসিন থাকে)
+    if len(recent) >= len(available):
+        recent.pop(0)
+
+    history["recent"] = recent
+    try:
+        with open(FOOTAGE_HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2)
+    except Exception:
+        pass
+
+    chosen_path = os.path.join(ASSETS_FOOTAGE_DIR, chosen_file)
+    print(f"🎥 [FOOTAGE ROTATION] নির্বাচিত অনন্য সিনেমাটিক ফুটেজ: {chosen_file} (মোট উপলব্ধ: {len(available)}টি)")
+    return chosen_path
 
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
