@@ -14,7 +14,6 @@ import requests
 from config import BASE_DIR, LOGS_FILE, FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, FB_GRAPH_URL
 from quran_surah_database import QARIS, LONG_SURAHS, REELS_SURAHS
 from quran_downloader import download_quran_video
-from anti_copyright_quran import process_quran_video
 from caption_engine import generate_quran_caption
 from fb_video_uploader import upload_quran_video_to_page
 
@@ -27,7 +26,9 @@ def get_fb_posted_records() -> tuple:
     surahs_posted_today = set()
     exact_ayats_posted = set()
 
-    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
+    token = FB_PAGE_ACCESS_TOKEN
+    page_id = FB_PAGE_ID
+    if not page_id or not token:
         return surahs_posted_today, exact_ayats_posted
 
     utc_now = datetime.datetime.now(datetime.timezone.utc)
@@ -35,18 +36,19 @@ def get_fb_posted_records() -> tuple:
     today_bd_str = bd_now.strftime("%Y-%m-%d")
 
     try:
-        url = f"{FB_GRAPH_URL}/{FB_PAGE_ID}/videos?limit=100&fields=id,description,created_time&access_token={FB_PAGE_ACCESS_TOKEN}"
+        url = f"{FB_GRAPH_URL}/{page_id}/videos?limit=100&fields=id,description,created_time,title&access_token={token}"
         r = requests.get(url, timeout=15)
         if r.status_code == 200:
             items = r.json().get("data", [])
             for item in items:
                 desc = item.get("description", "")
+                title = item.get("title", "")
+                full_text = f"{title} {desc}"
                 created_utc = item.get("created_time", "")
-                # বাংলাদেশ সময় অনুযায়ী ডেট বের করা
+
                 is_today = False
                 if created_utc:
                     try:
-                        # e.g. 2026-11-17T11:22:15+0000
                         dt_utc = datetime.datetime.fromisoformat(created_utc.replace("+0000", "+00:00"))
                         dt_bd = dt_utc + datetime.timedelta(hours=6)
                         if dt_bd.strftime("%Y-%m-%d") == today_bd_str:
@@ -58,10 +60,12 @@ def get_fb_posted_records() -> tuple:
                 for s in all_catalog:
                     s_name = s["bangla"]
                     s_ayahs = s.get("ayahs", "")
-                    if s_name in desc:
+                    s_arabic = s.get("arabic", "")
+
+                    if s_name in full_text or (s_arabic and s_arabic in full_text):
                         if is_today:
                             surahs_posted_today.add(s_name)
-                        if s_ayahs and s_ayahs in desc:
+                        if s_ayahs and s_ayahs in full_text:
                             exact_ayats_posted.add(f"{s_name}_{s_ayahs}")
 
             print(f"[SMART-SCHEDULER] আজকের দিনে আপলোড হওয়া সূরা ({len(surahs_posted_today)}টি): {list(surahs_posted_today)}")
@@ -91,28 +95,26 @@ def select_smart_surah(is_reel: bool = True) -> tuple:
     """
     ১. আজকের দিনে এই সূরা ইতিমধ্যে আপলোড হয়ে থাকলে বাদ দেবে।
     ২. এই নির্দিষ্ট আয়াত ইতিমধ্যে পেজে থাকলে বাদ দেবে।
-    ৩. ক্বারী দৈবচয়ন করবে।
+    ৩. ক্বারী নির্বাচন করবে।
     """
     surahs_posted_today, exact_ayats_posted = get_fb_posted_records()
     catalog = REELS_SURAHS if is_reel else LONG_SURAHS
 
-    # ফিল্টার ১: একই দিনে একই সূরা না + একই আয়াত না
     valid_candidates = []
     for s in catalog:
         s_name = s["bangla"]
         s_ayahs = s.get("ayahs", "")
         ayat_key = f"{s_name}_{s_ayahs}"
-        
+
         # শর্ত ১: আজ এই সূরা ইতিমধ্যে আপলোড হয়েছে কি না
         if s_name in surahs_posted_today:
             continue
-        # শর্ত ২: এই নির্দিষ্ট আয়াত ইতিমধ্যে পোস্ট হয়েছে কি না
+        # শর্ত ২: এই নির্দিষ্ট আয়াত ইতিমধ্যে পেজে আছে কি না
         if ayat_key in exact_ayats_posted:
             continue
-            
+
         valid_candidates.append(s)
 
-    # যদি সব শেষ হয়ে যায় (সব ১১৪ সূরা বা আয়াত শেষ হলে)
     if not valid_candidates:
         print("[SMART-SCHEDULER] সমস্ত সূরা আজকের জন্য রোটেশনে শেষ হয়েছে। শুধুমাত্র আজকের জন্য পোস্ট না হওয়া সূরা নেওয়া হচ্ছে...")
         valid_candidates = [s for s in catalog if s["bangla"] not in surahs_posted_today]
@@ -125,44 +127,32 @@ def select_smart_surah(is_reel: bool = True) -> tuple:
 
 def run_single_post():
     history = load_history()
-    
+
     # 75% Reels, 25% Long Surahs
     is_reel = random.random() < 0.75
-    
+
     surah, qari = select_smart_surah(is_reel=is_reel)
     qari_name = qari["name"]
     qari_en = qari["en"]
     ayahs_text = surah.get("ayahs", "পূর্ণাঙ্গ")
 
-    if is_reel:
-        search_query = f"{surah['bangla']} {qari_en} quran recitation bangla subtitle"
-    else:
-        search_query = f"{surah['bangla']} full {qari_en} quran recitation bangla translation"
-
     print(f"\n========================================================")
     print(f"📖 সিলেক্টেড সূরা: {surah['bangla']} [আয়াত: {ayahs_text}]")
     print(f"🎙️ ক্বারী: {qari_name} ({qari_en}) | টাইপ: {'রিলস (Reel)' if is_reel else 'লং ভিডিও (Long)'}")
     print(f"========================================================")
-    
-    # ১. ডাউনলোড (Pinterest/Pixabay HD + YouTube Tilawat Voice + Anti-Copyright)
-    video_meta = download_quran_video(search_query, is_reel=is_reel, surah_data=surah)
-    input_video_path = video_meta.get("filepath") or video_meta.get("file_path")
-    
-    # ২. এন্টি-কপিরাইট ফিল্টারিং
-    processed_video_path = process_quran_video(input_video_path, output_name="clean_quran_upload.mp4")
-    
-    # ৩. ক্যাপশন ও টাইটেল প্রস্তুত (ভিডিওর সাথে ১০০% সামঞ্জস্যপূর্ণ)
-    if video_meta.get("caption"):
-        caption = video_meta["caption"]
-        title = video_meta.get("title", f"{surah['arabic']} • {surah['bangla']} | ক্বারী {qari_name}")
-    else:
-        caption = generate_quran_caption(surah, qari_name, is_reel=is_reel)
-        title = f"{surah['arabic']} • {surah['bangla']} [আয়াত: {ayahs_text}] | ক্বারী {qari_name}"
-    
-    # ৪. ফেসবুকে আপলোড
-    upload_result = upload_quran_video_to_page(processed_video_path, caption=caption, title=title)
-    
-    # ৫. হিস্ট্রি রেকর্ড
+
+    # ১. ডাউনলোড ও এন্টি-কপিরাইট রেন্ডার
+    video_meta = download_quran_video(is_reel=is_reel, surah_data=surah)
+    video_path = video_meta.get("filepath") or video_meta.get("file_path")
+
+    # ২. ১০০% সামঞ্জস্যপূর্ণ স্ট্যান্ডার্ডাইজড ক্যাপশন ও টাইটেল
+    caption = generate_quran_caption(surah, qari_name, is_reel=is_reel)
+    title = f"হৃদয় জুড়ানো কুরআন তিলাওয়াত | {surah['arabic']} • {surah['bangla']} [আয়াত: {ayahs_text}] | ক্বারী {qari_name}"
+
+    # ৩. ফেসবুকে আপলোড
+    upload_result = upload_quran_video_to_page(video_path, caption=caption, title=title)
+
+    # ৪. হিস্ট্রি রেকর্ড
     item_key = f"{surah['bangla']}_{ayahs_text}_{qari_en}"
     history.append({
         "key": item_key,
@@ -174,13 +164,11 @@ def run_single_post():
         "result": upload_result
     })
     save_history(history)
-    
-    # ৬. ক্লিনআপ
+
+    # ৫. ক্লিনআপ
     try:
-        if os.path.exists(input_video_path):
-            os.remove(input_video_path)
-        if os.path.exists(processed_video_path):
-            os.remove(processed_video_path)
+        if os.path.exists(video_path):
+            os.remove(video_path)
     except Exception:
         pass
 
