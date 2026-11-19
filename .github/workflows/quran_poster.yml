@@ -1,15 +1,17 @@
-name: Holy Quran 24/7 Automated Tilawat & Azan Poster
+name: Holy Quran 10 Daily Tilawat Posts (5 Reels + 5 HQ Videos)
 
 on:
   schedule:
-    # Runs every 20 minutes (72 runs per day -> 5 Azan + 67 Long Surahs / Tilawat posts)
-    - cron: '*/20 * * * *'
+    # সকালের ২টি পোস্ট: বাংলাদেশ সময় সকাল ০৭:৩০ ও ০৯:৩০ (০১:৩০ ও ০৩:৩০ ইউটিসি)
+    - cron: '30 1,3 * * *'
+    # দুপুরের পর ৮টি পোস্ট: বাংলাদেশ সময় দুপুর ০১:০০ থেকে রাত ০৮:০০ পর্যন্ত প্রতি ১ ঘণ্টা পর পর (০৭:০০ থেকে ১৪:০০ ইউটিসি)
+    - cron: '0 7-14 * * *'
   workflow_dispatch:
     inputs:
-      batch_count:
-        description: 'Number of videos to process in this run'
+      format:
+        description: 'Post format: auto, reel, or video'
         required: false
-        default: '1'
+        default: 'auto'
 
 jobs:
   post-quran-tilawat:
@@ -34,17 +36,21 @@ jobs:
         run: |
           git pull --rebase origin main || true
 
-      - name: Run Quran Tilawat & Azan Engine
+      - name: Run Quran Tilawat Engine
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
-          BATCH=${{ github.event.inputs.batch_count || '1' }}
-          python quran_runner.py $BATCH
+          FORMAT="${{ github.event.inputs.format || 'auto' }}"
+          if [ "$FORMAT" = "reel" ] || [ "$FORMAT" = "video" ]; then
+            python quran_runner.py "$FORMAT"
+          else
+            python quran_runner.py
+          fi
 
       - name: Commit and Push State & History
         run: |
           git config --global user.name "QuranBot Automation"
           git config --global user.email "quranbot@automation.local"
           git add -A
-          git diff --staged --quiet || (git commit -m "chore: update quran posted history & azan state [skip ci]" && git push origin main) || true
+          git diff --staged --quiet || (git commit -m "chore: update quran posted history & footage state [skip ci]" && git push origin main) || true
