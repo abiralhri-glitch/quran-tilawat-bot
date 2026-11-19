@@ -135,7 +135,11 @@ def load_footage_history() -> dict:
     if os.path.exists(FOOTAGE_HISTORY_FILE):
         try:
             with open(FOOTAGE_HISTORY_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                if isinstance(data, dict):
+                    if "used_ids" not in data or not isinstance(data["used_ids"], list):
+                        data["used_ids"] = []
+                    return data
         except Exception:
             pass
     return {"used_ids": [], "last_index": -1}
@@ -187,6 +191,8 @@ def get_next_holy_scenes(count: int = 4) -> tuple:
     একই ফুটেজ পরপর বা সাম্প্রতিক ভিডিওতে কখনো রিপিট হবে না।
     """
     history = load_footage_history()
+    if "used_ids" not in history or not isinstance(history["used_ids"], list):
+        history["used_ids"] = []
     used_ids = set(history.get("used_ids", [])[-15:])  # সর্বশেষ ১৫টি আইটেম কঠোরভাবে বাদ
 
     # আনপোস্টেড বা ফ্রেশ সিনগুলো ফিল্টার করা
@@ -202,6 +208,8 @@ def get_next_holy_scenes(count: int = 4) -> tuple:
     selected_paths = [ensure_footage_file(item) for item in selected_items]
 
     for item in selected_items:
+        if "used_ids" not in history or not isinstance(history["used_ids"], list):
+            history["used_ids"] = []
         history["used_ids"].append(item["id"])
     history["used_ids"] = history["used_ids"][-30:]  # হিস্টোরিতে সর্বোচ্চ ৩০টি সংরক্ষণ
     save_footage_history(history)
@@ -273,7 +281,7 @@ def get_audio_duration(audio_path: str) -> float:
         FFMPEG_EXE, "-i", audio_path
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
-    m = re.search(r"Duration:s*(d+):(d+):(d+.d+)", res.stderr)
+    m = re.search(r"Duration:\s*(\d+):(\d+):(\d+\.\d+)", res.stderr)
     if m:
         hours, mins, secs = float(m.group(1)), float(m.group(2)), float(m.group(3))
         return hours * 3600 + mins * 60 + secs
@@ -349,7 +357,7 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
         "-map", "[final_v]",
         "-map", f"{audio_idx}:a:0",
         "-c:v", "libx264",
-        "-preset", "fast",
+        "-preset", "veryfast",
         "-crf", crf,
         *bitrate_args,
         "-c:a", "aac",
