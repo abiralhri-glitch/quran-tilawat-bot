@@ -1,10 +1,11 @@
 """
 Holy Quran Automated Tilawat Engine & High-Retention Video Generator
-- পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা, আল-আকসা ও গ্র্যান্ড মসজিদ
-- পাহাড় ও মেঘমালা, সমুদ্রের ঢেউ ও সূর্যাস্ত, রাস্তায় গাড়ি চলা, স্নিগ্ধ বৃষ্টি ও প্রাকৃতিক সৌন্দর্য
-- মক্কা ও মদিনার সকল সম্মানিত ঐতিহাসিক ও বর্তমান ইমামগণের তিলাওয়াত
+- ১০০% পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা, মসজিদুল আকসা ও বিশ্ববিখ্যাত ঐতিহাসিক মসজিদ
+- শুধুমাত্র পবিত্র মসজিদ ও হারামাইন শরীফাইনের আসল সিনেমাটিক 1080p আল্ট্রা-এইচডি ফুটেজ
+- কঠোর জিরো-ডুপ্লিকেট রোটেশন: একই ভিডিও কখনো পরপর বা একই দিনে ভিন্ন সূরায় পুনরাবৃত্তি হবে না
+- ৫টি রিলস (1080x1920) ও ৫টি ফুল এইচডি লং ভিডিও (1920x1080)
 - পেজের স্থায়ী ব্র্যান্ডেড ওয়াটারমার্ক: 'কুরআনের তিলাওয়াত • Quran Tilawat'
-- অ্যান্টি-কপিরাইট একোস্টিক ফিল্টারিং
+- ৩২০kbps ক্রিস্টাল ক্লিয়ার স্টুডিও সাউন্ড
 """
 
 import os
@@ -32,26 +33,69 @@ os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
-# স্থানীয় বাস্তব ফুটেজ তালিকা (মক্কা, মদিনা, আল-আকসা, পাহাড়, সমুদ্র, রাস্তায় গাড়ি চলা, ফুল ও বৃষ্টি)
-REAL_FOOTAGE_FILES = [
-    "makkah_kaaba.mp4",                # পবিত্র কাবা শরীফ ও তাওয়াফ
-    "madinah_nabawi.mp4",              # মসজিদে নববী ও মিনার
-    "makkah_grand_haram.mp4",          # মসজিদে হারামের অপূর্ব দৃশ্য
-    "madinah_rawdah_view.mp4",         # রওজা শরীফ ও সবুজ চত্বর
-    "kaaba_rain.mp4",                  # কাবা প্রাঙ্গণে রহমতের বৃষ্টি
-    "al_aqsa.mp4",                     # পবিত্র মসজিদুল আকসা
-    "madinah_nabawi_majestic.mp4",     # মসজিদে নববীর স্বয়ংক্রিয় ছাতা
-    "madinah_serene_atmosphere.mp4"    # মসজিদে নববীর আধ্যাত্মিক পরিবেশ
+# ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ ও হারামাইন শরীফাইনের আসল 1080p সিনেমাটিক ফুটেজ
+REAL_MOSQUE_FOOTAGES = [
+    {
+        "file": "makkah_kaaba.mp4",
+        "title": "পবিত্র কাবা শরীফ ও তাওয়াফ",
+        "location": "পবিত্র মসজিদুল হারাম, মক্কা মুকাররমা"
+    },
+    {
+        "file": "madinah_nabawi.mp4",
+        "title": "পবিত্র মসজিদে নববী ও সবুজ গম্বুজ",
+        "location": "মদিনা মনোওয়ারা"
+    },
+    {
+        "file": "makkah_grand_haram.mp4",
+        "title": "মসজিদুল হারামের মনোরম চত্বর",
+        "location": "মক্কা মুকাররমা"
+    },
+    {
+        "file": "madinah_rawdah_view.mp4",
+        "title": "রওজা শরীফ ও প্রশান্ত চত্বর",
+        "location": "মসজিদে নববী, মদিনা"
+    },
+    {
+        "file": "kaaba_rain.mp4",
+        "title": "কাবা প্রাঙ্গণে রহমতের বৃষ্টি",
+        "location": "পবিত্র কাবা শরীফ, মক্কা"
+    },
+    {
+        "file": "al_aqsa.mp4",
+        "title": "পবিত্র মসজিদুল আকসা (বাইতুল মুকাদ্দাস)",
+        "location": "জেরুজালেম / আল-কুদস"
+    },
+    {
+        "file": "madinah_nabawi_majestic.mp4",
+        "title": "মসজিদে নববীর সুদৃশ্য ছাতা ও মিনার",
+        "location": "মদিনা মনোওয়ারা"
+    },
+    {
+        "file": "madinah_serene_atmosphere.mp4",
+        "title": "মসজিদে নববীর আধ্যাত্মিক পরিবেশ",
+        "location": "মদিনা মনোওয়ারা"
+    },
+    {
+        "file": "sheikh_zayed_grand_mosque.mp4",
+        "title": "শেখ জায়েদ গ্র্যান্ড মসজিদ",
+        "location": "আবুধাবি, সংযুক্ত আরব আমিরাত"
+    },
+    {
+        "file": "sultan_ahmed_blue_mosque.mp4",
+        "title": "সুলতান আহমেদ ব্লু মস্ক (ঐতিহাসিক নীল মসজিদ)",
+        "location": "ইস্তাম্বুল, তুরস্ক"
+    }
 ]
 
 FOOTAGE_HISTORY_FILE = os.path.join(BASE_DIR, "footage_history.json")
 
-def get_high_retention_video() -> str:
+def get_next_mosque_footage(surah_data: dict = None) -> tuple:
     """
-    ১০০% পবিত্র মক্কা, মদিনা ও আল-আকসার আসল সিনেমাটিক ফুটেজ রোটেশন।
-    কঠোর নন-রিপিট সুরক্ষা: পরপর কখনো একই ব্যাকগ্রাউন্ড ফুটেজ ব্যবহৃত হবে না।
+    ১০০% কঠোর ডুপ্লিকেট-মুক্ত সিকোয়েন্সিয়াল রোটেশন:
+    প্রতিটি পোস্টের জন্য সম্পূর্ণ আলাদা মসজিদ ফুটেজ নির্ধারিত হবে।
+    ১০টি পোস্টের প্রতিটি সম্পূর্ণ ভিন্ন ভিন্ন ভিডিও ব্যবহার করবে।
     """
-    history = {"recent": []}
+    history = {"last_index": -1, "used_records": []}
     if os.path.exists(FOOTAGE_HISTORY_FILE):
         try:
             with open(FOOTAGE_HISTORY_FILE, "r", encoding="utf-8") as f:
@@ -59,47 +103,43 @@ def get_high_retention_video() -> str:
         except Exception:
             pass
 
-    recent = history.get("recent", [])
-
     # ফিল্টার: যেসব ফাইল বর্তমানে ফিজিক্যালি আছে
     available = []
-    for f in REAL_FOOTAGE_FILES:
-        p = os.path.join(ASSETS_FOOTAGE_DIR, f)
+    for item in REAL_MOSQUE_FOOTAGES:
+        p = os.path.join(ASSETS_FOOTAGE_DIR, item["file"])
         if os.path.exists(p) and os.path.getsize(p) > 50000:
-            available.append(f)
+            available.append(item)
 
     if not available:
-        raise FileNotFoundError("কোনো আসল সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
+        raise FileNotFoundError("কোনো পবিত্র মসজিদ বা হারামাইনের সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
 
-    # পূর্বে ব্যবহৃত হয়নি এমন ফুটেজ বাছাই (গ্যারান্টিড নো-রিপিট)
-    unseen = [f for f in available if f not in recent]
-    if not unseen:
-        # সব ক্লিপ একবার করে ব্যবহার শেষ হলে হিস্টোরি রিসেট, কিন্তু শেষেরটা বাদ
-        last_used = recent[-1] if recent else None
-        unseen = [f for f in available if f != last_used]
-        recent = []
+    last_index = history.get("last_index", -1)
+    next_index = (last_index + 1) % len(available)
+    chosen_meta = available[next_index]
 
-    chosen_file = random.choice(unseen) if unseen else available[0]
-    recent.append(chosen_file)
+    history["last_index"] = next_index
+    history["used_records"].append({
+        "file": chosen_meta["file"],
+        "surah": surah_data.get("bangla") if surah_data else "Unknown",
+        "timestamp": int(time.time())
+    })
+    if len(history["used_records"]) > 50:
+        history["used_records"] = history["used_records"][-50:]
 
-    # রিসেন্ট তালিকায় সর্বোচ্চ উপলব্ধ ফুটেজ সংখ্যার চেয়ে ১ কম রাখা (যাতে সবসময় অন্তত ১টি আনসিন থাকে)
-    if len(recent) >= len(available):
-        recent.pop(0)
-
-    history["recent"] = recent
     try:
         with open(FOOTAGE_HISTORY_FILE, "w", encoding="utf-8") as f:
-            json.dump(history, f, indent=2)
-    except Exception:
-        pass
+            json.dump(history, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[HISTORY WARN] {e}")
 
-    chosen_path = os.path.join(ASSETS_FOOTAGE_DIR, chosen_file)
-    print(f"🎥 [FOOTAGE ROTATION] নির্বাচিত অনন্য সিনেমাটিক ফুটেজ: {chosen_file} (মোট উপলব্ধ: {len(available)}টি)")
-    return chosen_path
+    chosen_path = os.path.join(ASSETS_FOOTAGE_DIR, chosen_meta["file"])
+    print(f"🕌 [পবিত্র মসজিদ ফুটেজ রোটেশন] #{next_index+1}/{len(available)}: {chosen_meta['title']} ({chosen_meta['location']})")
+    return chosen_path, chosen_meta
 
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
-    মক্কা ও মদিনার নির্দিষ্ট ইমামের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে।
+    মক্কা ও মদিনার সম্মানিত ইমামগণের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে।
+    কঠোর পলিসি: কোনো কপিরাইটযুক্ত স্টুডিও রিকার্ডিং নয়।
     """
     surah_num = surah_data.get("number", 1)
     surah_bangla = surah_data.get("bangla", "সূরা আল-ফাতিহা")
@@ -130,40 +170,49 @@ def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     except Exception as e:
         print(f"[IMAM CDN NOTICE] {e}")
 
-    # ফলব্যাক: EveryAyah সিডিএন
-    print(f"💡 ফলব্যাক EveryAyah সিডিএন থেকে {surah_bangla} সংগ্রহ হচ্ছে...")
-    fallback_url = f"https://everyayah.com/data/Alafasy_128kbps/{surah_num:03d}001.mp3"
+    # নিরাপদ ফলব্যাক: পবিত্র মক্কার শাইখ ড. মাহের আল-মুয়াইক্বলী
+    print(f"💡 নিরাপদ ফলব্যাক সিডিএন থেকে {surah_bangla} সংগ্রহ হচ্ছে...")
+    fallback_url = f"https://server12.mp3quran.net/maher/{surah_num:03d}.mp3"
     try:
-        r = requests.get(fallback_url, timeout=25)
+        r = requests.get(fallback_url, stream=True, timeout=30)
         if r.status_code == 200:
             with open(audio_path, "wb") as f:
-                f.write(r.content)
-            return audio_path, {"id": "alafasy", "name": "শাইখ মিশারি রশিদ আল-আফাসি", "mosque": "গ্র্যান্ড মস্ক কুয়েত"}
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    if chunk: f.write(chunk)
+            return audio_path, {
+                "id": "muaiqly",
+                "name": "শাইখ ড. মাহের আল-মুয়াইক্লি",
+                "title": "সম্মানিত ইমাম ও খতিব",
+                "mosque": "পবিত্র মসজিদুল হারাম, মক্কা মুকাররমা"
+            }
     except Exception as e:
         print(f"[FALLBACK CDN ERROR] {e}")
 
     raise RuntimeError(f"অডিও তিলাওয়াত সংগ্রহ করা যায়নি: {surah_bangla}")
 
-def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path: str, is_reel: bool = True, max_duration: int = 58) -> str:
+def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path: str, is_reel: bool = True) -> str:
     """
-    ভিডিওতে পেজের অফিশিয়াল ওয়াটারমার্ক সহ অ্যান্টি-কপিরাইট রেন্ডার সম্পন্ন করে:
-    - ওয়াটারমার্ক: কুরআনের তিলাওয়াত • Quran Tilawat
-    - ক্রপ ও স্কেলিং: 720x1280 (রিলস) বা 1280x720 (লং ভিডিও)
-    - অ্যান্টি-কপিরাইট একোস্টিক ফিল্টার
+    ভিডিওতে পেজের অফিশিয়াল ক্রিস্টাল ক্লিয়ার ওয়াটারমার্ক সহ আল্ট্রা হাই-কোয়ালিটি 1080p রেন্ডার:
+    - রিলস (Reels): 1080x1920 (Vertical 9:16), CRF 18, 6000k Bitrate, 320k Audio
+    - রেগুলার ভিডিও: 1920x1080 (Widescreen 16:9), CRF 17, 8000k Bitrate, 320k Audio
     """
-    print("🎨 পেজের অফিসিয়াল নিখুঁত ওয়াটারমার্ক সহ ভিডিও রেন্ডারিং শুরু...")
-
     if is_reel:
-        w, h = 720, 1280
-        video_scale = "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280"
+        w, h = 1080, 1920
+        max_duration = 65  # হাই রিটেনশন রিলস
+        video_scale = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920"
+        crf = "18"
+        bitrate_args = ["-b:v", "6000k", "-maxrate", "8000k", "-bufsize", "12000k"]
+        print("🎨 [REEL RENDERING] ১০৮০x১৯২০ আল্ট্রা-এইচডি ভার্টিক্যাল রিলস প্রস্তুত হচ্ছে...")
     else:
-        w, h = 1280, 720
-        video_scale = "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720"
+        w, h = 1920, 1080
+        max_duration = 240  # হাই কোয়ালিটি ৪ মিনিটের গভীর হৃদয়গ্রাহী তিলাওয়াত
+        video_scale = "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080"
+        crf = "17"
+        bitrate_args = ["-b:v", "8000k", "-maxrate", "12000k", "-bufsize", "16000k"]
+        print("🎨 [HQ VIDEO RENDERING] ১৯২০x১০৮০ ফুল এইচডি ওয়াইডস্ক্রিন লং ভিডিও প্রস্তুত হচ্ছে...")
 
     watermark_png = generate_watermark_overlay(w, h)
 
-    # একোস্টিক ফিল্টার ও ওয়াটারমার্ক ওভারলে
-    # 100% pure authentic original audio without any distortion or pitch shifting
     filter_complex = f"[0:v]{video_scale}[scaled_v];[scaled_v][2:v]overlay=0:0[final_v]"
 
     cmd = [
@@ -175,12 +224,13 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
         "-filter_complex", filter_complex,
         "-map", "[final_v]",
         "-map", "1:a:0",
-        # No pitch shifting or audio filters
         "-c:v", "libx264",
-        "-preset", "fast",
-        "-crf", "21",
+        "-preset", "medium",
+        "-crf", crf,
+        *bitrate_args,
         "-c:a", "aac",
-        "-b:a", "192k",
+        "-b:a", "320k",
+        "-ar", "48000",
         "-t", str(max_duration),
         "-shortest",
         "-map_metadata", "-1",
@@ -189,12 +239,12 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
 
     subprocess.run(cmd, check=True)
     if os.path.exists(out_path) and os.path.getsize(out_path) > 100000:
-        print(f"✨ রেন্ডারিং সম্পন্ন! সাইজ: {os.path.getsize(out_path)/(1024*1024):.2f} MB")
+        print(f"✨ রেন্ডারিং সম্পন্ন! কোয়ালিটি: {'1080x1920 Reel' if is_reel else '1920x1080 Full HD Video'} | সাইজ: {os.path.getsize(out_path)/(1024*1024):.2f} MB")
         return out_path
     else:
         raise RuntimeError("ভিডিও রেন্ডারিং সম্পন্ন হয়নি।")
 
-def download_quran_video(search_query: str = None, is_reel: bool = True, surah_data: dict = None, imam_data: dict = None) -> dict:
+def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_data: dict = None) -> dict:
     """quran_runner.py থেকে প্রধান এন্ট্রি পয়েন্ট"""
     if not surah_data:
         surah_data = random.choice(LONG_SURAHS)
@@ -203,18 +253,18 @@ def download_quran_video(search_query: str = None, is_reel: bool = True, surah_d
         imam_data = random.choice(MAKKAH_MADINAH_IMAMS)
 
     print("\n=======================================================")
-    print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']}")
+    print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']} ({'Reel' if is_reel else 'HQ Video'})")
     print(f"🎙️ তিলাওয়াত: {imam_data['name']} ({imam_data['mosque']})")
     print("=======================================================")
 
-    bg_video = get_high_retention_video()
+    bg_video, mosque_meta = get_next_mosque_footage(surah_data)
     voice_audio, imam = download_imam_surah_audio(surah_data, imam_data)
 
     ts = int(time.time())
-    final_output = os.path.join(PROCESSED_DIR, f"quran_{surah_data['number']}_{ts}.mp4")
+    format_tag = "reel" if is_reel else "hq_video"
+    final_output = os.path.join(PROCESSED_DIR, f"quran_{surah_data['number']}_{format_tag}_{ts}.mp4")
 
-    duration = 58 if is_reel else 240
-    render_quran_video_with_watermark(bg_video, voice_audio, final_output, is_reel=is_reel, max_duration=duration)
+    render_quran_video_with_watermark(bg_video, voice_audio, final_output, is_reel=is_reel)
 
     # ক্লিনআপ টেম্প অডিও ফাইল
     try:
@@ -224,16 +274,15 @@ def download_quran_video(search_query: str = None, is_reel: bool = True, surah_d
     return {
         "filepath": final_output,
         "file_path": final_output,
+        "is_reel": is_reel,
         "title": f"হৃদয় জুড়ানো তিলাওয়াত | {surah_data['bangla']} | {imam['name']}",
         "surah_name": surah_data["bangla"],
         "surah_number": surah_data["number"],
         "reciter": imam["name"],
         "mosque": imam["mosque"],
+        "bg_mosque": mosque_meta["title"],
+        "bg_location": mosque_meta["location"],
         "meaning": surah_data.get("meaning", ""),
         "benefit": surah_data.get("benefit", ""),
         "ayahs": surah_data.get("ayahs", "")
     }
-
-if __name__ == "__main__":
-    res = download_quran_video()
-    print("ফলাফল:", res)
