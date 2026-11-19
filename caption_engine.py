@@ -8,7 +8,7 @@ import random
 VIRAL_ISLAMIC_HASHTAGS = [
     "#Quran", "#QuranTilawat", "#Surah", "#IslamicReels", "#QuranRecitation",
     "#HolyQuran", "#Islam", "#IslamicReminders", "#Peace", "#Jannat",
-    "#MisharyAlafasy", "#YasserAlDosari", "#BengaliQuran", "#Sunnah", "#Dua"
+    "#MakkahHaramain", "#MaherAlMuaiqly", "#AbdurRahmanSudais", "#YasserAlDosari", "#BengaliQuran", "#Sunnah", "#Dua"
 ]
 
 ENGAGEMENT_HOOKS = [
@@ -25,7 +25,7 @@ CTA_OPTIONS = [
     "👉 প্রতিনিয়ত অন্তরের প্রশান্তিময় এমন কুরআন তিলাওয়াত পেতে পেজটিতে লাইক ও ফলো দিয়ে রাখুন। 🤲❤️"
 ]
 
-def generate_quran_caption(surah_data: dict, qari_name: str, is_reel: bool = True) -> str:
+def generate_quran_caption(surah_data: dict, qari_name: str, mosque_info: str = "", is_reel: bool = True) -> str:
     """
     Generates a full Facebook post caption for a Quran recitation.
     """
@@ -45,7 +45,9 @@ def generate_quran_caption(surah_data: dict, qari_name: str, is_reel: bool = Tru
     else:
         lines.append(f"🎧 পূর্ণাঙ্গ তিলাওয়াত: {arabic_name} ({bangla_name})")
 
-    lines.append(f"🎙️ ক্বারী: {qari_name}")
+    lines.append(f"🎙️ ইমাম/ক্বারী: {qari_name}")
+    if mosque_info:
+        lines.append(f"🕌 দৃশ্যপট: {mosque_info}")
     lines.append(f"✨ অর্থ ও তাৎপর্য: {meaning}")
     lines.append("━━━━━━━━━━━━━━━━━━━━")
     lines.append(hook)
