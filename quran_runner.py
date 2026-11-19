@@ -1,9 +1,11 @@
 """
-Holy Quran 24/7 Automated Orchestrator & Runner
-- ৫ ওয়াক্তের আজান অটোমেশন (ফজর, যোহর, আসর, মাগরিব, এশা)
-- মক্কা ও মদিনার সকল ইমামগণের তিলাওয়াতসহ দৈনিক ২০+ লং সূরা পোস্ট
+Holy Quran Automated Orchestrator & Runner for 'কুরআনের তিলাওয়াত - Quran Tilawat'
+- দৈনিক মোট ১০টি পোস্ট (সকালে ২টি এবং দুপুর ১টার পর থেকে প্রতি ১ ঘণ্টা পর পর ১টি করে মোট ৮টি)
+- ৫টি আল্ট্রা-এইচডি ভার্টিক্যাল রিলস (1080x1920) এবং ৫টি ফুল এইচডি লং ভিডিও (1920x1080)
+- আজান পোস্ট সম্পূর্ণ বাদ (শুধুমাত্র পবিত্র কুরআনের তিলাওয়াত)
+- শুধুমাত্র পবিত্র মক্কা, মদিনা ও বিশ্ববিখ্যাত পবিত্র মসজিদের ১০৮০p সিনেমাটিক ফুটেজ
+- কঠোর জিরো-ডুপ্লিকেট রোটেশন: একই ভিডিও পরপর বা একই দিনে ভিন্ন সূরায় কখনো রিপিট হবে না
 - পেজের স্থায়ী ব্র্যান্ডেড ওয়াটারমার্ক যুক্ত রিলস ও ভিডিও
-- স্মার্ট অটো-কমেন্ট রেসপন্ডার (প্রাসঙ্গিক ইসলামিক দোয়া ও নো-ডুপ্লিকেট রিপ্লাই)
 """
 
 import os
@@ -11,7 +13,6 @@ import sys
 import json
 import time
 import random
-import requests
 import datetime
 
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN
@@ -19,24 +20,42 @@ from quran_surah_database import MAKKAH_MADINAH_IMAMS, LONG_SURAHS
 from quran_downloader import download_quran_video
 from caption_engine import generate_quran_caption
 from fb_video_uploader import upload_quran_video_to_page
-from azan_engine import should_post_azan, post_daily_azan
 from auto_comment_responder import run_comment_responder
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 POSTED_HISTORY_FILE = os.path.join(BASE_DIR, "posted_history.json")
 
 def load_posted_history() -> dict:
+    today_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    default_history = {
+        "last_surah_index": -1,
+        "last_imam_index": -1,
+        "last_format_was_reel": False,
+        "daily_stats": {
+            "date": today_str,
+            "reels_posted": 0,
+            "hq_videos_posted": 0,
+            "total_today": 0
+        }
+    }
     if os.path.exists(POSTED_HISTORY_FILE):
         try:
             with open(POSTED_HISTORY_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                if isinstance(data, list):
-                    return {"posted_ids": data, "last_surah_index": -1, "last_imam_index": -1}
-                elif isinstance(data, dict):
+                if isinstance(data, dict):
+                    # Check if day changed
+                    ds = data.get("daily_stats", {})
+                    if ds.get("date") != today_str:
+                        data["daily_stats"] = {
+                            "date": today_str,
+                            "reels_posted": 0,
+                            "hq_videos_posted": 0,
+                            "total_today": 0
+                        }
                     return data
         except Exception:
-            return {"last_surah_index": -1, "last_imam_index": -1}
-    return {"last_surah_index": -1, "last_imam_index": -1}
+            return default_history
+    return default_history
 
 def save_posted_history(history: dict):
     try:
@@ -63,60 +82,103 @@ def get_next_surah_and_imam() -> tuple:
 
     return selected_surah, selected_imam
 
-def run_single_quran_cycle():
-    """১টি পূর্ণাঙ্গ চক্র: আজান চেক -> সূরা পাবলিশ -> অটো কমেন্ট রিপ্লাই"""
+def determine_post_format(forced_format: str = None) -> bool:
+    """
+    নির্ধারণ করে বর্তমান পোস্টটি রিলস (True) নাকি হাই-কোয়ালিটি রেগুলার ভিডিও (False):
+    লক্ষ্য: দৈনিক ৫টি রিলস ও ৫টি ফুল এইচডি রেগুলার ভিডিও (মোট ১০টি পোস্ট)
+    """
+    if forced_format == "reel":
+        return True
+    elif forced_format == "video":
+        return False
+
+    history = load_posted_history()
+    stats = history.get("daily_stats", {})
+    reels_count = stats.get("reels_posted", 0)
+    videos_count = stats.get("hq_videos_posted", 0)
+    last_was_reel = history.get("last_format_was_reel", False)
+
+    # অল্টারনেটিং সিলেকশন: একবার রিলস, একবার লং ভিডিও
+    if reels_count < 5 and videos_count < 5:
+        is_reel = not last_was_reel
+    elif reels_count < 5:
+        is_reel = True
+    elif videos_count < 5:
+        is_reel = False
+    else:
+        # ১০টি পূর্ণ হলে সাধারণ অল্টারনেটিং
+        is_reel = not last_was_reel
+
+    return is_reel
+
+def run_single_quran_cycle(forced_format: str = None):
     print("\n========================================================")
     print("🚀 'কুরআনের তিলাওয়াত' অটোমেশন সাইকেল শুরু...")
     print("========================================================")
 
-    # ধাপ ১: আজান চেক
-    is_azan_time, waqt = should_post_azan()
-    if is_azan_time:
-        print(f"🕌 এখন {waqt.upper()} আজানের সময়! আজান পোস্ট তৈরি হচ্ছে...")
-        res = post_daily_azan(waqt)
-        print(f"✅ আজান সফলভাবে পোস্ট করা হয়েছে: {res}")
+    # ১. ফরম্যাট নির্ধারণ (রিলস বনাম ফুল এইচডি রেগুলার ভিডিও)
+    is_reel = determine_post_format(forced_format)
+    format_label = "১০৮০x১৯২০ আল্ট্রা-এইচডি রিলস" if is_reel else "১৯২০x১০৮০ ফুল এইচডি রেগুলার ভিডিও"
+    print(f"🎯 বর্তমান পোস্টিং ফরম্যাট: {format_label}")
+
+    # ২. পরবর্তী সূরা ও সম্মানিত ইমাম নির্বাচন
+    selected_surah, selected_imam = get_next_surah_and_imam()
+    print(f"📖 নির্বাচিত সূরা: {selected_surah['bangla']} ({selected_surah['arabic']})")
+    print(f"🎙️ নির্বাচিত ইমাম: {selected_imam['name']} • {selected_imam['mosque']}")
+
+    # ৩. ভিডিও প্রস্তুতকরণ (পবিত্র মসজিদ ফুটেজ ও অফিসিয়াল ওয়াটারমার্ক সহ)
+    video_metadata = download_quran_video(
+        is_reel=is_reel,
+        surah_data=selected_surah,
+        imam_data=selected_imam
+    )
+
+    video_path = video_metadata["filepath"]
+    mosque_info = f"{video_metadata.get('bg_mosque', '')} ({video_metadata.get('bg_location', '')})"
+    caption = generate_quran_caption(
+        selected_surah,
+        f"{selected_imam['name']} ({selected_imam['mosque']})",
+        mosque_info=mosque_info,
+        is_reel=is_reel
+    )
+    title = f"{selected_surah['arabic']} • {selected_surah['bangla']} | {selected_imam['name']}"
+
+    # ৪. ফেসবুকে নির্দিষ্ট চ্যানেলে আপলোড
+    print(f"📤 ফেসবুকে আপলোড করা হচ্ছে ({'Reel API' if is_reel else 'High-Definition Feed API'})...")
+    upload_res = upload_quran_video_to_page(
+        video_path,
+        caption=caption,
+        title=title,
+        is_reel=is_reel
+    )
+    print(f"✅ সফল তিলাওয়াত পোস্ট! রেজাল্ট: {upload_res}")
+
+    # ৫. হিস্টোরি ও দৈনিক পরিসংখ্যান আপডেট
+    history = load_posted_history()
+    history["last_format_was_reel"] = is_reel
+    stats = history.setdefault("daily_stats", {})
+    if is_reel:
+        stats["reels_posted"] = stats.get("reels_posted", 0) + 1
     else:
-        # ধাপ ২: লং সূরা বা তিলাওয়াত ভিডিও পোস্ট
-        selected_surah, selected_imam = get_next_surah_and_imam()
-        print(f"📖 নির্বাচিত সূরা: {selected_surah['bangla']} ({selected_surah['arabic']})")
-        print(f"🎙️ নির্বাচিত ইমাম: {selected_imam['name']} • {selected_imam['mosque']}")
+        stats["hq_videos_posted"] = stats.get("hq_videos_posted", 0) + 1
+    stats["total_today"] = stats.get("total_today", 0) + 1
+    print(f"📊 আজকের পরিসংখ্যান: মোট {stats['total_today']}/১০টি (রিলস: {stats['reels_posted']}/৫, রেগুলার ভিডিও: {stats['hq_videos_posted']}/৫)")
+    save_posted_history(history)
 
-        # ভিডিও ও অডিও প্রস্তুতকরণ (রিয়েল ফুটেজ ও ওয়াটারমার্ক সহ)
-        video_metadata = download_quran_video(
-            is_reel=True,
-            surah_data=selected_surah,
-            imam_data=selected_imam
-        )
+    # ৬. ক্লিনআপ
+    if os.path.exists(video_path):
+        try: os.remove(video_path)
+        except Exception: pass
 
-        video_path = video_metadata["filepath"]
-        caption = generate_quran_caption(selected_surah, f"{selected_imam['name']} ({selected_imam['mosque']})", is_reel=True)
-        title = f"{selected_surah['arabic']} • {selected_surah['bangla']} | {selected_imam['name']}"
-
-        print("📤 ফেসবুকে ভিডিও আপলোড করা হচ্ছে...")
-        upload_res = upload_quran_video_to_page(video_path, caption=caption, title=title)
-        print(f"✅ সফল সূরা পোস্ট! রেজাল্ট: {upload_res}")
-
-        # ক্লিনআপ
-        if os.path.exists(video_path):
-            try: os.remove(video_path)
-            except Exception: pass
-
-    # ধাপ ৩: স্মার্ট অটো-কমেন্ট রেসপন্ডার চালু
+    # ৭. কমেন্ট রেসপন্ডার
     try:
         run_comment_responder(page_type="quran", max_replies=10)
     except Exception as e:
         print(f"[COMMENT RESPONDER WARN] {e}")
 
 if __name__ == "__main__":
-    batch = 1
-    if len(sys.argv) > 1:
-        try:
-            batch = int(sys.argv[1])
-        except ValueError:
-            batch = 1
+    forced = None
+    if len(sys.argv) > 1 and sys.argv[1].lower() in ["reel", "video"]:
+        forced = sys.argv[1].lower()
 
-    for i in range(batch):
-        if i > 0:
-            print("⏳ পরবর্তী ব্যাচের জন্য অপেক্ষা...")
-            time.sleep(10)
-        run_single_quran_cycle()
+    run_single_quran_cycle(forced_format=forced)
