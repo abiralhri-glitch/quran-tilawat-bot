@@ -36,44 +36,19 @@ os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 # ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ ও হারামাইন শরীফাইনের আসল 1080p সিনেমাটিক ফুটেজ
 REAL_MOSQUE_FOOTAGES = [
     {
-        "file": "makkah_kaaba.mp4",
-        "title": "পবিত্র কাবা শরীফ ও তাওয়াফ",
-        "location": "পবিত্র মসজিদুল হারাম, মক্কা মুকাররমা"
+        "file": "makkah_clock_tower_drone.mp4",
+        "title": "পবিত্র মক্কা ক্লক টাওয়ার ও মসজিদুল হারাম ড্রোন দৃশ্য",
+        "location": "মক্কা মুকাররমা, সৌদি আরব"
     },
     {
-        "file": "madinah_nabawi.mp4",
-        "title": "পবিত্র মসজিদে নববী ও সবুজ গম্বুজ",
-        "location": "মদিনা মনোওয়ারা"
-    },
-    {
-        "file": "makkah_grand_haram.mp4",
-        "title": "মসজিদুল হারামের মনোরম চত্বর",
-        "location": "মক্কা মুকাররমা"
-    },
-    {
-        "file": "madinah_rawdah_view.mp4",
-        "title": "রওজা শরীফ ও প্রশান্ত চত্বর",
-        "location": "মসজিদে নববী, মদিনা"
-    },
-    {
-        "file": "kaaba_rain.mp4",
-        "title": "কাবা প্রাঙ্গণে রহমতের বৃষ্টি",
+        "file": "kaaba_cinematic_shots.mp4",
+        "title": "পবিত্র কাবা শরীফ ও গিলাফের অপার্থিব সিনেমাটিক দৃশ্য",
         "location": "পবিত্র কাবা শরীফ, মক্কা"
     },
     {
-        "file": "al_aqsa.mp4",
-        "title": "পবিত্র মসজিদুল আকসা (বাইতুল মুকাদ্দাস)",
-        "location": "জেরুজালেম / আল-কুদস"
-    },
-    {
-        "file": "madinah_nabawi_majestic.mp4",
-        "title": "মসজিদে নববীর সুদৃশ্য ছাতা ও মিনার",
-        "location": "মদিনা মনোওয়ারা"
-    },
-    {
-        "file": "madinah_serene_atmosphere.mp4",
-        "title": "মসজিদে নববীর আধ্যাত্মিক পরিবেশ",
-        "location": "মদিনা মনোওয়ারা"
+        "file": "madinah_nabawi_drone_4k.mp4",
+        "title": "পবিত্র মসজিদে নববী ও রওজা শরীফের ৪কে ড্রোন ভিউ",
+        "location": "মদিনা মনোওয়ারা, সৌদি আরব"
     },
     {
         "file": "sheikh_zayed_grand_mosque.mp4",
@@ -84,6 +59,31 @@ REAL_MOSQUE_FOOTAGES = [
         "file": "sultan_ahmed_blue_mosque.mp4",
         "title": "সুলতান আহমেদ ব্লু মস্ক (ঐতিহাসিক নীল মসজিদ)",
         "location": "ইস্তাম্বুল, তুরস্ক"
+    },
+    {
+        "file": "faisal_mosque_islamabad.mp4",
+        "title": "বিখ্যাত ফয়সাল মসজিদ ও মারগাল্লা পাহাড় চত্বর",
+        "location": "ইসলামাবাদ, পাকিস্তান"
+    },
+    {
+        "file": "putra_mosque_malaysia.mp4",
+        "title": "পুত্রা মসজিদ (জলরাশির মাঝে গোলাপী মসজিদ)",
+        "location": "পুত্রজায়া, মালয়েশিয়া"
+    },
+    {
+        "file": "hassan_ii_mosque_morocco.mp4",
+        "title": "ঐতিহাসিক হাসান দ্বিতীয় মসজিদ (আটলান্টিক মহাসাগরের তীর)",
+        "location": "কাসাব্লাঙ্কা, মরক্কো"
+    },
+    {
+        "file": "badshahi_mosque_lahore.mp4",
+        "title": "ঐতিহাসিক বাদশাহী মসজিদ ও মার্বেল চত্বর",
+        "location": "লাহোর, পাকিস্তান"
+    },
+    {
+        "file": "kaaba_beauty_peaceful.mp4",
+        "title": "পবিত্র কাবা প্রাঙ্গণের স্নিগ্ধ আধ্যাত্মিক পরিবেশ",
+        "location": "পবিত্র মসজিদুল হারাম, মক্কা"
     }
 ]
 
