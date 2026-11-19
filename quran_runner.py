@@ -64,20 +64,67 @@ def save_posted_history(history: dict):
     except Exception as e:
         print(f"[HISTORY WARN] {e}")
 
+def get_posted_surahs_from_facebook() -> set:
+    """ফেসবুক পেজ থেকে ইতিমধ্যে পোস্ট হওয়া সূরাগুলোর নম্বর ও নাম সংগ্রহ করে"""
+    posted = set()
+    token = FB_PAGE_ACCESS_TOKEN
+    page_id = FB_PAGE_ID
+    if not token or not page_id:
+        return posted
+    try:
+        url = f"https://graph.facebook.com/v21.0/{page_id}/videos"
+        res = requests.get(url, params={"access_token": token, "fields": "description,title", "limit": 100}, timeout=15)
+        if res.status_code == 200:
+            for item in res.json().get("data", []):
+                text = (item.get("description", "") + " " + item.get("title", "")).lower()
+                m = re.findall(r"\[surah:(\d+)\]", text)
+                for num in m:
+                    posted.add(int(num))
+                for s in LONG_SURAHS:
+                    if s["bangla"].lower() in text or s["arabic"].lower() in text:
+                        posted.add(s["number"])
+        print(f"[FACEBOOK VERIFY] পেজ থেকে {len(posted)}টি ইতিমধ্যে পোস্ট হওয়া সূরা রেকর্ড করা হয়েছে।")
+    except Exception as e:
+        print(f"[FACEBOOK WARN] {e}")
+    return posted
+
 def get_next_surah_and_imam() -> tuple:
-    """পরবর্তী সূরা ও মক্কা/মদিনার ইমাম নির্বাচন করে (যাতে প্রতিটি সূরা ও ইমাম সমান গুরুত্ব পান)"""
+    """কঠোর জিরো-ডুপ্লিকেট রোটেশন: ফেসবুক ও লোকাল হিস্টোরি যাচাই করে কেবলমাত্র আনপোস্টেড সূরা নির্বাচন করে"""
     history = load_posted_history()
+    fb_posted_surahs = get_posted_surahs_from_facebook()
+    history_posted_surahs = set(history.get("posted_surah_numbers", []))
+    all_posted_surahs = fb_posted_surahs.union(history_posted_surahs)
+
     last_surah_index = history.get("last_surah_index", -1)
     last_imam_index = history.get("last_imam_index", -1)
 
-    next_surah_index = (last_surah_index + 1) % len(LONG_SURAHS)
-    next_imam_index = (last_imam_index + 1) % len(MAKKAH_MADINAH_IMAMS)
+    selected_surah = None
+    target_surah_idx = last_surah_index
 
-    selected_surah = LONG_SURAHS[next_surah_index]
+    # আনপোস্টেড সূরা অনুসন্ধান
+    for i in range(len(LONG_SURAHS)):
+        idx = (last_surah_index + 1 + i) % len(LONG_SURAHS)
+        candidate = LONG_SURAHS[idx]
+        if candidate["number"] not in all_posted_surahs:
+            selected_surah = candidate
+            target_surah_idx = idx
+            break
+
+    if not selected_surah:
+        print("[NOTICE] সমস্ত ১১৪টি সূরা একবার করে সম্পন্ন হয়েছে! হিস্টোরি সাইকেল ফ্রেশ করা হচ্ছে...")
+        all_posted_surahs.clear()
+        target_surah_idx = (last_surah_index + 1) % len(LONG_SURAHS)
+        selected_surah = LONG_SURAHS[target_surah_idx]
+
+    next_imam_index = (last_imam_index + 1) % len(MAKKAH_MADINAH_IMAMS)
     selected_imam = MAKKAH_MADINAH_IMAMS[next_imam_index]
 
-    history["last_surah_index"] = next_surah_index
+    history["last_surah_index"] = target_surah_idx
     history["last_imam_index"] = next_imam_index
+    if "posted_surah_numbers" not in history or not isinstance(history["posted_surah_numbers"], list):
+        history["posted_surah_numbers"] = []
+    if selected_surah["number"] not in history["posted_surah_numbers"]:
+        history["posted_surah_numbers"].append(selected_surah["number"])
     save_posted_history(history)
 
     return selected_surah, selected_imam
@@ -141,6 +188,7 @@ def run_single_quran_cycle(forced_format: str = None):
         mosque_info=mosque_info,
         is_reel=is_reel
     )
+    caption = f"{caption}\n\n📌 [surah:{selected_surah['number']}]"
     title = f"{selected_surah['arabic']} • {selected_surah['bangla']} | {selected_imam['name']}"
 
     # ৪. ফেসবুকে নির্দিষ্ট চ্যানেলে আপলোড
