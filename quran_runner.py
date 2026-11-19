@@ -94,7 +94,6 @@ def get_next_surah_and_imam() -> tuple:
     fb_posted_surahs = get_posted_surahs_from_facebook()
     history_posted_surahs = set(history.get("posted_surah_numbers", []))
     all_posted_surahs = fb_posted_surahs.union(history_posted_surahs)
-
     last_surah_index = history.get("last_surah_index", -1)
     last_imam_index = history.get("last_imam_index", -1)
 
