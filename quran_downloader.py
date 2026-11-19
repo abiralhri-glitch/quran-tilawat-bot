@@ -1,4 +1,4 @@
-"""
+﻿"""
 Holy Quran Automated Tilawat Engine & Multi-Scene High-Retention Video Generator
 - ১০০% পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা ও বিশ্ববিখ্যাত পবিত্র ঐতিহাসিক মসজিদ
 - মাল্টি-সিন ডায়নামিক ভিডিও আর্কিটেকচার: প্রতিটি লং ভিডিওতে ৪টি ভিন্ন ভিন্ন মসজিদ ও পবিত্র স্থানের দৃশ্য
@@ -244,7 +244,7 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
 
     for i, sc in enumerate(target_scenes):
         inputs.extend(["-stream_loop", "-1", "-i", sc])
-        filter_parts.append(f"[{i}:v]{scale_filter},trim=duration={seg_dur},setpts=PTS-STARTPTS[v{i}]")
+        filter_parts.append(f"[{i}:v]{scale_filter},setsar=1,fps=30,format=yuv420p,trim=duration={seg_dur},setpts=PTS-STARTPTS[v{i}]")
         concat_inputs.append(f"[v{i}]")
 
     num_scenes = len(target_scenes)
@@ -281,7 +281,34 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
         out_path
     ]
 
-    subprocess.run(cmd, check=True)
+    try:
+        print(f"🎬 [FFMPEG] মাল্টি-সিন রেন্ডারিং কমান্ড এক্সিকিউট হচ্ছে...")
+        subprocess.run(cmd, check=True)
+    except Exception as e:
+        print(f"[FFMPEG MULTI-SCENE WARN] Concat rendering failed ({e}). Executing single-scene fallback...")
+        fallback_filter = f"[0:v]{scale_filter},setsar=1,fps=30,format=yuv420p[v0];[v0][2:v]overlay=0:0[final_v]"
+        fallback_cmd = [
+            FFMPEG_EXE, "-y",
+            "-stream_loop", "-1",
+            "-i", target_scenes[0],
+            "-i", audio_path,
+            "-i", watermark_png,
+            "-filter_complex", fallback_filter,
+            "-map", "[final_v]",
+            "-map", "1:a:0",
+            "-c:v", "libx264",
+            "-preset", "fast",
+            "-crf", crf,
+            *bitrate_args,
+            "-c:a", "aac",
+            "-b:a", "320k",
+            "-ar", "48000",
+            "-t", str(total_duration),
+            "-shortest",
+            "-pix_fmt", "yuv420p",
+            out_path
+        ]
+        subprocess.run(fallback_cmd, check=True)
     if os.path.exists(out_path) and os.path.getsize(out_path) > 100000:
         print(f"✨ মাল্টি-সিন রেন্ডারিং সম্পন্ন! কোয়ালিটি: {'1080x1920 Reel' if is_reel else '1920x1080 Full HD Video'} | সাইজ: {os.path.getsize(out_path)/(1024*1024):.2f} MB")
         return out_path
@@ -333,3 +360,4 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
         "benefit": surah_data.get("benefit", ""),
         "ayahs": surah_data.get("ayahs", "")
     }
+
