@@ -207,7 +207,7 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
         print("🎨 [REEL RENDERING] ১০৮০x১৯২০ আল্ট্রা-এইচডি ভার্টিক্যাল রিলস প্রস্তুত হচ্ছে...")
     else:
         w, h = 1920, 1080
-        max_duration = 240  # হাই কোয়ালিটি ৪ মিনিটের গভীর হৃদয়গ্রাহী তিলাওয়াত
+        max_duration = 90  # দেড় মিনিটের গভীর তিলাওয়াত (দ্রুত রেন্ডার ও হাই রিটেনশন)  # হাই কোয়ালিটি ৪ মিনিটের গভীর হৃদয়গ্রাহী তিলাওয়াত
         video_scale = "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080"
         crf = "17"
         bitrate_args = ["-b:v", "8000k", "-maxrate", "12000k", "-bufsize", "16000k"]
@@ -227,7 +227,7 @@ def render_quran_video_with_watermark(video_path: str, audio_path: str, out_path
         "-map", "[final_v]",
         "-map", "1:a:0",
         "-c:v", "libx264",
-        "-preset", "medium",
+        "-preset", "fast",
         "-crf", crf,
         *bitrate_args,
         "-c:a", "aac",
