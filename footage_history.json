@@ -7,5 +7,13 @@
     "madinah_rawdah_view.mp4",
     "madinah_nabawi_majestic.mp4",
     "makkah_kaaba.mp4"
+  ],
+  "last_index": 0,
+  "used_records": [
+    {
+      "file": "makkah_kaaba.mp4",
+      "surah": "সূরা আল-জুমু'আহ",
+      "timestamp": 1795061062
+    }
   ]
 }
