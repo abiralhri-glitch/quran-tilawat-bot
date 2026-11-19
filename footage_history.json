@@ -1,5 +1,5 @@
 {
-  "last_index": 2,
+  "last_index": 6,
   "used_records": [
     {
       "file": "makkah_clock_tower_drone.mp4",
@@ -15,6 +15,26 @@
       "file": "madinah_nabawi_drone_4k.mp4",
       "surah": "সূরা আল-ইনসান",
       "timestamp": 1795064973
+    },
+    {
+      "file": "sheikh_zayed_grand_mosque.mp4",
+      "surah": "সূরা আন-নাবা",
+      "timestamp": 1795065982
+    },
+    {
+      "file": "sultan_ahmed_blue_mosque.mp4",
+      "surah": "সূরা আন-নাবা",
+      "timestamp": 1795065982
+    },
+    {
+      "file": "faisal_mosque_islamabad.mp4",
+      "surah": "সূরা আন-নাবা",
+      "timestamp": 1795065982
+    },
+    {
+      "file": "putra_mosque_malaysia.mp4",
+      "surah": "সূরা আন-নাবা",
+      "timestamp": 1795065982
     }
   ]
 }
