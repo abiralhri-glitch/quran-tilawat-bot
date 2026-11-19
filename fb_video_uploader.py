@@ -1,7 +1,7 @@
 """
-Facebook Reels & High-Quality Video Uploader for 'কুরআনের তিলাওয়াত - Quran Tilawat' Page
+Facebook Reels & High-Quality Long Video Uploader for 'কুরআনের তিলাওয়াত - Quran Tilawat' Page
 - supports official Facebook Graph API Video Reels resumable protocol
-- supports official Facebook Graph API High-Definition Feed Video upload
+- supports official Facebook Graph API Resumable Chunked Upload for Full Long Videos
 """
 
 import os
@@ -22,7 +22,7 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "", i
     file_size = os.path.getsize(video_path)
 
     # =========================================================================
-    # ১. যদি REEL হয়: Facebook Video Reels Resumable Upload
+    # ১. যদি REEL হয়: Facebook Video Reels Resumable Upload (Short 9:16)
     # =========================================================================
     if is_reel:
         print(f"[REELS UPLOADER] Uploading {os.path.basename(video_path)} as Facebook Reel ({file_size / (1024*1024):.2f} MB)...")
@@ -66,23 +66,67 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "", i
             print(f"[UPLOADER] Reels API warning: {e}. Falling back to standard videos endpoint...")
 
     # =========================================================================
-    # ২. যদি HIGH QUALITY REGULAR VIDEO হয় (অথবা রিলস ব্যর্থ হলে ফলব্যাক)
+    # ২. যদি HIGH QUALITY FULL LONG VIDEO হয়: Resumable Chunked Upload Protocol
     # =========================================================================
-    print(f"[HQ VIDEO UPLOADER] Uploading {os.path.basename(video_path)} as High-Definition Regular Video ({file_size / (1024*1024):.2f} MB)...")
-    url = f"https://graph-video.facebook.com/v21.0/{page_id}/videos"
+    print(f"[FULL LONG VIDEO UPLOADER] Uploading {os.path.basename(video_path)} via Resumable Chunked Protocol ({file_size / (1024*1024):.2f} MB)...")
+    init_url = f"{FB_GRAPH_URL}/{page_id}/videos"
     try:
-        with open(video_path, "rb") as vf:
-            files = {"source": vf}
-            data = {
-                "description": caption,
-                "title": title or caption.split("\n")[0][:65],
-                "published": True,
-                "access_token": token
-            }
-            r = requests.post(url, files=files, data=data, timeout=300)
-            resp = r.json()
-            print(f"[UPLOADER] Facebook HQ Video Upload Response: {resp}")
-            return {"id": resp.get("id"), "success": "id" in resp, "type": "hq_regular_video", "response": resp}
+        # Phase 1: Start
+        init_data = {
+            "upload_phase": "start",
+            "file_size": file_size,
+            "access_token": token
+        }
+        r = requests.post(init_url, data=init_data, timeout=35)
+        init_res = r.json()
+        if "upload_session_id" not in init_res:
+            print(f"[DIRECT FALLBACK] Resumable start not supported ({init_res}), trying direct post...")
+            with open(video_path, "rb") as vf:
+                r_direct = requests.post(
+                    f"https://graph-video.facebook.com/v21.0/{page_id}/videos",
+                    files={"source": vf},
+                    data={"description": caption, "title": title[:65], "access_token": token},
+                    timeout=360
+                )
+                return r_direct.json()
+
+        upload_session_id = init_res["upload_session_id"]
+        start_offset = int(init_res.get("start_offset", 0))
+
+        # Phase 2: Transfer (8MB chunks)
+        chunk_size = 8 * 1024 * 1024
+        with open(video_path, "rb") as f:
+            f.seek(start_offset)
+            while start_offset < file_size:
+                chunk = f.read(chunk_size)
+                if not chunk:
+                    break
+                headers = {
+                    "Authorization": f"OAuth {token}",
+                    "offset": str(start_offset),
+                    "file_size": str(file_size)
+                }
+                res_chunk = requests.post(
+                    f"{FB_GRAPH_URL}/{page_id}/videos",
+                    data=chunk,
+                    headers=headers,
+                    params={"upload_phase": "transfer", "upload_session_id": upload_session_id},
+                    timeout=180
+                )
+                c_data = res_chunk.json()
+                start_offset = int(c_data.get("start_offset", start_offset + len(chunk)))
+
+        # Phase 3: Finish
+        finish_data = {
+            "upload_phase": "finish",
+            "upload_session_id": upload_session_id,
+            "title": title[:65],
+            "description": caption,
+            "access_token": token
+        }
+        finish_res = requests.post(f"{FB_GRAPH_URL}/{page_id}/videos", data=finish_data, timeout=60).json()
+        print(f"[LONG VIDEO UPLOAD SUCCESS]: {finish_res}")
+        return {"id": finish_res.get("id", upload_session_id), "success": True, "type": "hq_long_video", "response": finish_res}
     except Exception as e:
         print(f"[UPLOADER ERROR] Video upload failed: {e}")
         return {"error": str(e), "success": False}
