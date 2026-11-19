@@ -1,5 +1,5 @@
 {
-  "last_index": 6,
+  "last_index": 0,
   "used_records": [
     {
       "file": "makkah_clock_tower_drone.mp4",
@@ -85,6 +85,26 @@
       "file": "putra_mosque_malaysia.mp4",
       "surah": "সূরা আর-রহমান",
       "timestamp": 1795085593
+    },
+    {
+      "file": "hassan_ii_mosque_morocco.mp4",
+      "surah": "সূরা আল-ওয়াকিয়াহ",
+      "timestamp": 1795089038
+    },
+    {
+      "file": "badshahi_mosque_lahore.mp4",
+      "surah": "সূরা আল-ওয়াকিয়াহ",
+      "timestamp": 1795089038
+    },
+    {
+      "file": "kaaba_beauty_peaceful.mp4",
+      "surah": "সূরা আল-ওয়াকিয়াহ",
+      "timestamp": 1795089038
+    },
+    {
+      "file": "makkah_clock_tower_drone.mp4",
+      "surah": "সূরা আল-ওয়াকিয়াহ",
+      "timestamp": 1795089038
     }
   ]
 }
