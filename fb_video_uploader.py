@@ -1,13 +1,14 @@
 """
-Facebook Reels & Video Uploader for 'কুরআনের তিলাওয়াত - Quran Tilawat' Page
-Supports official Facebook Graph API Video Reels resumable protocol
+Facebook Reels & High-Quality Video Uploader for 'কুরআনের তিলাওয়াত - Quran Tilawat' Page
+- supports official Facebook Graph API Video Reels resumable protocol
+- supports official Facebook Graph API High-Definition Feed Video upload
 """
 
 import os
 import requests
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, FB_GRAPH_URL
 
-def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -> dict:
+def upload_quran_video_to_page(video_path: str, caption: str, title: str = "", is_reel: bool = True) -> dict:
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video file not found: {video_path}")
 
@@ -19,63 +20,69 @@ def upload_quran_video_to_page(video_path: str, caption: str, title: str = "") -
         return {"id": "mock_video_id_quran_123", "status": "simulated"}
 
     file_size = os.path.getsize(video_path)
-    print(f"[UPLOADER] Uploading {os.path.basename(video_path)} as Facebook Reel ({file_size / (1024*1024):.2f} MB)...")
 
-    # Phase 1: Initialize Reels Upload Session
-    reels_uploaded = False
+    # =========================================================================
+    # ১. যদি REEL হয়: Facebook Video Reels Resumable Upload
+    # =========================================================================
+    if is_reel:
+        print(f"[REELS UPLOADER] Uploading {os.path.basename(video_path)} as Facebook Reel ({file_size / (1024*1024):.2f} MB)...")
+        try:
+            init_url = f"{FB_GRAPH_URL}/{page_id}/video_reels"
+            init_payload = {
+                "upload_phase": "start",
+                "access_token": token
+            }
+            r = requests.post(init_url, data=init_payload, timeout=35)
+            data = r.json()
+            if "video_id" in data and "upload_url" in data:
+                video_id = data["video_id"]
+                upload_url = data["upload_url"]
+                print(f"[+] Initialized Reel upload session: Video ID {video_id}")
+
+                with open(video_path, "rb") as f:
+                    video_bytes = f.read()
+
+                upload_headers = {
+                    "Authorization": f"OAuth {token}",
+                    "offset": "0",
+                    "file_size": str(file_size)
+                }
+                upload_resp = requests.post(upload_url, headers=upload_headers, data=video_bytes, timeout=180)
+                print(f"[+] Reels binary upload status: {upload_resp.status_code}")
+
+                finish_payload = {
+                    "upload_phase": "finish",
+                    "access_token": token,
+                    "video_id": video_id,
+                    "video_state": "PUBLISHED",
+                    "description": caption
+                }
+                finish_resp = requests.post(init_url, data=finish_payload, timeout=35)
+                finish_data = finish_resp.json()
+                print(f"[+] Reels finish result: {finish_data}")
+                if finish_data.get("success") or "video_id" in finish_data or "post_id" in finish_data or finish_resp.status_code == 200:
+                    return {"id": video_id, "success": True, "type": "reel", "reels_response": finish_data}
+        except Exception as e:
+            print(f"[UPLOADER] Reels API warning: {e}. Falling back to standard videos endpoint...")
+
+    # =========================================================================
+    # ২. যদি HIGH QUALITY REGULAR VIDEO হয় (অথবা রিলস ব্যর্থ হলে ফলব্যাক)
+    # =========================================================================
+    print(f"[HQ VIDEO UPLOADER] Uploading {os.path.basename(video_path)} as High-Definition Regular Video ({file_size / (1024*1024):.2f} MB)...")
+    url = f"https://graph-video.facebook.com/v21.0/{page_id}/videos"
     try:
-        init_url = f"{FB_GRAPH_URL}/{page_id}/video_reels"
-        init_payload = {
-            "upload_phase": "start",
-            "access_token": token
-        }
-        r = requests.post(init_url, data=init_payload, timeout=30)
-        data = r.json()
-        if "video_id" in data and "upload_url" in data:
-            video_id = data["video_id"]
-            upload_url = data["upload_url"]
-            print(f"[+] Initialized Reel upload session: Video ID {video_id}")
-
-            # Phase 2: Upload Binary Video Data
-            with open(video_path, "rb") as f:
-                video_bytes = f.read()
-
-            upload_headers = {
-                "Authorization": f"OAuth {token}",
-                "offset": "0",
-                "file_size": str(file_size)
+        with open(video_path, "rb") as vf:
+            files = {"source": vf}
+            data = {
+                "description": caption,
+                "title": title or caption.split("\n")[0][:65],
+                "published": True,
+                "access_token": token
             }
-            upload_resp = requests.post(upload_url, headers=upload_headers, data=video_bytes, timeout=180)
-            print(f"[+] Reels binary upload status: {upload_resp.status_code}")
-
-            # Phase 3: Finish and Publish as Reel
-            finish_payload = {
-                "upload_phase": "finish",
-                "access_token": token,
-                "video_id": video_id,
-                "video_state": "PUBLISHED",
-                "description": caption
-            }
-            finish_resp = requests.post(init_url, data=finish_payload, timeout=30)
-            finish_data = finish_resp.json()
-            print(f"[+] Reels finish result: {finish_data}")
-            if finish_data.get("success") or "video_id" in finish_data or "post_id" in finish_data or finish_resp.status_code == 200:
-                return {"id": video_id, "success": True, "reels_response": finish_data}
+            r = requests.post(url, files=files, data=data, timeout=300)
+            resp = r.json()
+            print(f"[UPLOADER] Facebook HQ Video Upload Response: {resp}")
+            return {"id": resp.get("id"), "success": "id" in resp, "type": "hq_regular_video", "response": resp}
     except Exception as e:
-        print(f"[UPLOADER] Reels API notice: {e}")
-
-    # Standard fallback only if Reels API failed to start
-    url = f"{FB_GRAPH_URL}/{page_id}/videos"
-    print(f"[UPLOADER] Posting to standard videos endpoint as fallback...")
-    with open(video_path, "rb") as vf:
-        files = {"source": vf}
-        data = {
-            "description": caption,
-            "title": title or caption.split("\n")[0][:60],
-            "published": True,
-            "access_token": token
-        }
-        r = requests.post(url, files=files, data=data, timeout=300)
-        resp = r.json()
-        print(f"[UPLOADER] Facebook Standard Video Upload Response: {resp}")
-        return resp
+        print(f"[UPLOADER ERROR] Video upload failed: {e}")
+        return {"error": str(e), "success": False}
