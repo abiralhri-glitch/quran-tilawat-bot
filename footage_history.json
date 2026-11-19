@@ -1,5 +1,5 @@
 {
-  "last_index": 1,
+  "last_index": 2,
   "used_records": [
     {
       "file": "makkah_clock_tower_drone.mp4",
@@ -10,6 +10,11 @@
       "file": "kaaba_cinematic_shots.mp4",
       "surah": "সূরা আল-মুযযাম্মিল",
       "timestamp": 1795063782
+    },
+    {
+      "file": "madinah_nabawi_drone_4k.mp4",
+      "surah": "সূরা আল-ইনসান",
+      "timestamp": 1795064973
     }
   ]
 }
