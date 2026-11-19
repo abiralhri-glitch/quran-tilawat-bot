@@ -118,6 +118,8 @@ def get_next_mosque_footage(surah_data: dict = None) -> tuple:
     chosen_meta = available[next_index]
 
     history["last_index"] = next_index
+    if "used_records" not in history or not isinstance(history["used_records"], list):
+        history["used_records"] = []
     history["used_records"].append({
         "file": chosen_meta["file"],
         "surah": surah_data.get("bangla") if surah_data else "Unknown",
