@@ -41,56 +41,56 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
 # ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ ও হারামাইন শরীফাইনের আসল 1080p সিনেমাটিক ফুটেজ
+# ৮.২কে ভিউ পাওয়া ভাইরাল কাবা তাওয়াফ ও হারামাইন শরীফাইনের আকর্ষণীয় ১০৮০p সিনেমাটিক ফুটেজ
+# (যে ক্লিপে মানুষের মাথার পেছন অংশ বা দেয়াল ছিল তা স্থায়ীভাবে বাদ দেওয়া হয়েছে)
 REAL_MOSQUE_FOOTAGES = [
     {
-        "file": "makkah_clock_tower_drone.mp4",
-        "title": "মক্কা ক্লক টাওয়ার ও গ্র্যান্ড হারাম",
-        "location": "মক্কা মুকাররমা"
+        "file": "kaaba_cinematic_shots.mp4",
+        "title": "পবিত্র কাবা শরীফ তাওয়াফ ও গিলাফ (ভাইরাল ভিউ)",
+        "location": "পবিত্র কাবা চত্বর, মক্কা",
+        "is_viral_kaaba": True
     },
     {
-        "file": "kaaba_cinematic_shots.mp4",
-        "title": "পবিত্র কাবা শরীফ ও গিলাফ",
-        "location": "পবিত্র কাবা চত্বর"
+        "file": "makkah_clock_tower_drone.mp4",
+        "title": "মক্কা গ্র্যান্ড হারাম ও লাখো হাজীদের তাওয়াফ ভিড়",
+        "location": "মক্কা মুকাররমা",
+        "is_viral_kaaba": True
     },
     {
         "file": "madinah_nabawi_drone_4k.mp4",
         "title": "মসজিদে নববী ও সবুজ গম্বুজ",
-        "location": "মদিনা মনোওয়ারা"
+        "location": "মদিনা মনোওয়ারা",
+        "is_viral_kaaba": False
     },
     {
         "file": "sheikh_zayed_grand_mosque.mp4",
         "title": "শেখ জায়েদ গ্র্যান্ড মসজিদ",
-        "location": "সংযুক্ত আরব আমিরাত"
+        "location": "সংযুক্ত আরব আমিরাত",
+        "is_viral_kaaba": False
     },
     {
         "file": "sultan_ahmed_blue_mosque.mp4",
         "title": "ঐতিহাসিক সুলতান আহমেদ নীল মসজিদ",
-        "location": "ইস্তাম্বুল, তুরস্ক"
+        "location": "ইস্তাম্বুল, তুরস্ক",
+        "is_viral_kaaba": False
     },
     {
         "file": "faisal_mosque_islamabad.mp4",
         "title": "ঐতিহাসিক ফয়সাল মসজিদ",
-        "location": "ইসলামাবাদ, পাকিস্তান"
+        "location": "ইসলামাবাদ, পাকিস্তান",
+        "is_viral_kaaba": False
     },
     {
         "file": "putra_mosque_malaysia.mp4",
-        "title": "পুত্রা মসজিদ",
-        "location": "পুত্রজায়া, মালয়েশিয়া"
+        "title": "গোলাপি পুত্রা মসজিদ",
+        "location": "পুত্রজায়া, মালয়েশিয়া",
+        "is_viral_kaaba": False
     },
     {
         "file": "hassan_ii_mosque_morocco.mp4",
         "title": "ঐতিহাসিক দ্বিতীয় হাসান মসজিদ",
-        "location": "কাসাব্লাঙ্কা, মরক্কো"
-    },
-    {
-        "file": "badshahi_mosque_lahore.mp4",
-        "title": "ঐতিহাসিক বাদশাহী মসজিদ",
-        "location": "লাহোর, পাকিস্তান"
-    },
-    {
-        "file": "kaaba_beauty_peaceful.mp4",
-        "title": "পবিত্র কাবা প্রাঙ্গণ ও মাতাফ",
-        "location": "মসজিদুল হারাম, মক্কা"
+        "location": "কাসাব্লাঙ্কা, মরক্কো",
+        "is_viral_kaaba": False
     }
 ]
 
@@ -142,13 +142,24 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
 
     rng = random.Random(seed_val)
 
-    # সম্প্রতি ফেসবুকে পোস্ট হওয়া সিনগুলোকে অগ্রাধিকার ছাড়া পেছনের দিকে রাখা
-    fresh_pool = [it for it in available if it["file"] not in recent_fb_scenes]
-    if len(fresh_pool) < count:
-        fresh_pool = available
+    # রিলসের জন্য ১ম দৃশ্য সর্বদা পবিত্র কাবা তাওয়াফ বা মক্কার দৃশ্য (যা ৮.২কে ভিউ পেয়েছিল) অগ্রাধিকার পাবে
+    kaaba_viral_items = [it for it in available if it.get("is_viral_kaaba")]
+    other_items = [it for it in available if not it.get("is_viral_kaaba")]
 
-    rng.shuffle(fresh_pool)
-    selected_items = fresh_pool[:count]
+    # সম্প্রতি পোস্ট হওয়া সিন ফিল্টার
+    fresh_kaaba = [it for it in kaaba_viral_items if it["file"] not in recent_fb_scenes] or kaaba_viral_items
+    fresh_others = [it for it in other_items if it["file"] not in recent_fb_scenes] or other_items
+
+    rng.shuffle(fresh_kaaba)
+    rng.shuffle(fresh_others)
+
+    # ১ম দৃশ্য: পবিত্র কাবা তাওয়াফ (৮.২কে ভিউ ড্রাইভ করার জন্য থাম্বনেইল)
+    selected_items = [fresh_kaaba[0]]
+    for it in fresh_others + fresh_kaaba[1:]:
+        if it["file"] not in [x["file"] for x in selected_items]:
+            selected_items.append(it)
+        if len(selected_items) >= count:
+            break
     selected_paths = [os.path.join(ASSETS_FOOTAGE_DIR, it["file"]) for it in selected_items]
 
     titles = " • ".join([it["title"] for it in selected_items])
@@ -231,6 +242,14 @@ def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
 
     raise RuntimeError(f"অডিও তিলাওয়াত সংগ্রহ করা যায়নি: {surah_bangla}")
 
+def get_audio_duration_sec(audio_path: str) -> float:
+    try:
+        cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_path]
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        return float(res.stdout.strip())
+    except Exception:
+        return 60.0
+
 def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_path: str, is_reel: bool = True) -> str:
     """
     মাল্টিপল ভিন্ন সিন যুক্ত হাই-রিটেনশন ডায়নামিক ভিডিও রেন্ডারিং:
@@ -238,22 +257,27 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
     - লং ভিডিও (HQ Video): ১৯২০x১০৮০ (ওয়াইডস্ক্রিন ১৬:৯), ৪টি সিন x ২৫ সেকেন্ড = ১০০ সেকেন্ড
     - একটানা অবিরত তিলাওয়াত অডিও এবং অফিশিয়াল ক্রিস্টাল ক্লিয়ার ওয়াটারমার্ক
     """
+    audio_dur = get_audio_duration_sec(audio_path)
     if is_reel:
         w, h = 1080, 1920
-        seg_dur = 20  # ৩টি সিন x ২০ সেকেন্ড = ৬০ সেকেন্ড
+        # রিলস ফেসবুকের অফিশিয়াল ৬০ সেকেন্ড
+        total_duration = 60
         target_scenes = scene_paths[:3]
+        seg_dur = total_duration / len(target_scenes)
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         crf = "18"
-        bitrate_args = ["-b:v", "6000k", "-maxrate", "8000k", "-bufsize", "12000k"]
-        print(f"🎨 [REEL MULTI-SCENE RENDERING] {len(target_scenes)}টি ভিন্ন সিন সহ ৬০ সেকেন্ডের রিলস তৈরি হচ্ছে...")
+        bitrate_args = ["-b:v", "5000k", "-maxrate", "7000k", "-bufsize", "10000k"]
+        print(f"🎨 [REEL RENDERING] {len(target_scenes)}টি দৃশ্য সহ ৬০ সেকেন্ডের আকর্ষণীয় রিলস প্রস্তুত হচ্ছে (১ম দৃশ্য: কাবা তাওয়াফ)...")
     else:
         w, h = 1920, 1080
-        seg_dur = 25  # ৪টি সিন x ২৫ সেকেন্ড = ১০০ সেকেন্ড
+        # বড় সূরার ক্ষেত্রে সম্পূর্ণ অডিওর পূর্ণাঙ্গ সময় (সর্বোচ্চ ১৫-২০ মিনিট ক্লাউড লিমিট সেফগার্ড)
+        total_duration = min(audio_dur, 1200.0)
         target_scenes = scene_paths[:4]
+        seg_dur = max(20.0, total_duration / len(target_scenes))
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
-        crf = "17"
-        bitrate_args = ["-b:v", "8000k", "-maxrate", "12000k", "-bufsize", "16000k"]
-        print(f"🎨 [HQ VIDEO MULTI-SCENE RENDERING] {len(target_scenes)}টি ভিন্ন সিন সহ ১০০ সেকেন্ডের ফুল এইচডি লং ভিডিও তৈরি হচ্ছে...")
+        crf = "20"
+        bitrate_args = ["-b:v", "4000k", "-maxrate", "6000k", "-bufsize", "8000k"]
+        print(f"🎨 [FULL SURAH HQ VIDEO] সম্পূর্ণ বড় সূরা ({total_duration/60:.1f} মিনিট) পূর্ণাঙ্গ রেন্ডারিং শুরু হচ্ছে...")
 
     watermark_png = generate_watermark_overlay(w, h)
 
