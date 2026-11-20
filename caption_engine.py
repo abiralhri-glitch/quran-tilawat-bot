@@ -1,6 +1,7 @@
 """
-Viral Quran Caption & High-Conversion Psychological Hook Generator
-কুরআনের প্রতিটি সূরা ও আয়াতের জন্য উচ্চ রিটেনশন হুক, অর্থ, ফজিলত, স্ট্রং ফলো কল-টু-অ্যাকশন এবং ভাইরাল হ্যাশট্যাগ
+Viral Quran Caption & Recommendation-Compliant Hook Generator
+ফেসবুক রিকমেন্ডেশন গাইডলাইন (Recommendation Guidelines) ও কমিউনিটি স্ট্যান্ডার্ড ১০০% মেনে
+কুরআনের প্রতিটি সূরা ও আয়াতের জন্য হৃদয়স্পর্শী হুক, অর্থ, ফজিলত, স্ট্রং ফলো কল-টু-অ্যাকশন এবং ভাইরাল হ্যাশট্যাগ
 """
 
 import random
@@ -15,12 +16,12 @@ VIRAL_ISLAMIC_HASHTAGS = [
 ]
 
 ENGAGEMENT_HOOKS = [
-    "⚠️ মাত্র ১ মিনিট মন দিয়ে শুনুন—আল্লাহর কসম, আপনার মনের সব অশান্তি ও ক্লান্তি দূর হয়ে যাবে ইনশাআল্লাহ! 🤲✨ (শেষ পর্যন্ত শুনুন)",
-    "🌿 যে ব্যক্তি মনোযোগ দিয়ে পবিত্র কুরআন শুনবে, মহান আল্লাহ তার অন্তরে প্রশান্তির নূর ঢেলে দেবেন। 🤍 (না টেনে শুনুন)",
-    "✨ মৃত্যুর আগে একবার হলেও এই সূরাটির তিলাওয়াত পূর্ণাঙ্গ শুনে যান—এটি আপনার পরকালের নাজাতের উসিলা হতে পারে। 🤲",
-    "💡 দিনে অন্তত ১ মিনিট হলেও আল্লাহর কালাম শুনুন, আপনার জীবনে ও সংসারে অফুরন্ত বরকত নেমে আসবে ইনশাআল্লাহ। 🌸",
+    "🌸 মাত্র ১ মিনিট মন দিয়ে শুনুন—পবিত্র কুরআনের এই তিলাওয়াত আপনার অন্তরে গভীর প্রশান্তি এনে দেবে ইনশাআল্লাহ। 🤲✨",
+    "🌿 যে ব্যক্তি মনোযোগ দিয়ে পবিত্র কুরআন শুনবে, মহান আল্লাহ তার অন্তরে হেদায়েত ও প্রশান্তির নূর ঢেলে দেবেন। 🤍",
+    "✨ আসুন অন্তরের ব্যাকুলতা দূর করতে মনোযোগ দিয়ে এই সূরাটির তিলাওয়াত শুনি—আল্লাহ আমাদের ক্ষমা করুন। 🤲",
+    "💡 দিনে অন্তত ১ মিনিট হলেও আল্লাহর কালাম শুনুন, আপনার জীবনে ও পরিবারে অফুরন্ত বরকত নেমে আসবে ইনশাআল্লাহ। 🌸",
     "🤍 খুব বেশি মন খারাপ বা মানসিক চাপে আছেন? চোখ বন্ধ করে ১ মিনিট এই তিলাওয়াতটি শুনুন, দিল শান্ত হয়ে যাবে। 🤲🌿",
-    "🔥 কবরের আজাব ও কঠিন বিপদ থেকে বাঁচতে এই বরকতময় তিলাওয়াতটি শেষ পর্যন্ত শুনুন। আল্লাহ আমাদের ক্ষমা করুন। 🤲"
+    "📖 মহাগ্রন্থ আল-কুরআন মানুষের জীবনের একমাত্র সঠিক পথের দিশা। মনোযোগ দিয়ে তিলাওয়াতটি শুনুন। 🤍🤲"
 ]
 
 FOLLOW_CTAS = [
@@ -31,8 +32,8 @@ FOLLOW_CTAS = [
 
 def generate_quran_caption(surah_data: dict, qari_name: str, mosque_info: str = "", is_reel: bool = True) -> str:
     """
-    Generates a high-conversion, viral Facebook post caption for Quran recitation.
-    Puts the psychological hook on LINE 1 so every scroller sees it instantly.
+    Generates a high-conversion, recommendation-safe Facebook post caption.
+    Strictly follows Meta Community Standards (No clickbait, no false claims, 100% authentic Quranic value).
     """
     arabic_name = surah_data.get("arabic", "القرآن الكريم")
     bangla_name = surah_data.get("bangla", "পবিত্র কুরআন")
@@ -48,7 +49,7 @@ def generate_quran_caption(surah_data: dict, qari_name: str, mosque_info: str = 
     hashtags_str = " ".join(selected_tags)
 
     lines = []
-    # 1. First Line: Powerful Curiosity & Retention Hook (visible before "... See more")
+    # 1. First Line: Powerful Clean Spiritual Hook (visible before "... See more")
     lines.append(hook)
     lines.append("")
 
@@ -67,7 +68,7 @@ def generate_quran_caption(surah_data: dict, qari_name: str, mosque_info: str = 
     if benefit:
         lines.append(f"💡 ফজিলত ও গুরুত্ব:\n{benefit}\n")
 
-    # 3. High-Conversion Follow CTA
+    # 3. Clean Follow CTA
     lines.append(cta)
     lines.append("")
 
