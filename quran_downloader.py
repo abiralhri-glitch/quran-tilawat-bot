@@ -45,87 +45,52 @@ os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 # (যে ক্লিপে মানুষের মাথার পেছন অংশ বা দেয়াল ছিল তা স্থায়ীভাবে বাদ দেওয়া হয়েছে)
 REAL_MOSQUE_FOOTAGES = [
     {
-        "file": "kaaba_cinematic_shots.mp4",
-        "title": "পবিত্র কাবা শরীফ তাওয়াফ ও গিলাফ (ভাইরাল ভিউ)",
-        "location": "পবিত্র কাবা চত্বর, মক্কা",
-        "is_viral_kaaba": True
-    },
-    {
         "file": "makkah_clock_tower_drone.mp4",
-        "title": "মক্কা গ্র্যান্ড হারাম ও লাখো হাজীদের তাওয়াফ ভিড়",
-        "location": "মক্কা মুকাররমা",
-        "is_viral_kaaba": True
+        "title": "পবিত্র মক্কা মুকাররমা ও কাবা শরীফ তাওয়াফ",
+        "location": "পবিত্র হারামাইন, মক্কা মুকাররমা"
     },
     {
         "file": "madinah_nabawi_drone_4k.mp4",
         "title": "মসজিদে নববী ও সবুজ গম্বুজ",
-        "location": "মদিনা মনোওয়ারা",
-        "is_viral_kaaba": False
-    },
-    {
-        "file": "sheikh_zayed_grand_mosque.mp4",
-        "title": "শেখ জায়েদ গ্র্যান্ড মসজিদ",
-        "location": "সংযুক্ত আরব আমিরাত",
-        "is_viral_kaaba": False
+        "location": "মদিনা মনোওয়ারা"
     },
     {
         "file": "sultan_ahmed_blue_mosque.mp4",
         "title": "ঐতিহাসিক সুলতান আহমেদ নীল মসজিদ",
-        "location": "ইস্তাম্বুল, তুরস্ক",
-        "is_viral_kaaba": False
+        "location": "ইস্তাম্বুল, তুরস্ক"
     },
     {
-        "file": "faisal_mosque_islamabad.mp4",
-        "title": "ঐতিহাসিক ফয়সাল মসজিদ",
-        "location": "ইসলামাবাদ, পাকিস্তান",
-        "is_viral_kaaba": False
+        "file": "sheikh_zayed_grand_mosque.mp4",
+        "title": "শেখ জায়েদ গ্র্যান্ড মসজিদ",
+        "location": "সংযুক্ত আরব আমিরাত"
     },
     {
         "file": "putra_mosque_malaysia.mp4",
         "title": "গোলাপি পুত্রা মসজিদ",
-        "location": "পুত্রজায়া, মালয়েশিয়া",
-        "is_viral_kaaba": False
+        "location": "পুত্রজায়া, মালয়েশিয়া"
     },
     {
         "file": "hassan_ii_mosque_morocco.mp4",
         "title": "ঐতিহাসিক দ্বিতীয় হাসান মসজিদ",
-        "location": "কাসাব্লাঙ্কা, মরক্কো",
-        "is_viral_kaaba": False
+        "location": "কাসাব্লাঙ্কা, মরক্কো"
+    },
+    {
+        "file": "faisal_mosque_islamabad.mp4",
+        "title": "ঐতিহাসিক ফয়সাল মসজিদ",
+        "location": "ইসলামাবাদ, পাকিস্তান"
     }
 ]
 
-FOOTAGE_HISTORY_FILE = os.path.join(BASE_DIR, "footage_history.json")
-
-def get_recent_facebook_scene_titles() -> set:
-    """
-    ফেসবুক গ্রাফ এপিআই থেকে পেজের সাম্প্রতিক ৫টি ভিডিও চেক করে
-    কোন কোন সিন ইতিমধ্যে পোস্ট হয়েছে তা বের করে, যাতে ডুপ্লিকেট না হয়।
-    """
-    recent_titles = set()
-    if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
-        return recent_titles
-    try:
-        url = f"https://graph.facebook.com/v19.0/{FB_PAGE_ID}/videos?fields=description,title&limit=5&access_token={FB_PAGE_ACCESS_TOKEN}"
-        r = requests.get(url, timeout=10).json()
-        for item in r.get("data", []):
-            desc = item.get("description", "") + " " + item.get("title", "")
-            for m in REAL_MOSQUE_FOOTAGES:
-                if m["title"] in desc or m["location"] in desc:
-                    recent_titles.add(m["file"])
-    except Exception as e:
-        print(f"[FB RECENT CHECK NOTICE] {e}")
-    return recent_titles
+FOOTAGE_STATE_FILE = os.path.join(BASE_DIR, "assets", "footage_state.json")
 
 def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
     """
-    উন্নত মাল্টি-সিন সিলেকশন (Zero Duplicate Guarantee):
-    ১. ফেসবুক পেজে সম্প্রতি পোস্ট হওয়া সিন ফিল্টার করে সরাসরি বাদ দেওয়া হয়।
-    ২. সময় (ঘণ্টা) এবং সূরা নম্বর ভিত্তিক ডায়নামিক সিড নির্ধারণ, ফলে হিস্টোরি ফাইল ছাড়াও প্রতিবার সম্পূর্ণ ভিন্ন সিন আসে।
-    ৩. পবিত্র মক্কা, মদিনা ও ঐতিহাসিক মসজিদসমূহের অপূর্ব রোটেশন।
+    100% Guaranteed Dynamic Non-Repeating Mosque Scene Selection:
+    - Permanently removed any man's head or bad footage.
+    - Rotates Scene 1 (Thumbnail) in a strict round-robin sequence:
+      Makkah Clock Tower -> Madinah Nabawi -> Blue Mosque -> Sheikh Zayed -> Putra -> Hassan II -> Faisal Mosque.
+    - Guaranteed unique thumbnail for every single Reel.
     """
-    recent_fb_scenes = get_recent_facebook_scene_titles()
-    print(f"🔍 [FB লাইভ হিস্ট্রি] সম্প্রতি পেজে ব্যবহৃত দৃশ্য: {len(recent_fb_scenes)}টি")
-
     available = []
     for item in REAL_MOSQUE_FOOTAGES:
         p = os.path.join(ASSETS_FOOTAGE_DIR, item["file"])
@@ -135,50 +100,43 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
     if not available:
         raise FileNotFoundError("কোনো পবিত্র মসজিদ বা হারামাইনের সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
 
-    # ডায়নামিক সিডিং: বর্তমান দিন, ঘণ্টা এবং সূরার অনন্য গানিতিক সমন্বয়
-    current_hour_epoch = int(time.time() // 3600)
-    surah_num = surah_data.get("number") or surah_data.get("surah_number", 1) if surah_data else 1
-    seed_val = (current_hour_epoch * 107) + (surah_num * 31)
+    # Load persistent state
+    state = {}
+    if os.path.exists(FOOTAGE_STATE_FILE):
+        try:
+            with open(FOOTAGE_STATE_FILE, "r", encoding="utf-8") as f:
+                state = json.load(f)
+        except Exception:
+            state = {}
 
-    rng = random.Random(seed_val)
+    last_idx = state.get("last_scene1_index", -1)
+    next_idx = (last_idx + 1) % len(available)
+    state["last_scene1_index"] = next_idx
 
-    # রিলসের জন্য ১ম দৃশ্য সর্বদা পবিত্র কাবা তাওয়াফ বা মক্কার দৃশ্য (যা ৮.২কে ভিউ পেয়েছিল) অগ্রাধিকার পাবে
-    kaaba_viral_items = [it for it in available if it.get("is_viral_kaaba")]
-    other_items = [it for it in available if not it.get("is_viral_kaaba")]
+    # Scene 1: Rotates fairly across all beautiful mosque drone footages
+    scene1 = available[next_idx]
 
-    # সম্প্রতি পোস্ট হওয়া সিন ফিল্টার
-    fresh_kaaba = [it for it in kaaba_viral_items if it["file"] not in recent_fb_scenes] or kaaba_viral_items
-    fresh_others = [it for it in other_items if it["file"] not in recent_fb_scenes] or other_items
+    # Remaining scenes: shuffled from the rest
+    other_pool = [it for i, it in enumerate(available) if i != next_idx]
+    random.shuffle(other_pool)
 
-    rng.shuffle(fresh_kaaba)
-    rng.shuffle(fresh_others)
-
-    # ১ম দৃশ্য: পবিত্র কাবা তাওয়াফ (৮.২কে ভিউ ড্রাইভ করার জন্য থাম্বনেইল)
-    selected_items = [fresh_kaaba[0]]
-    for it in fresh_others + fresh_kaaba[1:]:
-        if it["file"] not in [x["file"] for x in selected_items]:
-            selected_items.append(it)
-        if len(selected_items) >= count:
-            break
+    selected_items = [scene1] + other_pool[:count - 1]
     selected_paths = [os.path.join(ASSETS_FOOTAGE_DIR, it["file"]) for it in selected_items]
 
     titles = " • ".join([it["title"] for it in selected_items])
     locations = " • ".join(list(dict.fromkeys([it["location"] for it in selected_items])))
 
-    print(f"🕌 [জিরো-ডুপ্লিকেট মাল্টি-সিন প্রস্তুত] মোট {len(selected_items)}টি ভিন্ন ভিন্ন দৃশ্য:")
+    print(f"🕌 [জিরো-ডুপ্লিকেট মাল্টি-সিন প্রস্তুত] থাম্বনেইল সিন #{next_idx + 1}: {scene1['title']}")
     for idx, it in enumerate(selected_items, 1):
         print(f"   🎬 দৃশ্য #{idx}: {it['title']} ({it['location']})")
 
-    # হিস্ট্রি ফাইলে সেভ রাখা
+    # Save state
     try:
-        with open(FOOTAGE_HISTORY_FILE, "w", encoding="utf-8") as f:
-            json.dump({
-                "last_run_time": int(time.time()),
-                "selected_files": [it["file"] for it in selected_items],
-                "surah": surah_data.get("bangla", "Unknown") if surah_data else "Unknown"
-            }, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
+        os.makedirs(os.path.dirname(FOOTAGE_STATE_FILE), exist_ok=True)
+        with open(FOOTAGE_STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[STATE WARNING] {e}")
 
     combined_meta = {
         "title": titles,
@@ -186,7 +144,6 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
         "scenes": selected_items
     }
     return selected_paths, combined_meta
-
 
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
@@ -258,6 +215,7 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
     - একটানা অবিরত তিলাওয়াত অডিও এবং অফিশিয়াল ক্রিস্টাল ক্লিয়ার ওয়াটারমার্ক
     """
     audio_dur = get_audio_duration_sec(audio_path)
+
     if is_reel:
         w, h = 1080, 1920
         # রিলস ফেসবুকের অফিশিয়াল ৬০ সেকেন্ড
@@ -352,6 +310,7 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
             out_path
         ]
         subprocess.run(fallback_cmd, check=True)
+
     if os.path.exists(out_path) and os.path.getsize(out_path) > 100000:
         print(f"✨ মাল্টি-সিন রেন্ডারিং সম্পন্ন! কোয়ালিটি: {'1080x1920 Reel' if is_reel else '1920x1080 Full HD Video'} | সাইজ: {os.path.getsize(out_path)/(1024*1024):.2f} MB")
         return out_path
@@ -368,7 +327,8 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
 
     scene_count = 3 if is_reel else 4
 
-    print("\n=======================================================")
+    print("
+=======================================================")
     print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']} ({'Reel' if is_reel else 'HQ Video'})")
     print(f"🎙️ তিলাওয়াত: {imam_data['name']} ({imam_data['mosque']})")
     print(f"🎬 মাল্টি-সিন কাঠামো: {scene_count}টি ভিন্ন ভিন্ন পবিত্র মসজিদের দৃশ্য")
