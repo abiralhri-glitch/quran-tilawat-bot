@@ -13,6 +13,9 @@ on:
         required: false
         default: 'auto'
 
+permissions:
+  contents: write
+
 jobs:
   post-quran-tilawat:
     runs-on: ubuntu-latest
