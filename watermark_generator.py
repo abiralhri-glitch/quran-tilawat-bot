@@ -1,7 +1,7 @@
 """
 Watermark Generator for 'কুরআনের তিলাওয়াত - Quran Tilawat'
 Creates broadcast-grade, anti-aliased watermark overlays for both 9:16 (Reels) and 16:9 (Widescreen)
-100% immune to missing glyphs: supports both Bengali & English without any square boxes (□).
+With high-conversion Follow badge to maximize page growth.
 """
 
 import os
@@ -12,7 +12,7 @@ FONT_PATH = os.path.join(BASE_DIR, "NotoSansBengali-Bold.ttf")
 
 def generate_watermark_overlay(width: int = 720, height: int = 1280, output_path: str = None) -> str:
     """
-    Generates a crystal-clear transparent RGBA watermark overlay.
+    Generates a crystal-clear transparent RGBA watermark overlay with follow call-to-action badge.
     """
     if not output_path:
         output_path = os.path.join(BASE_DIR, f"watermark_{width}x{height}.png")
@@ -25,7 +25,7 @@ def generate_watermark_overlay(width: int = 720, height: int = 1280, output_path
     if os.path.exists(FONT_PATH):
         try:
             font_bn = ImageFont.truetype(FONT_PATH, font_size)
-            sub_font_bn = ImageFont.truetype(FONT_PATH, int(width * 0.024))
+            sub_font_bn = ImageFont.truetype(FONT_PATH, int(width * 0.026))
         except Exception:
             font_bn = ImageFont.load_default()
             sub_font_bn = font_bn
@@ -36,13 +36,13 @@ def generate_watermark_overlay(width: int = 720, height: int = 1280, output_path
     # 2. Load Latin/English font
     try:
         font_en = ImageFont.load_default(size=int(font_size * 0.85))
-        sub_font_en = ImageFont.load_default(size=int(width * 0.022))
+        sub_font_en = ImageFont.load_default(size=int(width * 0.024))
     except Exception:
         font_en = ImageFont.load_default()
         sub_font_en = font_en
 
-    # Top Watermark Badge Dimensions
-    pill_w = int(width * 0.72)
+    # Top Brand Pill
+    pill_w = int(width * 0.84)
     pill_h = int(height * 0.046)
     pill_x1 = (width - pill_w) // 2
     pill_y1 = int(height * 0.035)
@@ -74,29 +74,31 @@ def generate_watermark_overlay(width: int = 720, height: int = 1280, output_path
     start_x = (width - total_w) / 2
     center_y = (pill_y1 + pill_y2) / 2
 
-    # Draw each component with its correct font to avoid '□' square boxes
     draw.text((start_x, center_y), bn_text, font=font_bn, fill=(255, 255, 255, 250), anchor="lm")
     draw.text((start_x + w_bn, center_y), sep, font=font_en, fill=(218, 165, 32, 240), anchor="lm")
     draw.text((start_x + w_bn + w_sep, center_y), en_text, font=font_en, fill=(255, 255, 255, 250), anchor="lm")
 
-    # Bottom Right subtle branding badge
-    bot_w = int(width * 0.44)
-    bot_h = int(height * 0.032)
-    bot_x1 = width - bot_w - int(width * 0.03)
-    bot_y1 = height - bot_h - int(height * 0.03)
+    # Bottom Right Eye-Catching Follow CTA Badge
+    bot_w = int(width * 0.48)
+    bot_h = int(height * 0.038)
+    bot_x1 = width - bot_w - int(width * 0.04)
+    bot_y1 = height - bot_h - int(height * 0.04)
     bot_x2 = bot_x1 + bot_w
     bot_y2 = bot_y1 + bot_h
 
+    # Golden bordered translucent box
     draw.rounded_rectangle(
         [(bot_x1, bot_y1), (bot_x2, bot_y2)],
         radius=int(bot_h / 2),
-        fill=(0, 0, 0, 165)
+        fill=(12, 18, 32, 215),
+        outline=(255, 215, 0, 245),
+        width=2
     )
     draw.text(
         ((bot_x1 + bot_x2) // 2, (bot_y1 + bot_y2) // 2),
-        "Official Page",
+        "+ Follow For Daily Tilawat",
         font=sub_font_en,
-        fill=(218, 165, 32, 220),
+        fill=(255, 223, 0, 255),
         anchor="mm"
     )
 
