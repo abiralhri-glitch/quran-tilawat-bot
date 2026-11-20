@@ -238,15 +238,15 @@
       }
     }
   ],
-  "last_surah_index": 16,
-  "last_imam_index": 5,
+  "last_surah_index": 17,
+  "last_imam_index": 6,
   "daily_stats": {
     "date": "2026-11-20",
     "reels_posted": 5,
-    "hq_videos_posted": 4,
-    "total_today": 9
+    "hq_videos_posted": 5,
+    "total_today": 10
   },
-  "last_format_was_reel": true,
+  "last_format_was_reel": false,
   "posted_surah_numbers": [
     1,
     36,
@@ -264,6 +264,7 @@
     44,
     48,
     49,
-    50
+    50,
+    57
   ]
 }
