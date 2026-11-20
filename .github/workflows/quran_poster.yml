@@ -4,14 +4,14 @@ on:
   schedule:
     # সকালের ২টি পোস্ট: বাংলাদেশ সময় সকাল ০৭:৩০ ও ০৯:৩০ (০১:৩০ ও ০৩:৩০ ইউটিসি)
     - cron: '30 1,3 * * *'
-    # দুপুরের পর ৮টি পোস্ট: বাংলাদেশ সময় দুপুর ০১:০০ থেকে রাত ০৮:০০ পর্যন্ত প্রতি ১ ঘণ্টা পর পর (০৭:০০ থেকে ১৪:০০ ইউটিসি)
-    - cron: '0 7-14 * * *'
+    # দুপুর থেকে রাত পর্যন্ত প্রতি ১ ঘণ্টা পর পর: দুপুর ০১:০০ থেকে রাত ১০:০০ পর্যন্ত (০৭:০০ থেকে ১৬:০০ ইউটিসি)
+    - cron: '0 7-16 * * *'
   workflow_dispatch:
     inputs:
       format:
         description: 'Post format: auto, reel, or video'
         required: false
-        default: 'auto'
+        default: 'reel'
 
 permissions:
   contents: write
@@ -54,6 +54,7 @@ jobs:
       - name: Commit and Push State & History
         run: |
           git config --global user.name "QuranBot Automation"
-          git config --global user.email "quranbot@automation.local"
-          git add -A
+          git config --global user.email "quran-bot@users.noreply.github.com"
+          git pull --rebase origin main || true
+          git add posted_surahs_history.json assets/footage_state.json replied_comments.json 2>/dev/null || true
           git diff --staged --quiet || (git commit -m "chore: update quran posted history & footage state [skip ci]" && git push origin main) || true
