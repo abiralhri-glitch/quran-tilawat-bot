@@ -55,6 +55,7 @@ jobs:
         run: |
           git config --global user.name "QuranBot Automation"
           git config --global user.email "quran-bot@users.noreply.github.com"
-          git pull --rebase origin main || true
           git add posted_surahs_history.json assets/footage_state.json replied_comments.json 2>/dev/null || true
-          git diff --staged --quiet || (git commit -m "chore: update quran posted history & footage state [skip ci]" && git push origin main) || true
+          git diff --staged --quiet || git commit -m "chore: update quran posted history & footage state [skip ci]" || true
+          git pull --rebase origin main || true
+          git push origin main || true
