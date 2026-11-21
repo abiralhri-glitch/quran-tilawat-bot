@@ -10,10 +10,12 @@ Holy Quran Automated Orchestrator & Runner for 'কুরআনের তিল�
 
 import os
 import sys
+import re
 import json
 import time
 import random
 import datetime
+import requests
 
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN
 from quran_surah_database import MAKKAH_MADINAH_IMAMS, LONG_SURAHS
