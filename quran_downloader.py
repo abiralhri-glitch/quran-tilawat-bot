@@ -327,8 +327,7 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
 
     scene_count = 3 if is_reel else 4
 
-    print("
-=======================================================")
+    print("=======================================================")
     print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']} ({'Reel' if is_reel else 'HQ Video'})")
     print(f"🎙️ তিলাওয়াত: {imam_data['name']} ({imam_data['mosque']})")
     print(f"🎬 মাল্টি-সিন কাঠামো: {scene_count}টি ভিন্ন ভিন্ন পবিত্র মসজিদের দৃশ্য")
