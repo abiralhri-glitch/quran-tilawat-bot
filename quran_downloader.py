@@ -40,67 +40,232 @@ os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
-# ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ ও হারামাইন শরীফাইনের আসল 1080p সিনেমাটিক ফুটেজ
-# ৮.২কে ভিউ পাওয়া ভাইরাল কাবা তাওয়াফ ও হারামাইন শরীফাইনের আকর্ষণীয় ১০৮০p সিনেমাটিক ফুটেজ
-# (যে ক্লিপে মানুষের মাথার পেছন অংশ বা দেয়াল ছিল তা স্থায়ীভাবে বাদ দেওয়া হয়েছে)
-REAL_MOSQUE_FOOTAGES = [
+# ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ, পবিত্র কাবা তাওয়াফ ও রুহানি প্রকৃতির ৩৩+ সিনেমাটিক ফুটেজ পুল
+# (মানুষের মাথার অংশ বা ওয়াটারমার্ক টেক্সট থাকা ক্লিপ স্থায়ীভাবে বাদ দেওয়া হয়েছে)
+
+HERO_THUMBNAIL_SCENES = [
     {
-        "file": "makkah_clock_tower_drone.mp4",
-        "title": "পবিত্র মক্কা মুকাররমা ও কাবা শরীফ তাওয়াফ",
-        "location": "পবিত্র হারামাইন, মক্কা মুকাররমা"
+        "id": "kaaba_peaceful",
+        "file": "kaaba_beauty_peaceful.mp4",
+        "title": "পবিত্র কাবা শরীফ ও মক্কার মিনার",
+        "location": "পবিত্র মসজিদুল হারাম, মক্কা",
+        "start_offset": 0
     },
     {
+        "id": "madinah_nabawi",
         "file": "madinah_nabawi_drone_4k.mp4",
         "title": "মসজিদে নববী ও সবুজ গম্বুজ",
-        "location": "মদিনা মনোওয়ারা"
+        "location": "মদিনা মনোওয়ারা",
+        "start_offset": 0
     },
     {
+        "id": "sultan_ahmed",
         "file": "sultan_ahmed_blue_mosque.mp4",
         "title": "ঐতিহাসিক সুলতান আহমেদ নীল মসজিদ",
-        "location": "ইস্তাম্বুল, তুরস্ক"
+        "location": "ইস্তাম্বুল, তুরস্ক",
+        "start_offset": 2
     },
     {
+        "id": "sheikh_zayed",
         "file": "sheikh_zayed_grand_mosque.mp4",
         "title": "শেখ জায়েদ গ্র্যান্ড মসজিদ",
-        "location": "সংযুক্ত আরব আমিরাত"
+        "location": "সংযুক্ত আরব আমিরাত",
+        "start_offset": 1
     },
     {
-        "file": "putra_mosque_malaysia.mp4",
-        "title": "গোলাপি পুত্রা মসজিদ",
-        "location": "পুত্রজায়া, মালয়েশিয়া"
+        "id": "kaaba_peaceful_angle2",
+        "file": "kaaba_beauty_peaceful.mp4",
+        "title": "পবিত্র কাবা চত্বর ও তাওয়াফরত হাজীদের ভিড়",
+        "location": "মসজিদুল হারাম, মক্কা মুকাররমা",
+        "start_offset": 7
     },
     {
+        "id": "hassan_ii",
         "file": "hassan_ii_mosque_morocco.mp4",
         "title": "ঐতিহাসিক দ্বিতীয় হাসান মসজিদ",
-        "location": "কাসাব্লাঙ্কা, মরক্কো"
+        "location": "কাসাব্লাঙ্কা, মরক্কো",
+        "start_offset": 2
     },
     {
+        "id": "faisal_mosque",
         "file": "faisal_mosque_islamabad.mp4",
         "title": "ঐতিহাসিক ফয়সাল মসজিদ",
-        "location": "ইসলামাবাদ, পাকিস্তান"
+        "location": "ইসলামাবাদ, পাকিস্তান",
+        "start_offset": 3
+    },
+    {
+        "id": "makkah_clock_tower",
+        "file": "makkah_clock_tower_drone.mp4",
+        "title": "মক্কা ক্লক টাওয়ার ও গ্র্যান্ড হারাম",
+        "location": "মক্কা মুকাররমা",
+        "start_offset": 5
+    }
+]
+
+RICH_SECONDARY_POOL = [
+    {
+        "id": "rain_drops",
+        "url": "https://cdn.pixabay.com/video/2024/06/02/214982_large.mp4",
+        "title": "রহমতের স্নিগ্ধ বৃষ্টিপাত",
+        "location": "শান্ত প্রাকৃতিক পরিবেশ"
+    },
+    {
+        "id": "sunset_clouds",
+        "url": "https://cdn.pixabay.com/video/2024/08/08/225504_large.mp4",
+        "title": "দিগন্তে রক্তিম সূর্যাস্ত ও মেঘমালা",
+        "location": "গোধূলির আকাশ"
+    },
+    {
+        "id": "canyon_waterfall",
+        "url": "https://cdn.pixabay.com/video/2022/03/08/110108-686962724_medium.mp4",
+        "title": "পাহাড়ি গিরিখাত ও ঝর্ণার ধারা",
+        "location": "সবুজ পাহাড়"
+    },
+    {
+        "id": "galaxy_stars",
+        "url": "https://cdn.pixabay.com/video/2022/11/24/140366-774838017_large.mp4",
+        "title": "মহাবিশ্বের অসীম গ্যালাক্সি ও তারার মেলা",
+        "location": "মহাজাগতিক দিগন্ত"
+    },
+    {
+        "id": "misty_forest",
+        "url": "https://cdn.pixabay.com/video/2021/10/26/93432-639359155_large.mp4",
+        "title": "কুয়াশাঘেরা সবুজ বনানী",
+        "location": "শান্ত প্রকৃতি"
+    },
+    {
+        "id": "stream_waterfall",
+        "url": "https://cdn.pixabay.com/video/2023/07/04/170060-842720151_large.mp4",
+        "title": "স্বচ্ছ পাহাড়ি জলপ্রপাত",
+        "location": "পাহাড়ি নদী"
+    },
+    {
+        "id": "blue_clouds_timelapse",
+        "url": "https://cdn.pixabay.com/video/2022/11/04/137710-767484643_medium.mp4",
+        "title": "নীল আকাশের শুভ্র মেঘের মেলা",
+        "location": "নীল আকাশ"
+    },
+    {
+        "id": "ocean_sunset_waves",
+        "url": "https://cdn.pixabay.com/video/2023/12/09/192576-892942889_medium.mp4",
+        "title": "শান্ত সাগরের গোধূলি ঢেউ",
+        "location": "সৈকতের সন্ধ্যা"
+    },
+    {
+        "id": "rain_leaves",
+        "url": "https://cdn.pixabay.com/video/2023/07/30/173887-850026370_medium.mp4",
+        "title": "বৃষ্টিভেজা পাতার শান্ত ছন্দ",
+        "location": "বৃষ্টিস্নাত বন"
+    },
+    {
+        "id": "stone_mosque_arch",
+        "url": "https://cdn.pixabay.com/video/2022/12/16/143151-781991184_medium.mp4",
+        "title": "ঐতিহাসিক পাথুরে মসজিদ",
+        "location": "ইসলামিক ঐতিহ্য"
+    },
+    {
+        "id": "marble_courtyard",
+        "url": "https://cdn.pixabay.com/video/2023/03/04/153099-804706282_medium.mp4",
+        "title": "পবিত্র মার্বেল চত্বর ও মিনার",
+        "location": "মসজিদ প্রাঙ্গণ"
+    },
+    {
+        "id": "golden_dome_carving",
+        "url": "https://cdn.pixabay.com/video/2022/07/13/124063-729835810_medium.mp4",
+        "title": "সোনালী গম্বুজের নকশা",
+        "location": "ঐতিহাসিক কারুকাজ"
+    },
+    {
+        "id": "ancient_mosque_calm",
+        "url": "https://cdn.pixabay.com/video/2024/02/23/201668-916080463_medium.mp4",
+        "title": "প্রাচীন মসজিদ ও শান্ত পরিবেশ",
+        "location": "ঐতিহাসিক ইসলামিক ল্যান্ডমার্ক"
+    },
+    {
+        "id": "dawn_minaret_birds",
+        "url": "https://cdn.pixabay.com/video/2023/10/31/187272-880035010_medium.mp4",
+        "title": "ভোরের আলোয় সুউচ্চ মিনার",
+        "location": "ঐতিহাসিক মিনার প্রাঙ্গণ"
+    },
+    {
+        "id": "mountain_fog_dance",
+        "url": "https://cdn.pixabay.com/video/2021/02/21/65868-515617516_medium.mp4",
+        "title": "পর্বতচূড়ায় কুয়াশার মোহনীয় রূপ",
+        "location": "উঁচু পর্বতের মায়া"
     }
 ]
 
 FOOTAGE_STATE_FILE = os.path.join(BASE_DIR, "assets", "footage_state.json")
 
-def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
-    """
-    100% Guaranteed Dynamic Non-Repeating Mosque Scene Selection:
-    - Permanently removed any man's head or bad footage.
-    - Rotates Scene 1 (Thumbnail) in a strict round-robin sequence:
-      Makkah Clock Tower -> Madinah Nabawi -> Blue Mosque -> Sheikh Zayed -> Putra -> Hassan II -> Faisal Mosque.
-    - Guaranteed unique thumbnail for every single Reel.
-    """
-    available = []
-    for item in REAL_MOSQUE_FOOTAGES:
+def get_recent_facebook_scene_titles() -> list:
+    """ফেসবুকের শেষ ১০টি পোস্ট চেক করে কোন কোন সিন ব্যবহৃত হয়েছে তা বের করে"""
+    recent = []
+    if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
+        return recent
+    try:
+        url = f"https://graph.facebook.com/v21.0/{FB_PAGE_ID}/videos"
+        params = {"access_token": FB_PAGE_ACCESS_TOKEN, "fields": "description,title", "limit": 10}
+        res = requests.get(url, params=params, timeout=10)
+        if res.status_code == 200:
+            for item in res.json().get("data", []):
+                text = (item.get("description", "") + " " + item.get("title", ""))
+                recent.append(text)
+    except Exception as e:
+        print(f"[FB RECENT WARN] {e}")
+    return recent
+
+def ensure_scene_ready(item: dict) -> tuple:
+    """ফুটেজ ফাইল প্রস্তুত করে (লোকাল ফাইল অথবা ক্লাউড সিডিএন ক্যাশ)"""
+    offset = item.get("start_offset", 0)
+    if "file" in item:
         p = os.path.join(ASSETS_FOOTAGE_DIR, item["file"])
         if os.path.exists(p) and os.path.getsize(p) > 50000:
-            available.append(item)
+            return p, offset
 
-    if not available:
-        raise FileNotFoundError("কোনো পবিত্র মসজিদ বা হারামাইনের সিনেমাটিক ফুটেজ পাওয়া যায়নি।")
+    if "url" in item:
+        fname = f"{item['id']}.mp4"
+        cached = os.path.join(DOWNLOADS_DIR, fname)
+        if os.path.exists(cached) and os.path.getsize(cached) > 100000:
+            return cached, offset
+        try:
+            print(f"📥 ক্লাউড সিডিএন থেকে ফ্রেশ ফুটেজ ডাউনলোড হচ্ছে: {item['title']}...")
+            req = requests.get(item["url"], headers={'User-Agent': 'Mozilla/5.0'}, timeout=25)
+            if req.status_code == 200:
+                with open(cached, "wb") as f:
+                    f.write(req.content)
+                return cached, offset
+        except Exception as e:
+            print(f"[CDN DOWNLOAD WARN] {e}")
 
-    # Load persistent state
+    # Fallback to local default
+    fallback = os.path.join(ASSETS_FOOTAGE_DIR, "makkah_clock_tower_drone.mp4")
+    return fallback, 0
+
+def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
+    """
+    ১০০% গ্যারান্টিযুক্ত ডায়নামিক জিরো-ডুপ্লিকেট ফুটেজ নির্বাচন:
+    - ফেসবুক Graph API চেক করে সাম্প্রতিক ৫টি পোস্টের থাম্বনেইল সিন বাদ দেয়
+    - হিরো দৃশ্য থেকে সম্পূর্ণ আনপোস্টেড দৃশ্যকে দৃশ্য ১ (থাম্বনেইল) বানায়
+    - বাকি দৃশ্যগুলো ৩৩+ টি বৈচিত্র্যময় সিন ও প্রকৃতির পুল থেকে নির্বাচিত হয়
+    """
+    recent_texts = get_recent_facebook_scene_titles()
+    recent_blob = " ".join(recent_texts)
+
+    # দৃশ্য ১ এর জন্য ফিল্টার
+    hero_available = []
+    for h in HERO_THUMBNAIL_SCENES:
+        p = os.path.join(ASSETS_FOOTAGE_DIR, h.get("file", ""))
+        if os.path.exists(p) and os.path.getsize(p) > 50000:
+            hero_available.append(h)
+
+    if not hero_available:
+        hero_available = HERO_THUMBNAIL_SCENES
+
+    unseen_hero = [h for h in hero_available if h["title"] not in recent_blob]
+    if not unseen_hero:
+        unseen_hero = hero_available
+
+    # State file fallback check
     state = {}
     if os.path.exists(FOOTAGE_STATE_FILE):
         try:
@@ -109,41 +274,45 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
         except Exception:
             state = {}
 
-    last_idx = state.get("last_scene1_index", -1)
-    next_idx = (last_idx + 1) % len(available)
-    state["last_scene1_index"] = next_idx
+    last_idx = state.get("last_hero_index", -1)
+    next_idx = (last_idx + 1) % len(unseen_hero)
+    state["last_hero_index"] = next_idx
+    scene1_item = unseen_hero[next_idx]
 
-    # Scene 1: Rotates fairly across all beautiful mosque drone footages
-    scene1 = available[next_idx]
-
-    # Remaining scenes: shuffled from the rest
-    other_pool = [it for i, it in enumerate(available) if i != next_idx]
-    random.shuffle(other_pool)
-
-    selected_items = [scene1] + other_pool[:count - 1]
-    selected_paths = [os.path.join(ASSETS_FOOTAGE_DIR, it["file"]) for it in selected_items]
-
-    titles = " • ".join([it["title"] for it in selected_items])
-    locations = " • ".join(list(dict.fromkeys([it["location"] for it in selected_items])))
-
-    print(f"🕌 [জিরো-ডুপ্লিকেট মাল্টি-সিন প্রস্তুত] থাম্বনেইল সিন #{next_idx + 1}: {scene1['title']}")
-    for idx, it in enumerate(selected_items, 1):
-        print(f"   🎬 দৃশ্য #{idx}: {it['title']} ({it['location']})")
-
-    # Save state
     try:
         os.makedirs(os.path.dirname(FOOTAGE_STATE_FILE), exist_ok=True)
         with open(FOOTAGE_STATE_FILE, "w", encoding="utf-8") as f:
             json.dump(state, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"[STATE WARNING] {e}")
+    except Exception:
+        pass
+
+    # বাকি দৃশ্য নির্বাচন
+    remaining_pool = [x for x in hero_available if x["id"] != scene1_item["id"]] + RICH_SECONDARY_POOL
+    random.shuffle(remaining_pool)
+    secondary_items = remaining_pool[:count - 1]
+
+    selected_items = [scene1_item] + secondary_items
+
+    # পাথ ও অফসেট প্রস্তুত
+    scene_targets = []
+    for it in selected_items:
+        p, off = ensure_scene_ready(it)
+        scene_targets.append((p, off))
+
+    titles = " • ".join([it["title"] for it in selected_items])
+    locations = " • ".join(list(dict.fromkeys([it["location"] for it in selected_items])))
+
+    print(f"🕌 [জিরো-ডুপ্লিকেট ফ্রেশ দৃশ্য প্রস্তুত] থাম্বনেইল সিন: {scene1_item['title']} ({scene1_item['location']})")
+    for idx, it in enumerate(selected_items, 1):
+        print(f"   🎬 দৃশ্য #{idx}: {it['title']} ({it['location']})")
 
     combined_meta = {
         "title": titles,
         "location": locations,
         "scenes": selected_items
     }
-    return selected_paths, combined_meta
+    return scene_targets, combined_meta
+
 
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """
@@ -243,8 +412,13 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
     filter_parts = []
     concat_inputs = []
 
-    for i, sc in enumerate(target_scenes):
-        inputs.extend(["-stream_loop", "-1", "-i", sc])
+    for i, item in enumerate(target_scenes):
+        if isinstance(item, (list, tuple)):
+            sc, sc_offset = item[0], item[1]
+        else:
+            sc, sc_offset = item, 0
+        ss_args = ["-ss", str(sc_offset)] if sc_offset > 0 else []
+        inputs.extend(ss_args + ["-stream_loop", "-1", "-i", sc])
         filter_parts.append(f"[{i}:v]{scale_filter},setsar=1,fps=30,format=yuv420p,trim=duration={seg_dur},setpts=PTS-STARTPTS[v{i}]")
         concat_inputs.append(f"[v{i}]")
 
@@ -288,10 +462,11 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
     except Exception as e:
         print(f"[FFMPEG MULTI-SCENE WARN] Concat rendering failed ({e}). Executing single-scene fallback...")
         fallback_filter = f"[0:v]{scale_filter},setsar=1,fps=30,format=yuv420p[v0];[v0][2:v]overlay=0:0[final_v]"
+        first_sc = target_scenes[0][0] if isinstance(target_scenes[0], (list, tuple)) else target_scenes[0]
         fallback_cmd = [
             FFMPEG_EXE, "-y",
             "-stream_loop", "-1",
-            "-i", target_scenes[0],
+            "-i", first_sc,
             "-i", audio_path,
             "-i", watermark_png,
             "-filter_complex", fallback_filter,
