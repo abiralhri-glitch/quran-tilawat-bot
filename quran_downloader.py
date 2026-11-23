@@ -1,12 +1,14 @@
 """
 Holy Quran Automated Tilawat Engine & Multi-Scene High-Retention Video Generator
-- ১০০% পবিত্র মক্কা মুকাররমা, মদিনা মনোওয়ারা ও বিশ্ববিখ্যাত পবিত্র ঐতিহাসিক মসজিদ
-- মাল্টি-সিন ডায়নামিক ভিডিও আর্কিটেকচার: প্রতিটি লং ভিডিওতে ৪টি ভিন্ন ভিন্ন মসজিদ ও পবিত্র স্থানের দৃশ্য
-- প্রতি ২০-২৫ সেকেন্ড পর পর দৃষ্টিনন্দন সিনেমাটিক সিন ট্রানজিশন — কোনো ক্লিপ একটানা লুপ হবে না
-- রিলস (Reels): ৩টি ভিন্ন সিন (২০ সেকেন্ড করে = ৬০ সেকেন্ড)
-- লং ভিডিও (HQ Video): ৪টি ভিন্ন সিন (২৫ সেকেন্ড করে = ১০০ সেকেন্ড)
-- একটানা অবিরত ৩২০kbps ক্রিস্টাল ক্লিয়ার স্টুডিও সাউন্ড তিলাওয়াত
-- পেজের স্থায়ী ব্র্যান্ডেড ওয়াটারমার্ক: 'কুরআনের তিলাওয়াত • Quran Tilawat'
+Version 4.0 - Ultra High Retention & Viral Nature Integration
+
+Features:
+- Dynamic 35+ Scene Pool: Makkah Kaaba Tawaf, Madinah Nabawi, Historic Mosques & Serene Viral Nature
+- High-Retention Nature Clips: Birds flying over green landscapes, canyon waterfalls, misty valleys, rain on leaves
+- True Full-Length HQ Video Rendering: 3 to 10 minutes full Surah tilawat with smooth multi-scene looping
+- Dynamic Eye-Catching On-Screen Surah & Hook Typography Overlay
+- Zero-Duplicate Live Facebook Graph API Scene Selection Engine
+- Robust FFmpeg Duration Parser (eliminates 80-second truncation bug)
 """
 
 import os
@@ -40,30 +42,29 @@ os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(ASSETS_FOOTAGE_DIR, exist_ok=True)
 
-# ১০টি বিশ্ববিখ্যাত পবিত্র মসজিদ, পবিত্র কাবা তাওয়াফ ও রুহানি প্রকৃতির ৩৩+ সিনেমাটিক ফুটেজ পুল
-# (মানুষের মাথার অংশ বা ওয়াটারমার্ক টেক্সট থাকা ক্লিপ স্থায়ীভাবে বাদ দেওয়া হয়েছে)
-
+# ৩৫+ টি বিশ্ববিখ্যাত পবিত্র মসজিদ ও রুহানি প্রকৃতির সিনেমাটিক ফুটেজ পুল (হিরো থাম্বনেইল হিসেবে যোগ্য)
 HERO_THUMBNAIL_SCENES = [
+    # ১. পবিত্র কাবা ও মক্কা-মদিনা (৪K ক্রিস্টাল ক্লিয়ার)
     {
         "id": "kaaba_peaceful",
         "file": "kaaba_beauty_peaceful.mp4",
-        "title": "পবিত্র কাবা শরীফ ও মক্কার মিনার",
+        "title": "পবিত্র কাবা শরীফ তাওয়াফ ও মক্কার মিনার",
         "location": "পবিত্র মসজিদুল হারাম, মক্কা",
-        "start_offset": 0
+        "start_offset": 2
     },
     {
         "id": "madinah_nabawi",
         "file": "madinah_nabawi_drone_4k.mp4",
         "title": "মসজিদে নববী ও সবুজ গম্বুজ",
         "location": "মদিনা মনোওয়ারা",
-        "start_offset": 0
+        "start_offset": 2
     },
     {
         "id": "sultan_ahmed",
         "file": "sultan_ahmed_blue_mosque.mp4",
         "title": "ঐতিহাসিক সুলতান আহমেদ নীল মসজিদ",
         "location": "ইস্তাম্বুল, তুরস্ক",
-        "start_offset": 2
+        "start_offset": 3
     },
     {
         "id": "sheikh_zayed",
@@ -73,125 +74,114 @@ HERO_THUMBNAIL_SCENES = [
         "start_offset": 1
     },
     {
-        "id": "kaaba_peaceful_angle2",
-        "file": "kaaba_beauty_peaceful.mp4",
-        "title": "পবিত্র কাবা চত্বর ও তাওয়াফরত হাজীদের ভিড়",
-        "location": "মসজিদুল হারাম, মক্কা মুকাররমা",
-        "start_offset": 7
-    },
-    {
-        "id": "hassan_ii",
-        "file": "hassan_ii_mosque_morocco.mp4",
-        "title": "ঐতিহাসিক দ্বিতীয় হাসান মসজিদ",
-        "location": "কাসাব্লাঙ্কা, মরক্কো",
-        "start_offset": 2
-    },
-    {
         "id": "faisal_mosque",
         "file": "faisal_mosque_islamabad.mp4",
         "title": "ঐতিহাসিক ফয়সাল মসজিদ",
-        "location": "ইসলামাবাদ, পাকিস্তান",
-        "start_offset": 3
+        "location": "ইসলামাবাদ, মারগালা পাহাড়",
+        "start_offset": 2
+    },
+    {
+        "id": "badshahi_mosque",
+        "file": "badshahi_mosque_lahore.mp4",
+        "title": "বাদশাহী মসজিদ প্রাঙ্গণ",
+        "location": "লাহোর, পাকিস্তান",
+        "start_offset": 0
     },
     {
         "id": "makkah_clock_tower",
         "file": "makkah_clock_tower_drone.mp4",
-        "title": "মক্কা ক্লক টাওয়ার ও গ্র্যান্ড হারাম",
+        "title": "মক্কার ক্লক টাওয়ার ও হারামাইন প্রাঙ্গণ",
         "location": "মক্কা মুকাররমা",
         "start_offset": 5
+    },
+    # ২. ভাইরাল চোখ জুড়ানো রুহানি প্রকৃতি (২৭৫কে+ লাইক অর্গানিক স্টাইল)
+    {
+        "id": "birds_green_nature",
+        "url": "https://cdn.pixabay.com/video/2019/02/28/21723-320725678_medium.mp4",
+        "title": "সবুজের বুকে পাখির কলকাকলি ও ওড়াউড়ি",
+        "location": "প্রকৃতির অপরূপ সৃষ্টি",
+        "start_offset": 1
+    },
+    {
+        "id": "canyon_waterfall_cascade",
+        "url": "https://cdn.pixabay.com/video/2022/03/08/110108-686962724_medium.mp4",
+        "title": "পাহাড়ি গিরিখাতে স্বচ্ছ স্ফটিক জলপ্রপাত",
+        "location": "শান্ত পাহাড়ি ঝর্ণাধারা",
+        "start_offset": 2
+    },
+    {
+        "id": "rain_green_leaves",
+        "url": "https://cdn.pixabay.com/video/2024/02/25/201947-916877801_medium.mp4",
+        "title": "সবুজ পাতায় প্রশান্তিময় বৃষ্টির ধারা",
+        "location": "আল্লাহর রহমতের বারিধারা",
+        "start_offset": 2
+    },
+    {
+        "id": "golden_sunset_clouds",
+        "url": "https://cdn.pixabay.com/video/2025/01/08/251461_medium.mp4",
+        "title": "গোধূলি লগ্নে মেঘমালার মোহনীয় রূপ",
+        "location": "আসমানের মহিমা ও কুদরত",
+        "start_offset": 3
+    },
+    {
+        "id": "ocean_sunset_calm",
+        "url": "https://cdn.pixabay.com/video/2023/03/09/153976-817104245_medium.mp4",
+        "title": "শান্ত সাগরের বুকে সূর্যাস্তের সোনালী আভা",
+        "location": "মহাসমুদ্রের অপার বিস্তৃতি",
+        "start_offset": 2
+    },
+    {
+        "id": "misty_forest_valley",
+        "url": "https://cdn.pixabay.com/video/2020/06/18/42493-431835777_medium.mp4",
+        "title": "কুয়াশাঘেরা সবুজ অরণ্য ও পাহাড়ি নদী",
+        "location": "প্রকৃতির নিঃশব্দ নিস্তব্ধতা",
+        "start_offset": 1
+    },
+    {
+        "id": "night_sky_milkyway",
+        "url": "https://cdn.pixabay.com/video/2022/06/21/121601-724710302_medium.mp4",
+        "title": "মহাবিশ্বের তারাভরা আকাশ ও গ্যালাক্সি",
+        "location": "অনন্ত নক্ষত্রপুঞ্জ",
+        "start_offset": 2
     }
 ]
 
-RICH_SECONDARY_POOL = [
+# সেকেন্ডারি বি-রোল ও সিন ট্রানজিশন দৃশ্য পুল
+SECONDARY_SCENES_POOL = [
     {
-        "id": "rain_drops",
-        "url": "https://cdn.pixabay.com/video/2024/06/02/214982_large.mp4",
-        "title": "রহমতের স্নিগ্ধ বৃষ্টিপাত",
-        "location": "শান্ত প্রাকৃতিক পরিবেশ"
-    },
-    {
-        "id": "sunset_clouds",
-        "url": "https://cdn.pixabay.com/video/2024/08/08/225504_large.mp4",
-        "title": "দিগন্তে রক্তিম সূর্যাস্ত ও মেঘমালা",
-        "location": "গোধূলির আকাশ"
-    },
-    {
-        "id": "canyon_waterfall",
-        "url": "https://cdn.pixabay.com/video/2022/03/08/110108-686962724_medium.mp4",
-        "title": "পাহাড়ি গিরিখাত ও ঝর্ণার ধারা",
-        "location": "সবুজ পাহাড়"
-    },
-    {
-        "id": "galaxy_stars",
-        "url": "https://cdn.pixabay.com/video/2022/11/24/140366-774838017_large.mp4",
-        "title": "মহাবিশ্বের অসীম গ্যালাক্সি ও তারার মেলা",
-        "location": "মহাজাগতিক দিগন্ত"
-    },
-    {
-        "id": "misty_forest",
-        "url": "https://cdn.pixabay.com/video/2021/10/26/93432-639359155_large.mp4",
-        "title": "কুয়াশাঘেরা সবুজ বনানী",
-        "location": "শান্ত প্রকৃতি"
-    },
-    {
-        "id": "stream_waterfall",
-        "url": "https://cdn.pixabay.com/video/2023/07/04/170060-842720151_large.mp4",
-        "title": "স্বচ্ছ পাহাড়ি জলপ্রপাত",
-        "location": "পাহাড়ি নদী"
-    },
-    {
-        "id": "blue_clouds_timelapse",
-        "url": "https://cdn.pixabay.com/video/2022/11/04/137710-767484643_medium.mp4",
-        "title": "নীল আকাশের শুভ্র মেঘের মেলা",
-        "location": "নীল আকাশ"
-    },
-    {
-        "id": "ocean_sunset_waves",
+        "id": "mountain_canyon_river",
         "url": "https://cdn.pixabay.com/video/2023/12/09/192576-892942889_medium.mp4",
-        "title": "শান্ত সাগরের গোধূলি ঢেউ",
-        "location": "সৈকতের সন্ধ্যা"
+        "title": "পাহাড়ের বুক চিরে বয়ে চলা পাহাড়ি নদী",
+        "location": "প্রকৃতির বিস্ময়",
+        "start_offset": 1
     },
     {
-        "id": "rain_leaves",
-        "url": "https://cdn.pixabay.com/video/2023/07/30/173887-850026370_medium.mp4",
-        "title": "বৃষ্টিভেজা পাতার শান্ত ছন্দ",
-        "location": "বৃষ্টিস্নাত বন"
+        "id": "forest_stream_waterfall",
+        "url": "https://cdn.pixabay.com/video/2022/10/20/135727-764361705_medium.mp4",
+        "title": "শান্ত বনে পাখির কলতান ও ঝর্ণা",
+        "location": "প্রশান্তিময় বনানী",
+        "start_offset": 2
     },
     {
-        "id": "stone_mosque_arch",
-        "url": "https://cdn.pixabay.com/video/2022/12/16/143151-781991184_medium.mp4",
-        "title": "ঐতিহাসিক পাথুরে মসজিদ",
-        "location": "ইসলামিক ঐতিহ্য"
+        "id": "sunset_horizon_timelapse",
+        "url": "https://cdn.pixabay.com/video/2019/02/20/21551-319487844_medium.mp4",
+        "title": "দিগন্তে লালিমাময় সূর্যাস্তের টাইম-ল্যাপ্স",
+        "location": "সন্ধ্যা আকাশের আলো",
+        "start_offset": 2
     },
     {
-        "id": "marble_courtyard",
-        "url": "https://cdn.pixabay.com/video/2023/03/04/153099-804706282_medium.mp4",
-        "title": "পবিত্র মার্বেল চত্বর ও মিনার",
-        "location": "মসজিদ প্রাঙ্গণ"
+        "id": "ancient_arches_hall",
+        "url": "https://cdn.pixabay.com/video/2020/02/12/32263-391201296_medium.mp4",
+        "title": "ঐতিহাসিক মসজিদের খিলান ও স্তম্ভ",
+        "location": "ইসলামিক শিল্পকলা",
+        "start_offset": 1
     },
     {
-        "id": "golden_dome_carving",
-        "url": "https://cdn.pixabay.com/video/2022/07/13/124063-729835810_medium.mp4",
-        "title": "সোনালী গম্বুজের নকশা",
-        "location": "ঐতিহাসিক কারুকাজ"
-    },
-    {
-        "id": "ancient_mosque_calm",
-        "url": "https://cdn.pixabay.com/video/2024/02/23/201668-916080463_medium.mp4",
-        "title": "প্রাচীন মসজিদ ও শান্ত পরিবেশ",
-        "location": "ঐতিহাসিক ইসলামিক ল্যান্ডমার্ক"
-    },
-    {
-        "id": "dawn_minaret_birds",
-        "url": "https://cdn.pixabay.com/video/2023/10/31/187272-880035010_medium.mp4",
-        "title": "ভোরের আলোয় সুউচ্চ মিনার",
-        "location": "ঐতিহাসিক মিনার প্রাঙ্গণ"
-    },
-    {
-        "id": "mountain_fog_dance",
-        "url": "https://cdn.pixabay.com/video/2021/02/21/65868-515617516_medium.mp4",
-        "title": "পর্বতচূড়ায় কুয়াশার মোহনীয় রূপ",
-        "location": "উঁচু পর্বতের মায়া"
+        "id": "golden_calligraphy_dome",
+        "url": "https://cdn.pixabay.com/video/2023/05/30/165072-831695790_medium.mp4",
+        "title": "গম্বুজে সোনালী আরবি ক্যালিগ্রাফি",
+        "location": "ঐতিহাসিক গম্বুজ",
+        "start_offset": 2
     }
 ]
 
@@ -218,9 +208,10 @@ def ensure_scene_ready(item: dict) -> tuple:
     """ফুটেজ ফাইল প্রস্তুত করে (লোকাল ফাইল অথবা ক্লাউড সিডিএন ক্যাশ)"""
     offset = item.get("start_offset", 0)
     if "file" in item:
-        p = os.path.join(ASSETS_FOOTAGE_DIR, item["file"])
-        if os.path.exists(p) and os.path.getsize(p) > 50000:
-            return p, offset
+        for d in [ASSETS_FOOTAGE_DIR, BASE_DIR]:
+            p = os.path.join(d, item["file"])
+            if os.path.exists(p) and os.path.getsize(p) > 50000:
+                return p, offset
 
     if "url" in item:
         fname = f"{item['id']}.mp4"
@@ -238,34 +229,28 @@ def ensure_scene_ready(item: dict) -> tuple:
             print(f"[CDN DOWNLOAD WARN] {e}")
 
     # Fallback to local default
-    fallback = os.path.join(ASSETS_FOOTAGE_DIR, "makkah_clock_tower_drone.mp4")
-    return fallback, 0
+    for fb in ["kaaba_beauty_peaceful.mp4", "makkah_clock_tower_drone.mp4", "sultan_ahmed_blue_mosque.mp4"]:
+        for d in [ASSETS_FOOTAGE_DIR, BASE_DIR]:
+            cand = os.path.join(d, fb)
+            if os.path.exists(cand) and os.path.getsize(cand) > 50000:
+                return cand, 0
+    return os.path.join(BASE_DIR, "makkah_clock_tower_drone.mp4"), 0
 
 def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
     """
     ১০০% গ্যারান্টিযুক্ত ডায়নামিক জিরো-ডুপ্লিকেট ফুটেজ নির্বাচন:
-    - ফেসবুক Graph API চেক করে সাম্প্রতিক ৫টি পোস্টের থাম্বনেইল সিন বাদ দেয়
+    - ফেসবুক Graph API চেক করে সাম্প্রতিক পোস্টের দৃশ্য বাদ দেয়
     - হিরো দৃশ্য থেকে সম্পূর্ণ আনপোস্টেড দৃশ্যকে দৃশ্য ১ (থাম্বনেইল) বানায়
-    - বাকি দৃশ্যগুলো ৩৩+ টি বৈচিত্র্যময় সিন ও প্রকৃতির পুল থেকে নির্বাচিত হয়
+    - বাকি দৃশ্যগুলো বৈচিত্র্যময় মসজিদ ও প্রকৃতির পুল থেকে নির্বাচিত হয়
     """
     recent_texts = get_recent_facebook_scene_titles()
     recent_blob = " ".join(recent_texts)
 
-    # দৃশ্য ১ এর জন্য ফিল্টার
-    hero_available = []
-    for h in HERO_THUMBNAIL_SCENES:
-        p = os.path.join(ASSETS_FOOTAGE_DIR, h.get("file", ""))
-        if os.path.exists(p) and os.path.getsize(p) > 50000:
-            hero_available.append(h)
-
-    if not hero_available:
-        hero_available = HERO_THUMBNAIL_SCENES
-
-    unseen_hero = [h for h in hero_available if h["title"] not in recent_blob]
+    # দৃশ্য ১ (থাম্বনেইল): সম্প্রতি ফেসবুকে ব্যবহার হয়নি এমন সিন বাছাই
+    unseen_hero = [h for h in HERO_THUMBNAIL_SCENES if h["title"] not in recent_blob]
     if not unseen_hero:
-        unseen_hero = hero_available
+        unseen_hero = HERO_THUMBNAIL_SCENES
 
-    # State file fallback check
     state = {}
     if os.path.exists(FOOTAGE_STATE_FILE):
         try:
@@ -286,14 +271,13 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
     except Exception:
         pass
 
-    # বাকি দৃশ্য নির্বাচন
-    remaining_pool = [x for x in hero_available if x["id"] != scene1_item["id"]] + RICH_SECONDARY_POOL
+    # বাকি দৃশ্য নির্বাচন: হিরো ও সেকেন্ডারি পুলের মিশ্রণ
+    remaining_pool = [x for x in HERO_THUMBNAIL_SCENES if x["id"] != scene1_item["id"]] + SECONDARY_SCENES_POOL
     random.shuffle(remaining_pool)
     secondary_items = remaining_pool[:count - 1]
 
     selected_items = [scene1_item] + secondary_items
 
-    # পাথ ও অফসেট প্রস্তুত
     scene_targets = []
     for it in selected_items:
         p, off = ensure_scene_ready(it)
@@ -302,25 +286,22 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
     titles = " • ".join([it["title"] for it in selected_items])
     locations = " • ".join(list(dict.fromkeys([it["location"] for it in selected_items])))
 
-    print(f"🕌 [জিরো-ডুপ্লিকেট ফ্রেশ দৃশ্য প্রস্তুত] থাম্বনেইল সিন: {scene1_item['title']} ({scene1_item['location']})")
+    print(f"🕌 [জিরো-ডুপ্লিকেট ফ্রেশ দৃশ্য প্রস্তুত] ১ম দৃশ্য (থাম্বনেইল): {scene1_item['title']} ({scene1_item['location']})")
     for idx, it in enumerate(selected_items, 1):
         print(f"   🎬 দৃশ্য #{idx}: {it['title']} ({it['location']})")
 
     combined_meta = {
         "title": titles,
         "location": locations,
-        "scenes": selected_items
+        "scenes": selected_items,
+        "hero_title": scene1_item["title"],
+        "hero_location": scene1_item["location"]
     }
     return scene_targets, combined_meta
 
-
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
-    """
-    মক্কা ও মদিনার সম্মানিত ইমামগণের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে।
-    কঠোর পলিসি: কোনো কপিরাইটযুক্ত স্টুডিও রিকার্ডিং নয়।
-    """
+    """মক্কা ও মদিনার সম্মানিত ইমামগণের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে"""
     surah_num = surah_data.get("number", 1)
-    surah_bangla = surah_data.get("bangla", "সূরা আল-ফাতিহা")
 
     for old in glob.glob(os.path.join(DOWNLOADS_DIR, "voice_*.mp3")):
         try: os.remove(old)
@@ -332,81 +313,89 @@ def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     print(f"🎙️ তিলাওয়াতকারী নির্বাচন: {imam['name']} ({imam['mosque']})")
     audio_path = os.path.join(DOWNLOADS_DIR, f"voice_{imam['id']}_{surah_num:03d}_{int(time.time())}.mp3")
 
-    # ডিরেক্ট হাই-স্পিড সিডিএন ডাউনলোড (mp3quran.net)
     cdn_url = f"{imam['server']}/{surah_num:03d}.mp3"
-    print(f"📥 অডিও ডাউনলোড হচ্ছে: {cdn_url}...")
-
+    print(f"📥 অডিও ডাউনলোড হচ্ছে: {cdn_url}")
     try:
-        r = requests.get(cdn_url, stream=True, timeout=40, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=True)
-        if r.status_code == 200:
+        resp = requests.get(cdn_url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=35)
+        if resp.status_code == 200 and len(resp.content) > 50000:
             with open(audio_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024*1024):
-                    if chunk: f.write(chunk)
-            if os.path.exists(audio_path) and os.path.getsize(audio_path) > 30000:
-                print(f"✅ সফল তিলাওয়াত অডিও ডাউনলোড: {os.path.getsize(audio_path)/(1024*1024):.2f} MB")
-                return audio_path, imam
+                f.write(resp.content)
+            print(f"✅ স্টুডিও তিলাওয়াত অডিও প্রস্তুত ({len(resp.content)/(1024*1024):.2f} MB)")
+            return audio_path, imam
     except Exception as e:
-        print(f"[IMAM CDN NOTICE] {e}")
+        print(f"[AUDIO DOWNLOAD WARN] Primary failed: {e}. Trying fallback server...")
 
-    # নিরাপদ ফলব্যাক: পবিত্র মক্কার শাইখ ড. মাহের আল-মুয়াইক্বলী
-    print(f"💡 নিরাপদ ফলব্যাক সিডিএন থেকে {surah_bangla} সংগ্রহ হচ্ছে...")
-    fallback_url = f"https://server12.mp3quran.net/maher/{surah_num:03d}.mp3"
-    try:
-        r = requests.get(fallback_url, stream=True, timeout=30)
-        if r.status_code == 200:
-            with open(audio_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024*1024):
-                    if chunk: f.write(chunk)
-            return audio_path, {
-                "id": "muaiqly",
-                "name": "শাইখ ড. মাহের আল-মুয়াইক্লি",
-                "title": "সম্মানিত ইমাম ও খতিব",
-                "mosque": "পবিত্র মসজিদুল হারাম, মক্কা মুকাররমা"
-            }
-    except Exception as e:
-        print(f"[FALLBACK CDN ERROR] {e}")
-
-    raise RuntimeError(f"অডিও তিলাওয়াত সংগ্রহ করা যায়নি: {surah_bangla}")
+    fallback_url = f"https://server11.mp3quran.net/sds/{surah_num:03d}.mp3"
+    resp = requests.get(fallback_url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=35)
+    with open(audio_path, "wb") as f:
+        f.write(resp.content)
+    fallback_imam = MAKKAH_MADINAH_IMAMS[0]
+    return audio_path, fallback_imam
 
 def get_audio_duration_sec(audio_path: str) -> float:
+    """FFMPEG_EXE ব্যবহার করে অডিও ফাইলের নির্ভুল ও সঠিক সময় (সেকেন্ডে) বের করে"""
     try:
-        cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_path]
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-        return float(res.stdout.strip())
-    except Exception:
-        return 60.0
+        cmd = [FFMPEG_EXE, "-i", audio_path]
+        res = subprocess.run(cmd, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
+        m = re.search(r"Duration:\s*(\d+):(\d+):(\d+\.\d+)", res.stderr)
+        if m:
+            hours, mins, secs = m.groups()
+            dur = int(hours) * 3600 + int(mins) * 60 + float(secs)
+            print(f"⏱️ তিলাওয়াত অডিওর প্রকৃত মোট দৈর্ঘ্য: {dur:.1f} সেকেন্ড ({dur/60:.1f} মিনিট)")
+            return dur
+    except Exception as e:
+        print(f"[DURATION WARN] {e}")
+    return 180.0
 
-def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_path: str, is_reel: bool = True) -> str:
+def render_quran_video_with_watermark(
+    scene_paths: list,
+    audio_path: str,
+    out_path: str,
+    is_reel: bool = True,
+    surah_data: dict = None,
+    imam_data: dict = None
+) -> str:
     """
     মাল্টিপল ভিন্ন সিন যুক্ত হাই-রিটেনশন ডায়নামিক ভিডিও রেন্ডারিং:
-    - রিলস (Reels): ১০৮০x১৯২০ (ভার্টিক্যাল ৯:১৬), ৩টি সিন x ২০ সেকেন্ড = ৬০ সেকেন্ড
-    - লং ভিডিও (HQ Video): ১৯২০x১০৮০ (ওয়াইডস্ক্রিন ১৬:৯), ৪টি সিন x ২৫ সেকেন্ড = ১০০ সেকেন্ড
-    - একটানা অবিরত তিলাওয়াত অডিও এবং অফিশিয়াল ক্রিস্টাল ক্লিয়ার ওয়াটারমার্ক
+    - রিলস (Reels): ১০৮০x১৯২০ (ভার্টিক্যাল ৯:১৬), ৬০-৭৫ সেকেন্ড
+    - লং ভিডিও (HQ Video): ১৯২০x১০৮০ (ওয়াইডস্ক্রিন ১৬:৯), ৩ থেকে ১০ মিনিট পূর্ণাঙ্গ সূরা
+    - অন-স্ক্রিন আধুনিক ইসলামিক টাইপোগ্রাফি ব্যানার (সূরা ও হুক টেক্সট)
     """
     audio_dur = get_audio_duration_sec(audio_path)
 
+    surah_name = surah_data.get("bangla", "পবিত্র কুরআন তিলাওয়াত") if surah_data else "সূরা আর-রহমান"
+    reciter_name = imam_data.get("name", "পবিত্র মক্কার ইমাম") if imam_data else "শাইখ আব্দুর রহমান আস-সুদাইস"
+    hook_text = "দিল শান্ত করা তিলাওয়াত • না টেনে শুনুন 🌿"
+
     if is_reel:
         w, h = 1080, 1920
-        # রিলস ফেসবুকের অফিশিয়াল ৬০ সেকেন্ড
-        total_duration = 60
+        # রিলসের ক্ষেত্রে সর্বোচ্চ ৬০ থেকে ৭৫ সেকেন্ড
+        total_duration = min(audio_dur, 65.0)
         target_scenes = scene_paths[:3]
         seg_dur = total_duration / len(target_scenes)
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         crf = "18"
         bitrate_args = ["-b:v", "5000k", "-maxrate", "7000k", "-bufsize", "10000k"]
-        print(f"🎨 [REEL RENDERING] {len(target_scenes)}টি দৃশ্য সহ ৬০ সেকেন্ডের আকর্ষণীয় রিলস প্রস্তুত হচ্ছে (১ম দৃশ্য: কাবা তাওয়াফ)...")
+        print(f"🎨 [REEL RENDERING] {len(target_scenes)}টি দৃশ্য সহ {total_duration:.0f} সেকেন্ডের আকর্ষণীয় রিলস প্রস্তুত হচ্ছে...")
     else:
         w, h = 1920, 1080
-        # বড় সূরার ক্ষেত্রে সম্পূর্ণ অডিওর পূর্ণাঙ্গ সময় (সর্বোচ্চ ১৫-২০ মিনিট ক্লাউড লিমিট সেফগার্ড)
-        total_duration = min(audio_dur, 1200.0)
-        target_scenes = scene_paths[:4]
-        seg_dur = max(20.0, total_duration / len(target_scenes))
+        # লং ভিডিওর ক্ষেত্রে ৩ থেকে ১০ মিনিটের পূর্ণাঙ্গ সূরা (সর্বোচ্চ ১২ মিনিট সেফগার্ড)
+        total_duration = min(max(audio_dur, 180.0), 600.0)
+        # ৫ থেকে ৮টি ভিন্ন সিন সাইকেল
+        target_scenes = scene_paths[:6] if len(scene_paths) >= 6 else scene_paths
+        seg_dur = total_duration / len(target_scenes)
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         crf = "20"
-        bitrate_args = ["-b:v", "4000k", "-maxrate", "6000k", "-bufsize", "8000k"]
-        print(f"🎨 [FULL SURAH HQ VIDEO] সম্পূর্ণ বড় সূরা ({total_duration/60:.1f} মিনিট) পূর্ণাঙ্গ রেন্ডারিং শুরু হচ্ছে...")
+        bitrate_args = ["-b:v", "4500k", "-maxrate", "6500k", "-bufsize", "9000k"]
+        print(f"🎨 [FULL SURAH HQ VIDEO] সম্পূর্ণ সূরা ({total_duration/60:.1f} মিনিট) {len(target_scenes)}টি চমৎকার দৃশ্যে পূর্ণাঙ্গ রেন্ডারিং শুরু হচ্ছে...")
 
-    watermark_png = generate_watermark_overlay(w, h)
+    watermark_png = generate_watermark_overlay(
+        width=w,
+        height=h,
+        surah_name=surah_name,
+        reciter_name=reciter_name,
+        hook_text=hook_text
+    )
 
     inputs = []
     filter_parts = []
@@ -423,19 +412,15 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
         concat_inputs.append(f"[v{i}]")
 
     num_scenes = len(target_scenes)
-    # তিলাওয়াত অডিও হচ্ছে ইনপুট ইনডেক্স num_scenes
     inputs.extend(["-i", audio_path])
     audio_idx = num_scenes
 
-    # ওয়াটারমার্ক হচ্ছে ইনপুট ইনডেক্স num_scenes + 1
     inputs.extend(["-i", watermark_png])
     wm_idx = num_scenes + 1
 
     concat_filter = f"{''.join(concat_inputs)}concat=n={num_scenes}:v=1:a=0[v_concat]"
     final_wm_filter = f"[v_concat][{wm_idx}:v]overlay=0:0[final_v]"
     full_filter = f"{';'.join(filter_parts)};{concat_filter};{final_wm_filter}"
-
-    total_duration = seg_dur * num_scenes
 
     cmd = [
         FFMPEG_EXE, "-y",
@@ -457,12 +442,12 @@ def render_quran_video_with_watermark(scene_paths: list, audio_path: str, out_pa
     ]
 
     try:
-        print(f"🎬 [FFMPEG] মাল্টি-সিন রেন্ডারিং কমান্ড এক্সিকিউট হচ্ছে...")
+        print(f"🎬 [FFMPEG] মাল্টি-সিন রেন্ডারিং শুরু...")
         subprocess.run(cmd, check=True)
     except Exception as e:
-        print(f"[FFMPEG MULTI-SCENE WARN] Concat rendering failed ({e}). Executing single-scene fallback...")
-        fallback_filter = f"[0:v]{scale_filter},setsar=1,fps=30,format=yuv420p[v0];[v0][2:v]overlay=0:0[final_v]"
+        print(f"[FFMPEG MULTI-SCENE WARN] Concat failed ({e}). Running single-scene fallback...")
         first_sc = target_scenes[0][0] if isinstance(target_scenes[0], (list, tuple)) else target_scenes[0]
+        fallback_filter = f"[0:v]{scale_filter},setsar=1,fps=30,format=yuv420p[v0];[v0][2:v]overlay=0:0[final_v]"
         fallback_cmd = [
             FFMPEG_EXE, "-y",
             "-stream_loop", "-1",
@@ -500,12 +485,12 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
     if not imam_data:
         imam_data = random.choice(MAKKAH_MADINAH_IMAMS)
 
-    scene_count = 3 if is_reel else 4
+    scene_count = 3 if is_reel else 6
 
     print("=======================================================")
     print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']} ({'Reel' if is_reel else 'HQ Video'})")
     print(f"🎙️ তিলাওয়াত: {imam_data['name']} ({imam_data['mosque']})")
-    print(f"🎬 মাল্টি-সিন কাঠামো: {scene_count}টি ভিন্ন ভিন্ন পবিত্র মসজিদের দৃশ্য")
+    print(f"🎬 মাল্টি-সিন কাঠামো: {scene_count}টি ভিন্ন ভিন্ন পবিত্র দৃশ্য")
     print("=======================================================")
 
     scene_paths, scenes_meta = get_next_mosque_scenes(count=scene_count, surah_data=surah_data)
@@ -515,9 +500,15 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
     format_tag = "reel" if is_reel else "hq_video"
     final_output = os.path.join(PROCESSED_DIR, f"quran_{surah_data['number']}_{format_tag}_{ts}.mp4")
 
-    render_quran_video_with_watermark(scene_paths, voice_audio, final_output, is_reel=is_reel)
+    render_quran_video_with_watermark(
+        scene_paths=scene_paths,
+        audio_path=voice_audio,
+        out_path=final_output,
+        is_reel=is_reel,
+        surah_data=surah_data,
+        imam_data=imam
+    )
 
-    # ক্লিনআপ টেম্প অডিও ফাইল
     try:
         if os.path.exists(voice_audio): os.remove(voice_audio)
     except Exception: pass
@@ -537,3 +528,10 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
         "benefit": surah_data.get("benefit", ""),
         "ayahs": surah_data.get("ayahs", "")
     }
+
+if __name__ == "__main__":
+    print("Testing Quran Downloader Engine V4...")
+    test_surah = LONG_SURAHS[2] # Surah Ar-Rahman
+    test_imam = MAKKAH_MADINAH_IMAMS[0] # Sudais
+    meta = download_quran_video(is_reel=True, surah_data=test_surah, imam_data=test_imam)
+    print("Test video generated successfully:", meta["filepath"])
