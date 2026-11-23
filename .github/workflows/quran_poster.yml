@@ -1,11 +1,15 @@
-name: Holy Quran 10 Daily Tilawat Posts (5 Reels + 5 HQ Videos)
+name: Holy Quran 4 Daily Prime Tilawat Posts (2 Reels + 2 HQ Videos)
 
 on:
   schedule:
-    # সকালের ২টি পোস্ট: বাংলাদেশ সময় সকাল ০৭:৩০ ও ০৯:৩০ (০১:৩০ ও ০৩:৩০ ইউটিসি)
-    - cron: '30 1,3 * * *'
-    # দুপুর থেকে রাত পর্যন্ত প্রতি ১ ঘণ্টা পর পর: দুপুর ০১:০০ থেকে রাত ১০:০০ পর্যন্ত (০৭:০০ থেকে ১৬:০০ ইউটিসি)
-    - cron: '0 7-16 * * *'
+    # সকালের পোস্ট: বাংলাদেশ সময় সকাল ০৮:০০ (০২:০০ ইউটিসি)
+    - cron: '0 2 * * *'
+    # দুপুরের পোস্ট: বাংলাদেশ সময় দুপুর ০১:৩০ (০৭:৩০ ইউটিসি)
+    - cron: '30 7 * * *'
+    # সন্ধ্যার পোস্ট: বাংলাদেশ সময় বিকাল ০৫:৩০ (১১:৩০ ইউটিসি)
+    - cron: '30 11 * * *'
+    # রাতের পোস্ট: বাংলাদেশ সময় রাত ০৮:৩০ (১৪:৩০ ইউটিসি)
+    - cron: '30 14 * * *'
   workflow_dispatch:
     inputs:
       format:
@@ -18,17 +22,26 @@ permissions:
 
 jobs:
   post-quran-tilawat:
+    name: Generate & Publish High-Retention Quran Tilawat
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Bengali Fonts & FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-core fonts-noto-ui-core ffmpeg
 
       - name: Install Python Dependencies
         run: |
@@ -41,6 +54,7 @@ jobs:
 
       - name: Run Quran Tilawat Engine
         env:
+          PYTHONUNBUFFERED: "1"
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
