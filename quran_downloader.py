@@ -298,7 +298,6 @@ def get_next_mosque_scenes(count: int = 4, surah_data: dict = None) -> tuple:
         "hero_location": scene1_item["location"]
     }
     return scene_targets, combined_meta
-
 def download_imam_surah_audio(surah_data: dict, imam: dict = None) -> tuple:
     """মক্কা ও মদিনার সম্মানিত ইমামগণের ভেরিফাইড সিডিএন থেকে পূর্ণাঙ্গ সূরার অডিও সংগ্রহ করে"""
     surah_num = surah_data.get("number", 1)
@@ -337,7 +336,7 @@ def get_audio_duration_sec(audio_path: str) -> float:
     try:
         cmd = [FFMPEG_EXE, "-i", audio_path]
         res = subprocess.run(cmd, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
-        m = re.search(r"Duration:\s*(\d+):(\d+):(\d+\.\d+)", res.stderr)
+        m = re.search(r"Duration:s*(d+):(d+):(d+.d+)", res.stderr)
         if m:
             hours, mins, secs = m.groups()
             dur = int(hours) * 3600 + int(mins) * 60 + float(secs)
@@ -357,36 +356,47 @@ def render_quran_video_with_watermark(
 ) -> str:
     """
     মাল্টিপল ভিন্ন সিন যুক্ত হাই-রিটেনশন ডায়নামিক ভিডিও রেন্ডারিং:
-    - রিলস (Reels): ১০৮০x১৯২০ (ভার্টিক্যাল ৯:১৬), ৬০-৭৫ সেকেন্ড
-    - লং ভিডিও (HQ Video): ১৯২০x১০৮০ (ওয়াইডস্ক্রিন ১৬:৯), ৩ থেকে ১০ মিনিট পূর্ণাঙ্গ সূরা
+    - রিলস (Reels): ১০৮০x১৯২০ (ভার্টিক্যাল ৯:১৬), ১৫ থেকে ৩০ সেকেন্ড (ভাইরাল হাইপার-রিটেনশন সাইকেল)
+    - লং ভিডিও (HQ Video): ১৯২০x১০৮০ (ওয়াইডস্ক্রিন ১৬:৯), ১০ থেকে ৩০+ মিনিট পূর্ণাঙ্গ সূরা তিলাওয়াত
     - অন-স্ক্রিন আধুনিক ইসলামিক টাইপোগ্রাফি ব্যানার (সূরা ও হুক টেক্সট)
     """
     audio_dur = get_audio_duration_sec(audio_path)
 
     surah_name = surah_data.get("bangla", "পবিত্র কুরআন তিলাওয়াত") if surah_data else "সূরা আর-রহমান"
     reciter_name = imam_data.get("name", "পবিত্র মক্কার ইমাম") if imam_data else "শাইখ আব্দুর রহমান আস-সুদাইস"
-    hook_text = "দিল শান্ত করা তিলাওয়াত • না টেনে শুনুন 🌿"
 
     if is_reel:
         w, h = 1080, 1920
-        # রিলসের ক্ষেত্রে সর্বোচ্চ ৬০ থেকে ৭৫ সেকেন্ড
-        total_duration = min(audio_dur, 65.0)
-        target_scenes = scene_paths[:3]
+        # রিলস: ১৫ থেকে ৩০ সেকেন্ড (ইউজার রিকয়ারমেন্ট: 15 theke 30sec) - অ্যালগরিদমে ৯০-১০০% ওয়াচ-টাইম রিটেনশন পাওয়ার জন্য
+        target_reel_sec = float(random.randint(18, 28))
+        total_duration = min(audio_dur, target_reel_sec)
+        target_scenes = scene_paths[:2]
         seg_dur = total_duration / len(target_scenes)
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         crf = "18"
         bitrate_args = ["-b:v", "5000k", "-maxrate", "7000k", "-bufsize", "10000k"]
-        print(f"🎨 [REEL RENDERING] {len(target_scenes)}টি দৃশ্য সহ {total_duration:.0f} সেকেন্ডের আকর্ষণীয় রিলস প্রস্তুত হচ্ছে...")
+        preset = "fast"
+        hook_text = random.choice([
+            "২০ সেকেন্ড চোখ বন্ধ করে শুনুন • দিল শান্ত হবে",
+            "মন জুড়ানো তিলাওয়াত • না টেনে শুনুন",
+            "পবিত্র কুরআনের তিলাওয়াত • অন্তরের প্রশান্তি"
+        ])
+        print(f"🎨 [REEL RENDERING] {len(target_scenes)}টি দৃশ্য সহ {total_duration:.0f} সেকেন্ডের হাই-রিটেনশন রিলস প্রস্তুত হচ্ছে...")
     else:
         w, h = 1920, 1080
-        # লং ভিডিওর ক্ষেত্রে ৩ থেকে ১০ মিনিটের পূর্ণাঙ্গ সূরা (সর্বোচ্চ ১২ মিনিট সেফগার্ড)
-        total_duration = min(max(audio_dur, 180.0), 600.0)
-        # ৫ থেকে ৮টি ভিন্ন সিন সাইকেল
-        target_scenes = scene_paths[:6] if len(scene_paths) >= 6 else scene_paths
-        seg_dur = total_duration / len(target_scenes)
+        # লং ভিডিও: পূর্ণাঙ্গ সূরা তিলাওয়াত (১০ থেকে ৩০+ মিনিট / সম্পূর্ণ অডিওর সময়)
+        # সর্বোচ্চ ৬০ মিনিট (৩৬০০ সেকেন্ড) ক্লাউড সেফগার্ড
+        total_duration = min(audio_dur, 3600.0)
+        # ৬ থেকে ৮টি ভিন্ন সিন সাইকেল
+        num_scenes = min(len(scene_paths), 8)
+        target_scenes = scene_paths[:num_scenes]
+        seg_dur = max(25.0, total_duration / len(target_scenes))
+        total_duration = seg_dur * len(target_scenes)
         scale_filter = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
-        crf = "20"
-        bitrate_args = ["-b:v", "4500k", "-maxrate", "6500k", "-bufsize", "9000k"]
+        crf = "22"
+        bitrate_args = ["-b:v", "3500k", "-maxrate", "5000k", "-bufsize", "8000k"]
+        preset = "veryfast"
+        hook_text = "পূর্ণাঙ্গ তিলাওয়াত • অন্তরের প্রশান্তি"
         print(f"🎨 [FULL SURAH HQ VIDEO] সম্পূর্ণ সূরা ({total_duration/60:.1f} মিনিট) {len(target_scenes)}টি চমৎকার দৃশ্যে পূর্ণাঙ্গ রেন্ডারিং শুরু হচ্ছে...")
 
     watermark_png = generate_watermark_overlay(
@@ -429,11 +439,11 @@ def render_quran_video_with_watermark(
         "-map", "[final_v]",
         "-map", f"{audio_idx}:a:0",
         "-c:v", "libx264",
-        "-preset", "fast",
+        "-preset", preset,
         "-crf", crf,
         *bitrate_args,
         "-c:a", "aac",
-        "-b:a", "320k",
+        "-b:a", "256k",
         "-ar", "48000",
         "-t", str(total_duration),
         "-shortest",
@@ -485,7 +495,7 @@ def download_quran_video(is_reel: bool = True, surah_data: dict = None, imam_dat
     if not imam_data:
         imam_data = random.choice(MAKKAH_MADINAH_IMAMS)
 
-    scene_count = 3 if is_reel else 6
+    scene_count = 2 if is_reel else 8
 
     print("=======================================================")
     print(f"📖 'কুরআনের তিলাওয়াত' ভিডিও ইঞ্জিন: {surah_data['bangla']} ({'Reel' if is_reel else 'HQ Video'})")
